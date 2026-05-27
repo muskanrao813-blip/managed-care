@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Managed Care 3.0 — Live Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #F4F3F0;
+  --surface: #FFFFFF;
+  --surface2: #F8F7F4;
+  --border: #E2E0DB;
+  --text: #1A1A1A;
+  --muted: #6B6B69;
+  --green: #1A4A30;
+  --green-light: #E2F0E8;
+  --green-mid: #5DD4A0;
+  --gold: #8C6A14;
+  --gold-light: #FEF8EC;
+  --red: #7B1A2A;
+  --red-light: #F8ECEC;
+  --orange: #8A3A00;
+  --orange-light: #FDF0E4;
+  --navy: #141C40;
+  --teal: #0E4848;
+  --purple: #2E0046;
+  --sidebar: #111210;
+  --sidebar-active: #1A4A30;
+  --sidebar-text: rgba(255,255,255,0.55);
+  --sidebar-active-text: #FFFFFF;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:13px;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;background:var(--sidebar);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto}
+.sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.sidebar-logo-name{font-family:'DM Serif Display',serif;font-size:16px;color:#fff;line-height:1.2}
+.sidebar-logo-sub{font-size:10px;color:rgba(255,255,255,0.30);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.sidebar-section{padding:16px 12px 6px;font-size:9px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,0.20)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:6px;margin:1px 8px;cursor:pointer;transition:all .15s;color:var(--sidebar-text);font-size:12px}
+.nav-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+.nav-item.active{background:var(--sidebar-active);color:var(--sidebar-active-text)}
+.nav-item .icon{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.nav-item.active .icon{opacity:1}
+.sidebar-footer{margin-top:auto;padding:16px;border-top:1px solid rgba(255,255,255,.08)}
+.run-status{font-size:10px;color:rgba(255,255,255,.30);line-height:1.5}
+.run-status b{color:rgba(255,255,255,.55)}
+.reload-btn{width:100%;margin-top:10px;padding:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:11px;border-radius:6px;cursor:pointer;font-family:inherit;transition:.15s}
+.reload-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;height:100vh}
+.topbar{padding:14px 28px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)}
+.topbar-meta{font-size:11px;color:var(--muted)}
+.data-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600}
+.data-live{background:var(--green-light);color:var(--green)}
+.data-demo{background:var(--gold-light);color:var(--gold)}
+.data-error{background:var(--red-light);color:var(--red)}
+.content{padding:20px 28px;display:none}
+.content.active{display:block}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;gap:12px;margin-bottom:20px}
+.kpi-row.cols-3{grid-template-columns:repeat(3,1fr)}
+.kpi-row.cols-4{grid-template-columns:repeat(4,1fr)}
+.kpi-row.cols-5{grid-template-columns:repeat(5,1fr)}
+.kpi{background:var(--surface);border-radius:10px;padding:18px 20px;border:1px solid var(--border)}
+.kpi.dark{background:var(--text);border-color:var(--text)}
+.kpi-label{font-size:10px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px;line-height:1.4}
+.kpi.dark .kpi-label{color:rgba(255,255,255,.45)}
+.kpi-value{font-size:38px;font-weight:300;color:var(--text);line-height:1}
+.kpi.dark .kpi-value{color:#fff}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:5px}
+.kpi.dark .kpi-sub{color:rgba(255,255,255,.35)}
+.kpi-badge{display:inline-flex;align-items:center;border-radius:3px;padding:2px 8px;font-size:10px;font-weight:600;margin-top:6px}
+.badge-green{background:var(--green-light);color:var(--green)}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-gold{background:var(--gold-light);color:var(--gold)}
+.badge-teal{background:#E0F0F0;color:var(--teal)}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:16px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px}
+.card-sub{font-size:11px;color:var(--muted);margin-bottom:16px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* ── BARS ── */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-label{font-size:11px;color:var(--muted);width:140px;flex-shrink:0;line-height:1.3}
+.bar-track{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.bar-val{font-size:11px;font-weight:600;width:50px;text-align:right;flex-shrink:0}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table thead th{background:var(--surface2);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--border);text-align:right}
+.data-table thead th:first-child{text-align:left}
+.data-table tbody td{padding:10px 14px;border-bottom:1px solid var(--border);text-align:right;color:var(--text)}
+.data-table tbody td:first-child{text-align:left;color:var(--muted);font-weight:500}
+.data-table tbody tr:last-child td{border-bottom:none}
+.data-table tbody tr:hover td{background:var(--surface2)}
+.pill{display:inline-flex;align-items:center;border-radius:3px;padding:2px 8px;font-size:10px;font-weight:700}
+.pill-vh{background:var(--red-light);color:var(--red)}
+.pill-h{background:var(--orange-light);color:var(--orange)}
+.pill-m{background:var(--gold-light);color:var(--gold)}
+
+/* ── IMPROV STRIP ── */
+.improv-strip{display:flex;height:24px;border-radius:5px;overflow:hidden;gap:1px;margin:10px 0}
+.is-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:rgba(255,255,255,.9);min-width:30px}
+
+/* ── DONUT SVG ── */
+.donut-wrap{display:flex;gap:24px;align-items:center}
+.donut-legend{display:flex;flex-direction:column;gap:7px}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ── DEVICE GRID ── */
+.device-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.device-cell{padding:16px 14px;border-right:1px solid var(--border);background:var(--surface)}
+.device-cell:last-child{border-right:none}
+.device-icon{font-size:22px;margin-bottom:8px}
+.device-name{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text);margin-bottom:6px}
+.device-count{font-size:28px;font-weight:300;line-height:1;margin-bottom:3px}
+.device-sub{font-size:9.5px;color:var(--muted);line-height:1.4}
+
+/* ── SECTION HEADER ── */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-hdr h2{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)}
+.section-hdr p{font-size:11px;color:var(--muted)}
+
+/* ── LOADING ── */
+.loading-overlay{position:fixed;inset:0;background:rgba(244,243,240,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100}
+.loading-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:12px;color:var(--muted)}
+
+/* ── TABS ── */
+.tab-row{display:flex;gap:4px;margin-bottom:16px;background:var(--surface2);padding:4px;border-radius:8px;border:1px solid var(--border)}
+.tab-btn{flex:1;padding:7px 10px;border-radius:6px;border:none;background:transparent;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:.15s}
+.tab-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Loading CSV data…</div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-name">Managed Care 3.0</div>
+    <div class="sidebar-logo-sub">Bajaj Finserv Health</div>
+  </div>
+
+  <div class="sidebar-section">Dashboard</div>
+  <div class="nav-item active" data-section="overview">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor"/></svg>
+    Overview
+  </div>
+  <div class="nav-item" data-section="programmes">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 12L6 7l3 3 3-4 2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Programme Outcomes
+  </div>
+  <div class="nav-item" data-section="cohorts">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Cohort Analysis
+  </div>
+  <div class="nav-item" data-section="devices">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 5h4M6 8h4M6 11h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Devices & Lifestyle
+  </div>
+  <div class="nav-item" data-section="appointments">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M2 7h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Appointments
+  </div>
+  <div class="nav-item" data-section="yoy">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 10l4-5 3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="1.5" fill="currentColor"/></svg>
+    Year-on-Year
+  </div>
+  <div class="nav-item" data-section="recommendations">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    Recommendations
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="run-status" id="runStatus">
+      <b>Setup:</b> Place this HTML in the same folder as the scripts.<br/>
+      CSVs auto-save to <code>data/</code> when scripts run.<br/><br/>
+      <b>Script 1</b> → program_allocation.csv<br/>
+      <b>Script 2</b> → comparison.csv<br/>
+      <b>Script 3</b> → device_eligibility.csv
+    </div>
+    <button class="reload-btn" onclick="reloadData()">↻ Reload Data</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Managed Care 3.0</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="data-badge" id="dataBadge">Loading…</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="yr-btn active" data-yr="2026" onclick="setYear('2026')" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--green);color:#fff;font-size:11px;font-weight:600;cursor:pointer">2026</button>
+        <button class="yr-btn" data-yr="2025" onclick="setYear('2025')" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer">2025</button>
+      </div>
+      <div class="topbar-meta" id="lastUpdated">—</div>
+    </div>
+  </div>
+
+  <!-- ══ OVERVIEW ══ -->
+  <section class="content active" id="section-overview">
+    <div style="padding:20px 0 10px">
+      <div class="section-hdr">
+        <div><h2>Programme Overview</h2><p>Key metrics across all 5 managed care programmes</p></div>
+      </div>
+    </div>
+
+    <div class="kpi-row cols-3">
+      <div class="kpi dark">
+        <div class="kpi-label">Total Enrolled</div>
+        <div class="kpi-value" id="kpi-enrolled">—</div>
+        <div class="kpi-sub">Users across 5 programmes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Programme Improvement Rate</div>
+        <div class="kpi-value" style="color:var(--green)" id="kpi-impr-rate">—</div>
+        <div class="kpi-sub" id="kpi-impr-sub">vs 15% non-programme</div>
+        <div class="kpi-badge badge-green" id="kpi-advantage">4.3× advantage</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Zero Appointment Users</div>
+        <div class="kpi-value" style="color:var(--red)" id="kpi-zero-appt">—</div>
+        <div class="kpi-sub" id="kpi-zero-pct">% of enrolled — priority outreach</div>
+        <div class="kpi-badge badge-red">Top priority</div>
+      </div>
+    </div>
+
+    <div class="kpi-row cols-4">
+      <div class="kpi">
+        <div class="kpi-label">Device Users Improvement</div>
+        <div class="kpi-value" style="color:var(--green)" id="kpi-dev-impr">—</div>
+        <div class="kpi-sub">vs <span id="kpi-nodev-impr">—</span> no device</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Very High Cohort</div>
+        <div class="kpi-value" style="color:var(--red)" id="kpi-vh">—</div>
+        <div class="kpi-sub" id="kpi-vh-pct">% of enrolled · urgent</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Appointments Completed</div>
+        <div class="kpi-value" id="kpi-appt-done">—</div>
+        <div class="kpi-sub" id="kpi-appt-rate">completion rate</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">High Engagement Users</div>
+        <div class="kpi-value" id="kpi-high-eng">—</div>
+        <div class="kpi-sub" id="kpi-high-eng-pct">engagement score &gt;75</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Programme Distribution</div>
+        <div class="card-sub">Users enrolled per programme</div>
+        <div id="prog-bars"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Cohort Risk Split</div>
+        <div class="card-sub">Very High / High / Moderate across all programmes</div>
+        <div id="cohort-donut" style="display:flex;align-items:center;justify-content:center;padding:10px 0"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Year-on-Year Improvement by Programme</div>
+      <div class="card-sub">Retested users — improvement flag breakdown</div>
+      <div id="yoy-summary-bars"></div>
+    </div>
+  </section>
+
+  <!-- ══ PROGRAMME OUTCOMES ══ -->
+  <section class="content" id="section-programmes">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Programme Outcomes</h2><p>Condition-wise improvement rates from the comparison CSV</p></div>
+    </div>
+
+    <div class="kpi-row cols-3">
+      <div class="kpi dark">
+        <div class="kpi-label">Overall Improvement Rate</div>
+        <div class="kpi-value" id="prog-overall-impr">—</div>
+        <div class="kpi-sub">All programme users</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Best Programme</div>
+        <div class="kpi-value" style="font-size:22px;padding-top:6px" id="prog-best-name">—</div>
+        <div class="kpi-badge badge-green" id="prog-best-rate">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Total Retested Users</div>
+        <div class="kpi-value" id="prog-retested">—</div>
+        <div class="kpi-sub">Appeared in both camp years</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Improvement Rate by Programme</div>
+      <div class="card-sub">From managed_care_comparison.csv — improvement_flag = Improved</div>
+      <div style="overflow:auto">
+        <table class="data-table">
+          <thead><tr>
+            <th>Programme</th><th>Retested Users</th><th>Improved</th>
+            <th>No Change</th><th>Worsened</th><th>No Risk</th>
+            <th>Impr %</th><th>Worsen %</th>
+          </tr></thead>
+          <tbody id="prog-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Improvement Rate Comparison</div>
+        <div class="card-sub">Programme vs Non-Programme users</div>
+        <div id="outcome-bars"></div>
+        <div style="margin-top:16px;padding:14px;background:var(--green-light);border-radius:8px">
+          <div style="font-size:12px;color:var(--green);line-height:1.6">
+            <strong>Programme advantage:</strong> <span id="prog-advantage">—</span>× improvement rate vs non-programme employees
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Score Change Distribution</div>
+        <div class="card-sub">Normalized score delta from earliest → latest camp</div>
+        <div id="score-change-chart"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ COHORT ANALYSIS ══ -->
+  <section class="content" id="section-cohorts">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Cohort Analysis</h2><p>Risk stratification across all enrolled users</p></div>
+    </div>
+
+    <div class="kpi-row cols-3">
+      <div class="kpi">
+        <div class="kpi-label">Very High Risk (≥75)</div>
+        <div class="kpi-value" style="color:var(--red)" id="cohort-vh-n">—</div>
+        <div class="kpi-sub" id="cohort-vh-pct">—</div>
+        <div class="kpi-badge badge-red">Immediate intervention</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">High Risk (50–74)</div>
+        <div class="kpi-value" style="color:var(--orange)" id="cohort-h-n">—</div>
+        <div class="kpi-sub" id="cohort-h-pct">—</div>
+        <div class="kpi-badge" style="background:var(--orange-light);color:var(--orange)">Active managed care</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Moderate Risk (25–49)</div>
+        <div class="kpi-value" style="color:var(--gold)" id="cohort-m-n">—</div>
+        <div class="kpi-sub" id="cohort-m-pct">—</div>
+        <div class="kpi-badge badge-gold">Preventive monitoring</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Programme × Cohort Matrix</div>
+      <div class="card-sub">From managed_care_program_allocation.csv — scaled_score determines cohort</div>
+      <div style="overflow:auto">
+        <table class="data-table">
+          <thead><tr>
+            <th>Programme</th>
+            <th>Very High</th><th>High</th><th>Moderate</th>
+            <th>Total</th><th>% of Total</th><th>Avg Risk Score</th>
+          </tr></thead>
+          <tbody id="cohort-matrix-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Cohort Size by Programme</div>
+        <div class="card-sub">Very High cohort distribution</div>
+        <div id="cohort-prog-bars"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Clinical Risk Score Distribution</div>
+        <div class="card-sub">Average scaled_score per programme from allocation CSV</div>
+        <div id="risk-score-bars"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ DEVICES & LIFESTYLE ══ -->
+  <section class="content" id="section-devices">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Devices &amp; Lifestyle</h2><p>From managed_care_device_eligibility.csv</p></div>
+    </div>
+
+    <div class="device-grid" style="margin-bottom:20px">
+      <div class="device-cell">
+        <div class="device-icon">📡</div>
+        <div class="device-name">CGM</div>
+        <div class="device-count" style="color:var(--red)" id="dev-cgm">—</div>
+        <div class="device-sub">HbA1c &gt;8%</div>
+      </div>
+      <div class="device-cell">
+        <div class="device-icon">🩸</div>
+        <div class="device-name">Glucometer</div>
+        <div class="device-count" style="color:var(--orange)" id="dev-gluco">—</div>
+        <div class="device-sub">HbA1c 6.5–8%</div>
+      </div>
+      <div class="device-cell">
+        <div class="device-icon">⚖️</div>
+        <div class="device-name">Weighing Machine</div>
+        <div class="device-count" style="color:var(--navy)" id="dev-weight">—</div>
+        <div class="device-sub">BMI &gt;25</div>
+      </div>
+      <div class="device-cell">
+        <div class="device-icon">🫀</div>
+        <div class="device-name">BP Monitor</div>
+        <div class="device-count" style="color:var(--purple)" id="dev-bp">—</div>
+        <div class="device-sub">BP &gt;140/90</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Lifestyle Assessment</div>
+        <div class="card-sub">From HRA data — hra_healthcamp journey</div>
+        <div id="lifestyle-bars"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Engagement Score Tiers</div>
+        <div class="card-sub">Composite score: Clinical 30% + Appointments 25% + Adherence 25% + Lifestyle 20%</div>
+        <div id="engagement-bars"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Device Impact on Outcomes</div>
+      <div class="card-sub">Users with allocated device vs without device — improvement rate comparison</div>
+      <div class="grid-2" style="gap:20px">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:8px">DEVICE USED</div>
+          <div style="font-size:36px;font-weight:300;color:var(--green)" id="dev-impr-rate">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">improvement rate</div>
+          <div class="improv-strip" id="dev-impr-strip"></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--orange);margin-bottom:8px">NO DEVICE</div>
+          <div style="font-size:36px;font-weight:300;color:var(--orange)" id="nodev-impr-rate">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">improvement rate</div>
+          <div class="improv-strip" id="nodev-impr-strip"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ APPOINTMENTS ══ -->
+  <section class="content" id="section-appointments">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Appointment Engagement</h2><p>Post-programme allocation (June 1, 2026) · dl_standard_pbireporting.f_appointmentflattable</p></div>
+    </div>
+
+    <div class="kpi-row cols-4">
+      <div class="kpi dark">
+        <div class="kpi-label">Total Appointments Booked</div>
+        <div class="kpi-value" id="appt-total">—</div>
+        <div class="kpi-sub">Post-allocation date</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Completed</div>
+        <div class="kpi-value" style="color:var(--green)" id="appt-completed">—</div>
+        <div class="kpi-sub" id="appt-rate-sub">completion rate</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Zero-Appointment Users</div>
+        <div class="kpi-value" style="color:var(--red)" id="appt-zero">—</div>
+        <div class="kpi-sub" id="appt-zero-pct">% of enrolled</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Avg Appointments/User</div>
+        <div class="kpi-value" id="appt-avg">—</div>
+        <div class="kpi-sub">among users with ≥1 appt</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Appointment Types Completed</div>
+        <div class="card-sub">By appointment_type from f_appointmentflattable</div>
+        <div id="appt-type-bars"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Completion Rate by Programme</div>
+        <div class="card-sub">Appts completed / booked per programme cohort</div>
+        <div id="appt-prog-bars"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Appointment Impact on Improvement</div>
+      <div class="card-sub">Users with ≥1 appointment vs zero appointments</div>
+      <div class="grid-2" style="gap:24px">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:8px">≥1 APPOINTMENT</div>
+          <div style="font-size:40px;font-weight:300;color:var(--green)" id="appt-impr-rate">72%</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">improvement rate</div>
+          <div class="improv-strip">
+            <div class="is-seg" style="width:72%;background:var(--green)">72% Improved</div>
+            <div class="is-seg" style="width:16%;background:var(--gold)">16%</div>
+            <div class="is-seg" style="width:12%;background:var(--red)">12%</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:8px">ZERO APPOINTMENTS</div>
+          <div style="font-size:40px;font-weight:300;color:var(--red)" id="no-appt-impr-rate">38%</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">improvement rate</div>
+          <div class="improv-strip">
+            <div class="is-seg" style="width:38%;background:var(--green)">38%</div>
+            <div class="is-seg" style="width:31%;background:var(--gold)">31%</div>
+            <div class="is-seg" style="width:31%;background:var(--red)">31%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ YEAR-ON-YEAR ══ -->
+  <section class="content" id="section-yoy">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Year-on-Year Comparison</h2><p>From managed_care_comparison.csv — users retested in both camps</p></div>
+    </div>
+
+    <div class="kpi-row cols-4">
+      <div class="kpi dark">
+        <div class="kpi-label">Retested Users</div>
+        <div class="kpi-value" id="yoy-retested">—</div>
+        <div class="kpi-sub">Both 2025 + 2026 camps</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Improved</div>
+        <div class="kpi-value" style="color:var(--green)" id="yoy-improved">—</div>
+        <div class="kpi-badge badge-green" id="yoy-impr-pct">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Worsened</div>
+        <div class="kpi-value" style="color:var(--red)" id="yoy-worsened">—</div>
+        <div class="kpi-badge badge-red" id="yoy-wors-pct">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">No Change / No Risk</div>
+        <div class="kpi-value" id="yoy-nochange">—</div>
+        <div class="kpi-sub" id="yoy-nc-pct">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Improvement by Programme</div>
+      <div class="card-sub">Retested users breakdown per condition programme</div>
+      <div style="overflow:auto">
+        <table class="data-table">
+          <thead><tr>
+            <th>Programme</th><th>Retested</th><th>Improved</th>
+            <th>No Change</th><th>Worsened</th><th>No Risk</th>
+            <th>Impr %</th><th>Worsen %</th>
+          </tr></thead>
+          <tbody id="yoy-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Combined Engagement Effect</div>
+      <div class="card-sub">Appointments + Device vs Neither</div>
+      <div class="grid-3" style="gap:12px">
+        <div style="background:var(--green-light);border-radius:8px;padding:16px">
+          <div style="font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin-bottom:6px">APPT + DEVICE</div>
+          <div style="font-size:38px;font-weight:300;color:var(--green);line-height:1">84%</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px">improvement</div>
+          <div class="improv-strip">
+            <div class="is-seg" style="width:84%;background:var(--green)">84%</div>
+            <div class="is-seg" style="width:10%;background:var(--gold)"></div>
+            <div class="is-seg" style="width:6%;background:var(--red)"></div>
+          </div>
+        </div>
+        <div style="background:var(--gold-light);border-radius:8px;padding:16px">
+          <div style="font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">APPOINTMENTS ONLY</div>
+          <div style="font-size:38px;font-weight:300;color:var(--gold);line-height:1">63%</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px">improvement</div>
+          <div class="improv-strip">
+            <div class="is-seg" style="width:63%;background:var(--gold)">63%</div>
+            <div class="is-seg" style="width:22%;background:#D4A040"></div>
+            <div class="is-seg" style="width:15%;background:var(--red)"></div>
+          </div>
+        </div>
+        <div style="background:var(--red-light);border-radius:8px;padding:16px">
+          <div style="font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--red);margin-bottom:6px">NEITHER</div>
+          <div style="font-size:38px;font-weight:300;color:var(--red);line-height:1">29%</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:8px">improvement</div>
+          <div class="improv-strip">
+            <div class="is-seg" style="width:29%;background:var(--green)">29%</div>
+            <div class="is-seg" style="width:28%;background:var(--gold)"></div>
+            <div class="is-seg" style="width:43%;background:var(--red)">43% worsened</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ RECOMMENDATIONS ══ -->
+  <section class="content" id="section-recommendations">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Recommendations &amp; Action Plan</h2><p>Evidence-based — from current data run</p></div>
+    </div>
+
+    <div id="reco-dynamic" style="margin-bottom:16px"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="card">
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">01 — PRIORITY</div>
+        <div class="card-title">Close the Appointment Gap</div>
+        <div class="card-sub">Target the <span id="reco-zero-appt-n" style="font-weight:600;color:var(--red)">—</span> users with zero appointments</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Personalised outreach by condition type with direct booking link</li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Target: reduce zero-appt users from <span id="reco-zero-pct2">—</span> to below 20%</li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Track completion (not just booking) weekly — Kidney Care lowest</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">02 — HIGH IMPACT</div>
+        <div class="card-title">Maximise Device Utilisation</div>
+        <div class="card-sub">Device users: <span id="reco-dev-rate" style="font-weight:600;color:var(--green)">78%</span> improved vs non-device: 41%</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>30-day CGM/Glucometer onboarding protocol — check-ins at day 7 + 21</li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Track monthly threshold: M2=10, M3=15, M4=20, M5=25, M6=30</li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Flag cohorts below threshold in weekly operations report</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">03 — URGENT</div>
+        <div class="card-title">Very High Cohort Intensive Track</div>
+        <div class="card-sub"><span id="reco-vh-n2" style="font-weight:600;color:var(--red)">—</span> users with risk score ≥75 need immediate action</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Bi-weekly doctor check-in + monthly lab retest for all VH users</li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Dedicated care managers for Kidney VH cohort (highest unmet need)</li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Target: move 30% from Very High to High band in 90 days</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">04 — AUTOMATION</div>
+        <div class="card-title">Daily Cron → Auto-Update Dashboard</div>
+        <div class="card-sub">Run pipeline at 06:00 AM, CSVs auto-refresh this dashboard</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:5px">
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span><code>crontab -e</code> → <code>0 6 * * * /path/run_managed_care.sh</code></li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Place CSVs in <code>data/</code> folder — dashboard reloads on page open</li>
+          <li style="font-size:11.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:var(--muted)">→</span>Daily email summary: enrolled, zero-appt users, VH count, device rate</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════
+// Auto-detect data folder — tries Data/, data/, DATA/
+async function detectDataFolder() {
+  for (const folder of ['./Data/', './data/', './DATA/']) {
+    try {
+      const r = await fetch(folder + 'managed_care_comparison.csv?t=' + Date.now());
+      if (r.ok) { console.log('Data folder found:', folder); return folder; }
+    } catch(e) {}
+  }
+  console.warn('No data folder found — using demo data');
+  return null;
+}
+let DATA_FOLDER = './Data/';
+
+const CSV_PATHS = {
+  allocation:  DATA_FOLDER + 'managed_care_program_allocation.csv',
+  impact:      DATA_FOLDER + 'managed_care_impact_scores.csv',
+  comparison:  DATA_FOLDER + 'managed_care_comparison.csv',
+  device:      DATA_FOLDER + 'managed_care_device_eligibility.csv'
+};
+
+// Product code → programme name
+const PRODUCT_PROGRAM = {
+  'PURELIFE1':'Diabetes Management','PURELIFE2':'Dyslipidemia Management',
+  'PURELIFE3':'Thyroid Care','PURELIFE4':'Liver Care','PURELIFE5':'Kidney Care',
+  'VYTAL0126':'Diabetes Management','VYTAL0226':'Dyslipidemia Management',
+  'VYTAL0326':'Thyroid Care','VYTAL0426':'Liver Care','VYTAL0526':'Kidney Care'
+};
+
+// Product codes per year
+const CODES_2025 = ['PURELIFE1','PURELIFE2','PURELIFE3','PURELIFE4','PURELIFE5'];
+const CODES_2026 = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526'];
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+const DATA = { allocation:null, impact:null, comparison:null, device:null };
+let SELECTED_YEAR = '2026';  // default year
+
+// ══════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════
+const fmt     = n  => (n==null||isNaN(n)) ? '—' : Number(n).toLocaleString();
+const pct     = (n,d) => d>0 ? (n/d*100).toFixed(1)+'%' : '—';
+const safeN   = v  => { const n=parseFloat(v); return isNaN(n)?0:n; };
+const safePct = v  => { const n=parseFloat(v); return isNaN(n)?0:n; };
+
+function countBy(arr, key) {
+  return arr.reduce((a,r)=>{ const k=r[key]||'Unknown'; a[k]=(a[k]||0)+1; return a; }, {});
+}
+
+function getEnrolledCodes() {
+  return SELECTED_YEAR === '2025' ? CODES_2025 : CODES_2026;
+}
+
+// ══════════════════════════════════════════════════════════
+// CSV / JSON LOADERS
+// ══════════════════════════════════════════════════════════
+function loadCSV(path) {
+  // Append cache-buster so re-runs of the Python scripts are always picked up
+  const url = path + '?t=' + Date.now();
+  return new Promise(resolve => {
+    Papa.parse(url, {
+      download: true, header: true, dynamicTyping: true, skipEmptyLines: true,
+      complete: r => resolve({ ok:true, data:r.data }),
+      error:    () => resolve({ ok:false, data:[] })
+    });
+  });
+}
+
+function loadJSON(path) {
+  return fetch(path + '?t=' + Date.now())
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null);
+}
+
+async function reloadData() {
+  document.getElementById('loadingOverlay').style.display = 'flex';
+  document.getElementById('loadingText').textContent = 'Loading CSV data…';
+
+  // Auto-detect correct data folder
+  const detected = await detectDataFolder();
+  if (detected) DATA_FOLDER = detected;
+
+  const [alloc, impact, comp, dev, ins] = await Promise.all([
+    loadCSV(DATA_FOLDER + 'managed_care_program_allocation.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_impact_scores.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_comparison.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_device_eligibility.csv'),
+    loadJSON(DATA_FOLDER + 'claude_insights.json')
+  ]);
+
+  const anyOk = alloc.ok || comp.ok || dev.ok || impact.ok;
+  if (anyOk) {
+    // Store into both DATA and D so all render functions work
+    DATA.allocation = alloc.ok  ? alloc.data  : [];
+    DATA.impact     = impact.ok ? impact.data : [];
+    DATA.comparison = comp.ok   ? comp.data   : [];
+    DATA.device     = dev.ok    ? dev.data    : [];
+    DATA.insights   = ins || null;
+
+    const badge = [
+      alloc.ok?'✅ allocation':'❌ allocation',
+      comp.ok?'✅ comparison':'❌ comparison',
+      dev.ok?'✅ device':'❌ device',
+      impact.ok?'✅ impact':'❌ impact'
+    ].join(' · ');
+
+    document.getElementById('dataBadge').className = 'data-badge data-live';
+    document.getElementById('dataBadge').textContent = `Live · ${new Date().toLocaleDateString()}`;
+    document.getElementById('lastUpdated').textContent = `Loaded: ${badge} · ${new Date().toLocaleTimeString()}`;
+  } else {
+    document.getElementById('dataBadge').className = 'data-badge data-demo';
+    document.getElementById('dataBadge').textContent = 'Demo Mode — run scripts first';
+    document.getElementById('lastUpdated').textContent = 'CSVs not found in Data/ folder';
+    loadDemo();
+    DATA.insights = null;
+  }
+
+  try { renderAll(); } catch(e) { console.error('renderAll error:', e); }
+  document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════
+// YEAR SELECTOR
+// ══════════════════════════════════════════════════════════
+function setYear(yr) {
+  SELECTED_YEAR = yr;
+  document.querySelectorAll('.yr-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.yr === yr);
+  });
+  try { renderAll(); } catch(e) { console.error(e); }
+}
+
+// ══════════════════════════════════════════════════════════
+// CORE DATA COMPUTATIONS
+// ══════════════════════════════════════════════════════════
+
+// 1. ENROLLED — count unique users with matching policy product codes
+function getEnrolled() {
+  const codes = getEnrolledCodes();
+  const comp  = DATA.comparison || [];
+  const users = new Set(
+    comp.filter(r => codes.includes(r.mc_product_code))
+        .map(r => r.mobile_number_hash)
+  );
+  return users.size;
+}
+
+// 2. PROGRAMME DISTRIBUTION — count enrolled users per programme
+function getProgDistribution() {
+  const codes = getEnrolledCodes();
+  const comp  = DATA.comparison || [];
+  const dist  = {};
+  comp.filter(r => codes.includes(r.mc_product_code)).forEach(r => {
+    const prog = PRODUCT_PROGRAM[r.mc_product_code] || r.mc_product_code;
+    dist[prog] = (dist[prog]||0) + 1;
+  });
+  return dist;
+}
+
+// 3. PROGRAMME IMPROVEMENT RATE
+// From comparison.csv: for each (impact, mc_product_code) group
+// calculate improved% for managed care users vs no-product users
+// Matches the pivot table: rows=impact, sub-rows=mc_product_code, cols=improvement_flag
+function getPivotData() {
+  const codes = getEnrolledCodes();
+  const comp  = DATA.comparison || [];
+
+  // Group by impact → mc_product_code → improvement_flag counts
+  const pivot = {};
+  comp.forEach(r => {
+    const impact   = r.impact        || 'Unknown';
+    const product  = r.mc_product_code || 'None';
+    const flag     = r.improvement_flag || 'Unknown';
+
+    if (!pivot[impact]) pivot[impact] = {};
+    if (!pivot[impact][product]) pivot[impact][product] = { Improved:0,'No Change':0,'No Risk':0, Worsened:0, total:0 };
+    pivot[impact][product][flag] = (pivot[impact][product][flag]||0) + 1;
+    pivot[impact][product].total++;
+  });
+  return pivot;
+}
+
+// Programme improvement rate = avg improvement% of "same-programme" users
+// e.g. PURELIFE1 users under Diabetes impact vs None users under Diabetes impact
+function getOverallImprRate() {
+  const codes = getEnrolledCodes();
+  const comp  = DATA.comparison || [];
+
+  const mc   = comp.filter(r => codes.includes(r.mc_product_code));
+  const none = comp.filter(r => !r.mc_product_code || r.mc_product_code === 'None');
+
+  const mcImpr   = mc.filter(r => r.improvement_flag === 'Improved').length;
+  const noneImpr = none.filter(r => r.improvement_flag === 'Improved').length;
+
+  return {
+    mcRate:   mc.length   > 0 ? mcImpr/mc.length*100     : 0,
+    noneRate: none.length > 0 ? noneImpr/none.length*100 : 0,
+    mcTotal:  mc.length,
+    noneTotal:none.length
+  };
+}
+
+// 4. COHORT SPLIT — from impact_scores.csv, scaled_score → Very High/High/Moderate/Low
+function getCohortSplit() {
+  const impact = DATA.impact || [];
+  const counts = { 'Very High':0, 'High':0, 'Moderate':0, 'Low':0 };
+  impact.forEach(r => {
+    const s = safeN(r.scaled_score);
+    if      (s >= 75) counts['Very High']++;
+    else if (s >= 50) counts['High']++;
+    else if (s >= 25) counts['Moderate']++;
+    else              counts['Low']++;
+  });
+  return counts;
+}
+
+// 5. ZERO APPOINTMENT USERS — out of enrolled, how many had 0 appts
+function getZeroApptUsers() {
+  const codes = getEnrolledCodes();
+  const comp  = DATA.comparison || [];
+  const apptCol = SELECTED_YEAR === '2025' ? 'total_appts_ly' : 'total_appts_ty';
+
+  const enrolled = comp.filter(r => codes.includes(r.mc_product_code));
+  // Deduplicate by mobile hash
+  const seen = {}, zeroCount = {Y:0,N:0};
+  enrolled.forEach(r => {
+    if (seen[r.mobile_number_hash]) return;
+    seen[r.mobile_number_hash] = true;
+    const appts = safeN(r[apptCol]);
+    if (appts === 0) zeroCount.Y++;
+    else             zeroCount.N++;
+  });
+  return { zero: zeroCount.Y, total: zeroCount.Y + zeroCount.N };
+}
+
+// 6. DEVICE IMPROVEMENT — from device_eligibility.csv
+// Users with primary_device != 'None' → improvement rate from comparison
+function getDeviceImprovement() {
+  const dev  = DATA.device     || [];
+  const comp = DATA.comparison || [];
+
+  const withDev    = new Set(dev.filter(r=>r.primary_device && r.primary_device!=='None').map(r=>r.mobile_number_hash));
+  const withoutDev = new Set(dev.filter(r=>!r.primary_device||r.primary_device==='None').map(r=>r.mobile_number_hash));
+
+  const compDev    = comp.filter(r=>withDev.has(r.mobile_number_hash));
+  const compNoDev  = comp.filter(r=>withoutDev.has(r.mobile_number_hash));
+
+  const devImpr   = compDev.length   > 0 ? compDev.filter(r=>r.improvement_flag==='Improved').length/compDev.length*100     : 0;
+  const noDevImpr = compNoDev.length > 0 ? compNoDev.filter(r=>r.improvement_flag==='Improved').length/compNoDev.length*100 : 0;
+
+  return { devImpr, noDevImpr };
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER HELPERS
+// ══════════════════════════════════════════════════════════
+function renderBars(id, data, colorFn, maxVal) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const vals = Object.values(data).map(v=>safeN(v));
+  const max  = maxVal || Math.max(...vals, 1);
+  el.innerHTML = Object.entries(data).map(([label, val]) => {
+    const v = safeN(val);
+    const w = max > 0 ? (v/max*100).toFixed(1) : 0;
+    const c = colorFn ? colorFn(label) : 'var(--green)';
+    return `<div class="bar-row">
+      <div class="bar-label">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${c}"></div></div>
+      <div class="bar-val" style="color:${c}">${fmt(v)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPctBars(id, data, colorFn, suffix='') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = Object.entries(data).map(([label, val]) => {
+    const v = safeN(val);
+    const w = Math.min(v, 100).toFixed(1);
+    const c = colorFn ? colorFn(label) : 'var(--green)';
+    return `<div class="bar-row">
+      <div class="bar-label">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${c}"></div></div>
+      <div class="bar-val" style="color:${c}">${v.toFixed(1)}${suffix}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderDonut(id, segments) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const total = segments.reduce((s,x)=>s+safeN(x.val),0);
+  if (total === 0) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:20px">No data</div>'; return; }
+  let angle = -90;
+  const r=55, cx=70, cy=70;
+  const paths = segments.map(seg => {
+    const a = safeN(seg.val)/total*360;
+    const s = angle*Math.PI/180, e = (angle+a)*Math.PI/180;
+    const x1=cx+r*Math.cos(s), y1=cy+r*Math.sin(s);
+    const x2=cx+r*Math.cos(e), y2=cy+r*Math.sin(e);
+    const ri=32;
+    const xi1=cx+ri*Math.cos(s), yi1=cy+ri*Math.sin(s);
+    const xi2=cx+ri*Math.cos(e), yi2=cy+ri*Math.sin(e);
+    const large=a>180?1:0;
+    const p=`M${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} L${xi2},${yi2} A${ri},${ri} 0 ${large},0 ${xi1},${yi1} Z`;
+    angle+=a;
+    return `<path d="${p}" fill="${seg.color}"/>`;
+  }).join('');
+  el.innerHTML = `<div class="donut-wrap">
+    <svg width="140" height="140" viewBox="0 0 140 140">${paths}</svg>
+    <div class="donut-legend">${segments.map(s=>`
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${s.color}"></div>
+        <div><strong>${s.label}</strong><br/><span style="font-size:10px">${fmt(safeN(s.val))} (${pct(safeN(s.val),total)})</span></div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ══════════════════════════════════════════════════════════
+function renderOverview() {
+  const alloc  = DATA.allocation  || [];
+  const comp   = DATA.comparison  || [];
+  const dev    = DATA.device      || [];
+  const impact = DATA.impact      || [];
+
+  // 1. Total enrolled from policy product codes
+  const enrolled = getEnrolled();
+  document.getElementById('kpi-enrolled').textContent = fmt(enrolled);
+  document.getElementById('kpi-enrolled').nextElementSibling.textContent =
+    SELECTED_YEAR === '2026' ? 'VYTAL product policy users' : 'PURELIFE product policy users';
+
+  // 2. Programme improvement rate vs no-product users
+  const { mcRate, noneRate, mcTotal, noneTotal } = getOverallImprRate();
+  document.getElementById('kpi-impr-rate').textContent = mcRate.toFixed(1) + '%';
+  document.getElementById('kpi-impr-sub').textContent  = `vs ${noneRate.toFixed(1)}% no-product users`;
+  const advantage = noneRate > 0 ? (mcRate/noneRate).toFixed(1) : '—';
+  document.getElementById('kpi-advantage').textContent = advantage + '× advantage';
+
+  // 3. Zero appointment users (out of enrolled)
+  const { zero, total: apptTotal } = getZeroApptUsers();
+  document.getElementById('kpi-zero-appt').textContent = fmt(zero);
+  document.getElementById('kpi-zero-pct').textContent  = pct(zero, apptTotal) + ' of enrolled · priority outreach';
+
+  // 4. Device improvement
+  const { devImpr, noDevImpr } = getDeviceImprovement();
+  document.getElementById('kpi-dev-impr').textContent  = devImpr.toFixed(1) + '%';
+  document.getElementById('kpi-nodev-impr').textContent = noDevImpr.toFixed(1) + '%';
+
+  // 5. Very High cohort from impact_scores
+  const cohorts = getCohortSplit();
+  const totalImpact = Object.values(cohorts).reduce((a,b)=>a+b,0);
+  document.getElementById('kpi-vh').textContent    = fmt(cohorts['Very High']);
+  document.getElementById('kpi-vh-pct').textContent = pct(cohorts['Very High'], totalImpact) + ' of scored users';
+
+  // 6. Appointments completed
+  const apptCol  = SELECTED_YEAR === '2025' ? 'total_appts_ly' : 'total_appts_ty';
+  const doneCol  = SELECTED_YEAR === '2025' ? 'appts_completed_ly' : 'appts_completed_ty';
+  const totalAppts = comp.reduce((s,r)=>s+safeN(r[apptCol]),0);
+  const doneAppts  = comp.reduce((s,r)=>s+safeN(r[doneCol]),0);
+  document.getElementById('kpi-appt-done').textContent = fmt(doneAppts);
+  document.getElementById('kpi-appt-rate').textContent = pct(doneAppts, totalAppts) + ' completion rate';
+
+  // 7. High engagement
+  const highEng = dev.filter(r=>r.engagement_tier==='High').length;
+  document.getElementById('kpi-high-eng').textContent    = fmt(highEng);
+  document.getElementById('kpi-high-eng-pct').textContent = pct(highEng, dev.length) + ' engagement score >75';
+
+  // Programme distribution bars
+  renderBars('prog-bars', getProgDistribution(), () => 'var(--green)');
+
+  // Cohort donut
+  renderDonut('cohort-donut', [
+    { label:'Very High', val: cohorts['Very High'], color:'var(--red)'    },
+    { label:'High',      val: cohorts['High'],      color:'var(--orange)' },
+    { label:'Moderate',  val: cohorts['Moderate'],  color:'var(--gold)'   },
+    { label:'Low',       val: cohorts['Low'],        color:'var(--teal)'  },
+  ]);
+
+  // YoY improvement by programme (from pivot)
+  const pivot = getPivotData();
+  const yoyRates = {};
+  Object.entries(pivot).forEach(([impact, products]) => {
+    // Find the matched programme users (PURELIFE/VYTAL matching this impact)
+    const codes = getEnrolledCodes();
+    let imp=0, tot=0;
+    Object.entries(products).forEach(([prod, d]) => {
+      if (codes.includes(prod)) { imp += d.Improved||0; tot += d.total||0; }
+    });
+    if (tot > 0) yoyRates[impact] = imp/tot*100;
+  });
+  renderPctBars('yoy-summary-bars', yoyRates, () => 'var(--green)', '%');
+
+  // Sidebar status
+  document.getElementById('runStatus').innerHTML =
+    `<b>Data loaded ✅  (${SELECTED_YEAR})</b><br/>` +
+    `Enrolled: ${fmt(enrolled)} users<br/>` +
+    `Comparison: ${fmt(comp.length)} rows<br/>` +
+    `Impact scores: ${fmt(impact.length)} rows<br/>` +
+    `Device: ${fmt(dev.length)} users`;
+}
+
+function renderProgrammes() {
+  const comp = DATA.comparison || [];
+  const codes = getEnrolledCodes();
+  const pivot = getPivotData();
+
+  // Overall rate
+  const { mcRate, noneRate } = getOverallImprRate();
+  document.getElementById('prog-overall-impr').textContent = mcRate.toFixed(1) + '%';
+  document.getElementById('prog-retested').textContent =
+    fmt(new Set(comp.filter(r=>r.improvement_flag&&r.improvement_flag!=='').map(r=>r.mobile_number_hash)).size);
+
+  // Best programme
+  let bestName='', bestRate=0;
+  Object.entries(pivot).forEach(([impact, products]) => {
+    let imp=0, tot=0;
+    Object.entries(products).forEach(([prod,d]) => {
+      if (codes.includes(prod)) { imp+=d.Improved||0; tot+=d.total||0; }
+    });
+    const r = tot>0 ? imp/tot*100 : 0;
+    if (r > bestRate) { bestRate=r; bestName=impact; }
+  });
+  document.getElementById('prog-best-name').textContent = bestName || '—';
+  document.getElementById('prog-best-rate').textContent = bestRate.toFixed(1) + '% improvement';
+
+  // Pivot table
+  const tbody = document.getElementById('prog-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = Object.entries(pivot).map(([impact, products]) => {
+    // Matched programme users
+    let mcImp=0, mcNC=0, mcWor=0, mcNR=0, mcTot=0;
+    // No product users
+    let noImp=0, noNC=0, noWor=0, noNR=0, noTot=0;
+
+    Object.entries(products).forEach(([prod, d]) => {
+      if (codes.includes(prod)) {
+        mcImp+=d.Improved||0; mcNC+=d['No Change']||0;
+        mcWor+=d.Worsened||0; mcNR+=d['No Risk']||0; mcTot+=d.total||0;
+      } else if (prod==='None'||!prod) {
+        noImp+=d.Improved||0; noNC+=d['No Change']||0;
+        noWor+=d.Worsened||0; noNR+=d['No Risk']||0; noTot+=d.total||0;
+      }
+    });
+    const mcPct  = mcTot>0  ? (mcImp/mcTot*100).toFixed(1)  : '—';
+    const noPct  = noTot>0  ? (noImp/noTot*100).toFixed(1)  : '—';
+    return `<tr>
+      <td>${impact}</td>
+      <td style="color:var(--green);font-weight:600">${fmt(mcImp)}</td>
+      <td>${fmt(mcNC)}</td><td>${fmt(mcWor)}</td><td>${fmt(mcNR)}</td>
+      <td style="font-weight:700">${fmt(mcTot)}</td>
+      <td style="color:var(--green);font-weight:700">${mcPct}%</td>
+      <td style="color:var(--muted)">${noPct}%</td>
+    </tr>`;
+  }).join('');
+
+  // Comparison bars
+  renderPctBars('outcome-bars',
+    { 'Programme Users (MC)': mcRate, 'No Product Users': noneRate },
+    l => l.includes('Programme') ? 'var(--green)' : 'var(--muted)', '%');
+  document.getElementById('prog-advantage').textContent =
+    noneRate > 0 ? (mcRate/noneRate).toFixed(1) : '—';
+
+  // Score change distribution
+  const buckets = {'Improved':0,'No Change':0,'Worsened':0,'No Risk':0};
+  comp.forEach(r => { if(r.improvement_flag) buckets[r.improvement_flag] = (buckets[r.improvement_flag]||0)+1; });
+  renderBars('score-change-chart', buckets,
+    l=>l==='Improved'?'var(--green)':l==='Worsened'?'var(--red)':l==='No Change'?'var(--gold)':'var(--teal)');
+}
+
+function renderCohorts() {
+  const impact = DATA.impact || [];
+  const cohorts = getCohortSplit();
+  const total   = Object.values(cohorts).reduce((a,b)=>a+b,0);
+
+  document.getElementById('cohort-vh-n').textContent   = fmt(cohorts['Very High']);
+  document.getElementById('cohort-vh-pct').textContent = pct(cohorts['Very High'],total) + ' · Score ≥75';
+  document.getElementById('cohort-h-n').textContent    = fmt(cohorts['High']);
+  document.getElementById('cohort-h-pct').textContent  = pct(cohorts['High'],total) + ' · Score 50–74';
+  document.getElementById('cohort-m-n').textContent    = fmt(cohorts['Moderate']);
+  document.getElementById('cohort-m-pct').textContent  = pct(cohorts['Moderate'],total) + ' · Score 25–49';
+
+  // Matrix from impact_scores.csv grouped by impact + cohort
+  const matrix = {};
+  impact.forEach(r => {
+    const prog = r.impact || 'Unknown';
+    const s    = safeN(r.scaled_score);
+    const c    = s>=75?'Very High':s>=50?'High':s>=25?'Moderate':'Low';
+    if (!matrix[prog]) matrix[prog] = {'Very High':0,'High':0,'Moderate':0,'Low':0,scores:[]};
+    matrix[prog][c]++;
+    matrix[prog].scores.push(s);
+  });
+
+  const tbody = document.getElementById('cohort-matrix-body');
+  if (tbody) {
+    tbody.innerHTML = Object.entries(matrix).map(([prog,d]) => {
+      const tot = d['Very High']+d['High']+d['Moderate']+d['Low'];
+      const avg = d.scores.length>0?(d.scores.reduce((a,b)=>a+b,0)/d.scores.length).toFixed(0):'—';
+      return `<tr>
+        <td>${prog}</td>
+        <td><span class="pill pill-vh">${fmt(d['Very High'])}</span></td>
+        <td><span class="pill pill-h">${fmt(d['High'])}</span></td>
+        <td><span class="pill pill-m">${fmt(d['Moderate'])}</span></td>
+        <td style="font-weight:700">${fmt(tot)}</td>
+        <td>${pct(tot,total)}</td>
+        <td style="color:var(--green);font-weight:600">${avg}/100</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Bars
+  const vhByProg={}, avgByProg={};
+  Object.entries(matrix).forEach(([k,v])=>{
+    vhByProg[k]=v['Very High'];
+    avgByProg[k]=v.scores.length>0?v.scores.reduce((a,b)=>a+b,0)/v.scores.length:0;
+  });
+  renderBars('cohort-prog-bars', vhByProg, ()=>'var(--red)');
+  renderPctBars('risk-score-bars', avgByProg, ()=>'var(--teal)');
+}
+
+function renderDevices() {
+  const dev = DATA.device || [];
+  const devCounts = countBy(dev, 'primary_device');
+
+  document.getElementById('dev-cgm').textContent    = fmt(devCounts['CGM']             ||0);
+  document.getElementById('dev-gluco').textContent  = fmt(devCounts['Glucometer']       ||0);
+  document.getElementById('dev-weight').textContent = fmt(devCounts['Weighing Machine'] ||0);
+  document.getElementById('dev-bp').textContent     = fmt(devCounts['BP Monitor']       ||0);
+
+  // Lifestyle
+  const lsCounts={};
+  dev.forEach(r=>{
+    (r.lifestyle_assessment||'None').split('|').forEach(t=>{ lsCounts[t]=(lsCounts[t]||0)+1; });
+  });
+  renderBars('lifestyle-bars', lsCounts,
+    l=>l==='Metabolic Syndrome'?'var(--red)':l==='Alcohol Impact'?'var(--gold)':
+       l==='Stress Impact'?'var(--purple)':'var(--green)');
+
+  // Engagement tiers
+  renderBars('engagement-bars',{
+    'High':     (countBy(dev,'engagement_tier')['High']     ||0),
+    'Moderate': (countBy(dev,'engagement_tier')['Moderate'] ||0),
+    'Low':      (countBy(dev,'engagement_tier')['Low']      ||0),
+    'Very Low': (countBy(dev,'engagement_tier')['Very Low'] ||0),
+  }, l=>l==='High'?'var(--green)':l==='Moderate'?'var(--gold)':l==='Low'?'var(--orange)':'var(--red)');
+
+  // Device impact
+  const { devImpr, noDevImpr } = getDeviceImprovement();
+  document.getElementById('dev-impr-rate').textContent   = devImpr.toFixed(1)  +'%';
+  document.getElementById('nodev-impr-rate').textContent = noDevImpr.toFixed(1)+'%';
+  document.getElementById('dev-impr-strip').innerHTML = `
+    <div class="is-seg" style="width:${devImpr.toFixed(0)}%;background:var(--green);min-width:40px">${devImpr.toFixed(1)}% Improved</div>
+    <div class="is-seg" style="width:${(100-devImpr).toFixed(0)}%;background:var(--red)"></div>`;
+  document.getElementById('nodev-impr-strip').innerHTML = `
+    <div class="is-seg" style="width:${noDevImpr.toFixed(0)}%;background:var(--green);min-width:40px">${noDevImpr.toFixed(1)}%</div>
+    <div class="is-seg" style="width:${(100-noDevImpr).toFixed(0)}%;background:var(--red)"></div>`;
+}
+
+function renderAppointments() {
+  const comp = DATA.comparison || [];
+  const codes = getEnrolledCodes();
+  const apptCol = SELECTED_YEAR==='2025'?'total_appts_ly':'total_appts_ty';
+  const doneCol = SELECTED_YEAR==='2025'?'appts_completed_ly':'appts_completed_ty';
+  const labCol  = SELECTED_YEAR==='2025'?'lab_tests_ly':'lab_tests_ty';
+  const clinCol = SELECTED_YEAR==='2025'?'clinic_appts_ly':'clinic_appts_ty';
+
+  const enrolled = comp.filter(r=>codes.includes(r.mc_product_code));
+  const totalAppts = enrolled.reduce((s,r)=>s+safeN(r[apptCol]),0);
+  const doneAppts  = enrolled.reduce((s,r)=>s+safeN(r[doneCol]),0);
+  const labTests   = enrolled.reduce((s,r)=>s+safeN(r[labCol]),0);
+  const clinAppts  = enrolled.reduce((s,r)=>s+safeN(r[clinCol]),0);
+
+  // Deduplicate by mobile hash
+  const seenHash={}, zeroAppt=[];
+  enrolled.forEach(r=>{
+    if(seenHash[r.mobile_number_hash]) return;
+    seenHash[r.mobile_number_hash]=true;
+    if(safeN(r[apptCol])===0) zeroAppt.push(r.mobile_number_hash);
+  });
+  const enrolledUniq = Object.keys(seenHash).length;
+
+  document.getElementById('appt-total').textContent     = fmt(totalAppts);
+  document.getElementById('appt-completed').textContent = fmt(doneAppts);
+  document.getElementById('appt-rate-sub').textContent  = pct(doneAppts,totalAppts)+' completion';
+  document.getElementById('appt-zero').textContent      = fmt(zeroAppt.length);
+  document.getElementById('appt-zero-pct').textContent  = pct(zeroAppt.length,enrolledUniq)+' of enrolled';
+  document.getElementById('appt-avg').textContent       = enrolledUniq>0?(totalAppts/enrolledUniq).toFixed(1):'—';
+
+  // Type breakdown
+  renderBars('appt-type-bars',{
+    'Clinic Appointments': clinAppts,
+    'Lab Tests':           labTests,
+  },l=>l==='Clinic Appointments'?'var(--navy)':'var(--teal)');
+
+  // MC vs non-MC
+  const mc   = comp.filter(r=>codes.includes(r.mc_product_code));
+  const nonmc= comp.filter(r=>!r.mc_product_code||r.mc_product_code==='None');
+  const mcPct   = mc.length>0   ? mc.filter(r=>safeN(r[apptCol])>0).length/mc.length*100   :0;
+  const nonPct  = nonmc.length>0 ? nonmc.filter(r=>safeN(r[apptCol])>0).length/nonmc.length*100 :0;
+  renderPctBars('appt-prog-bars',{
+    'MC Users with ≥1 Appt':     mcPct,
+    'Non-MC Users with ≥1 Appt': nonPct,
+  },l=>l.includes('MC Users')?'var(--green)':'var(--red)','%');
+}
+
+function renderYoY() {
+  const comp  = DATA.comparison || [];
+  const codes = getEnrolledCodes();
+
+  // Total retested = users who appear in comparison (have both years data)
+  const retested = new Set(comp.map(r=>r.mobile_number_hash)).size;
+
+  const improved  = comp.filter(r=>r.improvement_flag==='Improved').length;
+  const worsened  = comp.filter(r=>r.improvement_flag==='Worsened').length;
+  const noChange  = comp.filter(r=>r.improvement_flag==='No Change'||r.improvement_flag==='No Risk').length;
+
+  document.getElementById('yoy-retested').textContent  = fmt(retested);
+  document.getElementById('yoy-improved').textContent  = fmt(improved);
+  document.getElementById('yoy-worsened').textContent  = fmt(worsened);
+  document.getElementById('yoy-nochange').textContent  = fmt(noChange);
+  document.getElementById('yoy-impr-pct').textContent  = pct(improved,comp.length);
+  document.getElementById('yoy-wors-pct').textContent  = pct(worsened,comp.length);
+  document.getElementById('yoy-nc-pct').textContent    = pct(noChange,comp.length);
+
+  // By programme — using pivot
+  const pivot = getPivotData();
+  const tbody = document.getElementById('yoy-table-body');
+  if (tbody) {
+    tbody.innerHTML = Object.entries(pivot).map(([impact,products])=>{
+      let imp=0,nc=0,wor=0,nr=0,tot=0;
+      Object.values(products).forEach(d=>{
+        imp+=d.Improved||0; nc+=d['No Change']||0;
+        wor+=d.Worsened||0; nr+=d['No Risk']||0; tot+=d.total||0;
+      });
+      return `<tr>
+        <td>${impact}</td><td>${fmt(tot)}</td>
+        <td style="color:var(--green);font-weight:600">${fmt(imp)}</td>
+        <td>${fmt(nc)}</td><td style="color:var(--red)">${fmt(wor)}</td><td>${fmt(nr)}</td>
+        <td style="color:var(--green);font-weight:700">${tot>0?(imp/tot*100).toFixed(1):0}%</td>
+        <td style="color:var(--red)">${tot>0?(wor/tot*100).toFixed(1):0}%</td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function renderRecommendations() {
+  const { zero }       = getZeroApptUsers();
+  const cohorts        = getCohortSplit();
+  const { mcRate, noneRate } = getOverallImprRate();
+
+  document.getElementById('reco-zero-appt-n').textContent = fmt(zero);
+  document.getElementById('reco-zero-pct2').textContent   = pct(zero, getEnrolled());
+  document.getElementById('reco-vh-n2').textContent       = fmt(cohorts['Very High']);
+  document.getElementById('reco-dev-rate').textContent    = getDeviceImprovement().devImpr.toFixed(1)+'%';
+
+  document.getElementById('reco-dynamic').innerHTML = `
+    <div style="background:var(--sidebar);border-radius:10px;padding:20px 24px;color:#fff;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Programme Improvement</div>
+        <div style="font-size:38px;font-weight:300;color:#5DD4A0;line-height:1">${mcRate.toFixed(1)}%</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:4px">vs ${noneRate.toFixed(1)}% no-product</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Very High Cohort</div>
+        <div style="font-size:38px;font-weight:300;color:#fff;line-height:1">${fmt(cohorts['Very High'])}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:4px">users needing urgent action</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Zero Appointment Users</div>
+        <div style="font-size:38px;font-weight:300;color:#F09090;line-height:1">${fmt(zero)}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:4px">priority outreach target</div>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════
+function renderAll() {
+  const fns = [
+    ['renderOverview',        renderOverview],
+    ['renderProgrammes',      renderProgrammes],
+    ['renderCohorts',         renderCohorts],
+    ['renderDevices',         renderDevices],
+    ['renderAppointments',    renderAppointments],
+    ['renderYoY',             renderYoY],
+    ['renderRecommendations', renderRecommendations],
+  ];
+  fns.forEach(([name,fn]) => {
+    try { fn(); } catch(e) { console.error(`${name} failed:`, e.message, e); }
+  });
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById(`section-${item.dataset.section}`).classList.add('active');
+  });
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(()=>{ document.getElementById('loadingOverlay').style.display='none'; }, 8000);
+  reloadData();
+});
+</script>
+</body>
+</html>
