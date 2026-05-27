@@ -691,7 +691,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 async function detectDataFolder() {
   for (const folder of ['./Data/', './data/', './DATA/']) {
     try {
-      const r = await fetch(folder + 'managed_care_comparison.csv?t=' + Date.now());
+      const r = await fetch(folder + 'managed_care_comparison.csv');
       if (r.ok) { console.log('Data folder found:', folder); return folder; }
     } catch(e) {}
   }
@@ -708,14 +708,30 @@ const CSV_PATHS = {
 };
 
 // Product code → programme name
+// All known MC identifiers — raw codes AND programme names
+// CSV may store either format
 const PRODUCT_PROGRAM = {
   'PURELIFE1':'Diabetes Management','PURELIFE2':'Dyslipidemia Management',
   'PURELIFE3':'Thyroid Care','PURELIFE4':'Liver Care','PURELIFE5':'Kidney Care',
   'VYTAL0126':'Diabetes Management','VYTAL0226':'Dyslipidemia Management',
-  'VYTAL0326':'Thyroid Care','VYTAL0426':'Liver Care','VYTAL0526':'Kidney Care'
+  'VYTAL0326':'Thyroid Care','VYTAL0426':'Liver Care','VYTAL0526':'Kidney Care',
+  // Programme names map to themselves (CSV stores names not codes)
+  'Diabetes Management':'Diabetes Management',
+  'Dyslipidemia Management':'Dyslipidemia Management',
+  'Thyroid Care':'Thyroid Care','Liver Care':'Liver Care','Kidney Care':'Kidney Care'
 };
-
-// Product codes per year
+const PROG_IMPACTS = {
+  'Diabetes Management':['Diabetes','Diabetes mellitus'],
+  'Dyslipidemia Management':['Dyslipidemia'],
+  'Thyroid Care':['Thyroid dysfunction','Thyroid dsyfunction'],
+  'Liver Care':['Liver dysfunction'],
+  'Kidney Care':['Kidney dysfunction']
+};
+const ALL_MC_IDS = [
+  'PURELIFE1','PURELIFE2','PURELIFE3','PURELIFE4','PURELIFE5',
+  'VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526',
+  'Diabetes Management','Dyslipidemia Management','Thyroid Care','Liver Care','Kidney Care'
+];
 const CODES_2025 = ['PURELIFE1','PURELIFE2','PURELIFE3','PURELIFE4','PURELIFE5'];
 const CODES_2026 = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526'];
 
@@ -723,7 +739,7 @@ const CODES_2026 = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526']
 // STATE
 // ══════════════════════════════════════════════════════════
 const DATA = { allocation:null, impact:null, comparison:null, device:null };
-let SELECTED_YEAR = '2026';  // default year
+let SELECTED_YEAR = '2025';  // default year — all current data uses PURELIFE codes (2025)
 
 // ══════════════════════════════════════════════════════════
 // HELPERS
@@ -737,29 +753,58 @@ function countBy(arr, key) {
   return arr.reduce((a,r)=>{ const k=r[key]||'Unknown'; a[k]=(a[k]||0)+1; return a; }, {});
 }
 
+// Detect which MC codes/names are actually in the comparison CSV
+let _detectedCodes = null;
+function detectCodesFromCSV() {
+  if (_detectedCodes) return _detectedCodes;
+  const comp = DATA.comparison || [];
+  if (!comp.length) return null;
+  const found = new Set();
+  comp.forEach(r => {
+    const v = (r.mc_product_code || r.managed_care_program || '').toString().trim();
+    if (v && v !== 'None' && v !== 'nan' && v !== '' && ALL_MC_IDS.includes(v)) found.add(v);
+  });
+  _detectedCodes = found.size > 0 ? [...found] : null;
+  if (_detectedCodes) console.log('MC codes detected in CSV:', _detectedCodes);
+  return _detectedCodes;
+}
+
 function getEnrolledCodes() {
+  // First try to detect from CSV content
+  const detected = detectCodesFromCSV();
+  if (detected && detected.length > 0) return detected;
+  // Fallback to hardcoded year codes
   return SELECTED_YEAR === '2025' ? CODES_2025 : CODES_2026;
 }
 
+// Check if a row is a managed care user
+function isMCRow(r) {
+  const v = (r.mc_product_code || '').toString().trim();
+  return v && v !== 'None' && v !== 'nan' && v !== '' && ALL_MC_IDS.includes(v);
+}
+
+// Get programme name from any identifier
+function getProgName(code) {
+  return PRODUCT_PROGRAM[code] || code || 'Unknown';
+}
+
+// Get matching impacts for a programme code/name
+function getImpacts(code) {
+  const prog = getProgName(code);
+  return PROG_IMPACTS[prog] || [prog];
+}
+
 // ══════════════════════════════════════════════════════════
-// CSV / JSON LOADERS
+// CSV LOADER
 // ══════════════════════════════════════════════════════════
 function loadCSV(path) {
-  // Append cache-buster so re-runs of the Python scripts are always picked up
-  const url = path + '?t=' + Date.now();
   return new Promise(resolve => {
-    Papa.parse(url, {
+    Papa.parse(path, {
       download: true, header: true, dynamicTyping: true, skipEmptyLines: true,
       complete: r => resolve({ ok:true, data:r.data }),
       error:    () => resolve({ ok:false, data:[] })
     });
   });
-}
-
-function loadJSON(path) {
-  return fetch(path + '?t=' + Date.now())
-    .then(r => r.ok ? r.json() : null)
-    .catch(() => null);
 }
 
 async function reloadData() {
@@ -786,6 +831,13 @@ async function reloadData() {
     DATA.comparison = comp.ok   ? comp.data   : [];
     DATA.device     = dev.ok    ? dev.data    : [];
     DATA.insights   = ins || null;
+    // D is used by render functions — keep in sync with DATA
+    _detectedCodes = null; // reset so codes re-detected from new data
+  D.alloc   = DATA.allocation;
+    D.impact  = DATA.impact;
+    D.comp    = DATA.comparison;
+    D.device  = DATA.device;
+    DATA.insights= DATA.insights;
 
     const badge = [
       alloc.ok?'✅ allocation':'❌ allocation',
@@ -801,8 +853,13 @@ async function reloadData() {
     document.getElementById('dataBadge').className = 'data-badge data-demo';
     document.getElementById('dataBadge').textContent = 'Demo Mode — run scripts first';
     document.getElementById('lastUpdated').textContent = 'CSVs not found in Data/ folder';
+    // Load demo data and sync to D
     loadDemo();
-    DATA.insights = null;
+    D.alloc   = DATA.allocation || [];
+    D.impact  = DATA.impact     || [];
+    D.comp    = DATA.comparison || [];
+    D.device  = DATA.device     || [];
+    DATA.insights= null;
   }
 
   try { renderAll(); } catch(e) { console.error('renderAll error:', e); }
@@ -814,6 +871,7 @@ async function reloadData() {
 // ══════════════════════════════════════════════════════════
 function setYear(yr) {
   SELECTED_YEAR = yr;
+  _detectedCodes = null; // reset cache so detection re-runs for new year
   document.querySelectorAll('.yr-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.yr === yr);
   });
@@ -829,7 +887,7 @@ function getEnrolled() {
   const codes = getEnrolledCodes();
   const comp  = DATA.comparison || [];
   const users = new Set(
-    comp.filter(r => codes.includes(r.mc_product_code))
+    comp.filter(r => isMCRow(r))
         .map(r => r.mobile_number_hash)
   );
   return users.size;
@@ -840,8 +898,8 @@ function getProgDistribution() {
   const codes = getEnrolledCodes();
   const comp  = DATA.comparison || [];
   const dist  = {};
-  comp.filter(r => codes.includes(r.mc_product_code)).forEach(r => {
-    const prog = PRODUCT_PROGRAM[r.mc_product_code] || r.mc_product_code;
+  comp.filter(r => isMCRow(r)).forEach(r => {
+    const prog = getProgName(r.mc_product_code);
     dist[prog] = (dist[prog]||0) + 1;
   });
   return dist;
@@ -858,8 +916,12 @@ function getPivotData() {
   // Group by impact → mc_product_code → improvement_flag counts
   const pivot = {};
   comp.forEach(r => {
-    const impact   = r.impact        || 'Unknown';
-    const product  = r.mc_product_code || 'None';
+    const impact   = r.impact || 'Unknown';
+    // Resolve to programme name — handles both raw codes and programme names in CSV
+    const rawCode  = (r.mc_product_code || '').toString().trim();
+    const product  = (rawCode && rawCode !== 'None' && ALL_MC_IDS.includes(rawCode))
+                     ? getProgName(rawCode)
+                     : 'None';
     const flag     = r.improvement_flag || 'Unknown';
 
     if (!pivot[impact]) pivot[impact] = {};
@@ -876,7 +938,7 @@ function getOverallImprRate() {
   const codes = getEnrolledCodes();
   const comp  = DATA.comparison || [];
 
-  const mc   = comp.filter(r => codes.includes(r.mc_product_code));
+  const mc   = comp.filter(r => isMCRow(r));
   const none = comp.filter(r => !r.mc_product_code || r.mc_product_code === 'None');
 
   const mcImpr   = mc.filter(r => r.improvement_flag === 'Improved').length;
@@ -906,21 +968,23 @@ function getCohortSplit() {
 
 // 5. ZERO APPOINTMENT USERS — out of enrolled, how many had 0 appts
 function getZeroApptUsers() {
-  const codes = getEnrolledCodes();
-  const comp  = DATA.comparison || [];
-  const apptCol = SELECTED_YEAR === '2025' ? 'total_appts_ly' : 'total_appts_ty';
+  const comp = DATA.comparison || [];
+  const dev  = DATA.device     || [];
 
-  const enrolled = comp.filter(r => codes.includes(r.mc_product_code));
-  // Deduplicate by mobile hash
-  const seen = {}, zeroCount = {Y:0,N:0};
-  enrolled.forEach(r => {
-    if (seen[r.mobile_number_hash]) return;
-    seen[r.mobile_number_hash] = true;
-    const appts = safeN(r[apptCol]);
-    if (appts === 0) zeroCount.Y++;
-    else             zeroCount.N++;
-  });
-  return { zero: zeroCount.Y, total: zeroCount.Y + zeroCount.N };
+  // Build enrolled hash set from comparison (MC users only)
+  const enrolledHashes = new Set(
+    comp.filter(r => isMCRow(r)).map(r => r.mobile_number_hash)
+  );
+
+  // Build appt_booked lookup from device CSV (actual column name)
+  const devMap = {};
+  dev.forEach(r => { devMap[r.mobile_number_hash] = safeN(r.appt_booked); });
+
+  // Count zero-appt enrolled users
+  let zero = 0;
+  enrolledHashes.forEach(h => { if ((devMap[h] || 0) === 0) zero++; });
+
+  return { zero, total: enrolledHashes.size };
 }
 
 // 6. DEVICE IMPROVEMENT — from device_eligibility.csv
@@ -1045,11 +1109,9 @@ function renderOverview() {
   document.getElementById('kpi-vh').textContent    = fmt(cohorts['Very High']);
   document.getElementById('kpi-vh-pct').textContent = pct(cohorts['Very High'], totalImpact) + ' of scored users';
 
-  // 6. Appointments completed
-  const apptCol  = SELECTED_YEAR === '2025' ? 'total_appts_ly' : 'total_appts_ty';
-  const doneCol  = SELECTED_YEAR === '2025' ? 'appts_completed_ly' : 'appts_completed_ty';
-  const totalAppts = comp.reduce((s,r)=>s+safeN(r[apptCol]),0);
-  const doneAppts  = comp.reduce((s,r)=>s+safeN(r[doneCol]),0);
+  // 6. Appointments completed — sourced from device_eligibility CSV (appt_booked / appt_completed)
+  const totalAppts = dev.reduce((s,r)=>s+safeN(r.appt_booked),0);
+  const doneAppts  = dev.reduce((s,r)=>s+safeN(r.appt_completed),0);
   document.getElementById('kpi-appt-done').textContent = fmt(doneAppts);
   document.getElementById('kpi-appt-rate').textContent = pct(doneAppts, totalAppts) + ' completion rate';
 
@@ -1077,7 +1139,7 @@ function renderOverview() {
     const codes = getEnrolledCodes();
     let imp=0, tot=0;
     Object.entries(products).forEach(([prod, d]) => {
-      if (codes.includes(prod)) { imp += d.Improved||0; tot += d.total||0; }
+      if (ALL_MC_IDS.includes(prod)) { imp += d.Improved||0; tot += d.total||0; }
     });
     if (tot > 0) yoyRates[impact] = imp/tot*100;
   });
@@ -1108,7 +1170,7 @@ function renderProgrammes() {
   Object.entries(pivot).forEach(([impact, products]) => {
     let imp=0, tot=0;
     Object.entries(products).forEach(([prod,d]) => {
-      if (codes.includes(prod)) { imp+=d.Improved||0; tot+=d.total||0; }
+      if (ALL_MC_IDS.includes(prod)) { imp+=d.Improved||0; tot+=d.total||0; }
     });
     const r = tot>0 ? imp/tot*100 : 0;
     if (r > bestRate) { bestRate=r; bestName=impact; }
@@ -1126,10 +1188,10 @@ function renderProgrammes() {
     let noImp=0, noNC=0, noWor=0, noNR=0, noTot=0;
 
     Object.entries(products).forEach(([prod, d]) => {
-      if (codes.includes(prod)) {
+      if (ALL_MC_IDS.includes(prod)) {
         mcImp+=d.Improved||0; mcNC+=d['No Change']||0;
         mcWor+=d.Worsened||0; mcNR+=d['No Risk']||0; mcTot+=d.total||0;
-      } else if (prod==='None'||!prod) {
+      } else if (prod==='None' || !ALL_MC_IDS.includes(prod)) {
         noImp+=d.Improved||0; noNC+=d['No Change']||0;
         noWor+=d.Worsened||0; noNR+=d['No Risk']||0; noTot+=d.total||0;
       }
@@ -1250,26 +1312,34 @@ function renderDevices() {
 
 function renderAppointments() {
   const comp = DATA.comparison || [];
-  const codes = getEnrolledCodes();
-  const apptCol = SELECTED_YEAR==='2025'?'total_appts_ly':'total_appts_ty';
-  const doneCol = SELECTED_YEAR==='2025'?'appts_completed_ly':'appts_completed_ty';
-  const labCol  = SELECTED_YEAR==='2025'?'lab_tests_ly':'lab_tests_ty';
-  const clinCol = SELECTED_YEAR==='2025'?'clinic_appts_ly':'clinic_appts_ty';
+  const dev  = DATA.device     || [];
 
-  const enrolled = comp.filter(r=>codes.includes(r.mc_product_code));
-  const totalAppts = enrolled.reduce((s,r)=>s+safeN(r[apptCol]),0);
-  const doneAppts  = enrolled.reduce((s,r)=>s+safeN(r[doneCol]),0);
-  const labTests   = enrolled.reduce((s,r)=>s+safeN(r[labCol]),0);
-  const clinAppts  = enrolled.reduce((s,r)=>s+safeN(r[clinCol]),0);
+  // Enrolled hash set — MC users from comparison CSV
+  const enrolledHashes = new Set(
+    comp.filter(r => isMCRow(r)).map(r => r.mobile_number_hash)
+  );
+  const nonMCHashes = new Set(
+    comp.filter(r => !r.mc_product_code || r.mc_product_code === 'None')
+        .map(r => r.mobile_number_hash)
+  );
 
-  // Deduplicate by mobile hash
+  // Device CSV has actual columns: appt_booked, appt_completed, lab_tests_count, clinic_appts_count
+  const enrolledDev = dev.filter(r => enrolledHashes.has(r.mobile_number_hash));
+  const nonMCDev    = dev.filter(r => nonMCHashes.has(r.mobile_number_hash));
+
+  const totalAppts = enrolledDev.reduce((s,r)=>s+safeN(r.appt_booked),0);
+  const doneAppts  = enrolledDev.reduce((s,r)=>s+safeN(r.appt_completed),0);
+  const labTests   = enrolledDev.reduce((s,r)=>s+safeN(r.lab_tests_count),0);
+  const clinAppts  = enrolledDev.reduce((s,r)=>s+safeN(r.clinic_appts_count),0);
+
+  // Deduplicate by mobile hash for zero-appt count
   const seenHash={}, zeroAppt=[];
-  enrolled.forEach(r=>{
+  enrolledDev.forEach(r=>{
     if(seenHash[r.mobile_number_hash]) return;
     seenHash[r.mobile_number_hash]=true;
-    if(safeN(r[apptCol])===0) zeroAppt.push(r.mobile_number_hash);
+    if(safeN(r.appt_booked)===0) zeroAppt.push(r.mobile_number_hash);
   });
-  const enrolledUniq = Object.keys(seenHash).length;
+  const enrolledUniq = enrolledHashes.size || 1;
 
   document.getElementById('appt-total').textContent     = fmt(totalAppts);
   document.getElementById('appt-completed').textContent = fmt(doneAppts);
@@ -1284,11 +1354,11 @@ function renderAppointments() {
     'Lab Tests':           labTests,
   },l=>l==='Clinic Appointments'?'var(--navy)':'var(--teal)');
 
-  // MC vs non-MC
-  const mc   = comp.filter(r=>codes.includes(r.mc_product_code));
-  const nonmc= comp.filter(r=>!r.mc_product_code||r.mc_product_code==='None');
-  const mcPct   = mc.length>0   ? mc.filter(r=>safeN(r[apptCol])>0).length/mc.length*100   :0;
-  const nonPct  = nonmc.length>0 ? nonmc.filter(r=>safeN(r[apptCol])>0).length/nonmc.length*100 :0;
+  // MC vs non-MC — % of users with ≥1 appointment
+  const mcPct  = enrolledDev.length > 0
+    ? enrolledDev.filter(r=>safeN(r.appt_booked)>0).length / enrolledDev.length * 100 : 0;
+  const nonPct = nonMCDev.length > 0
+    ? nonMCDev.filter(r=>safeN(r.appt_booked)>0).length / nonMCDev.length * 100 : 0;
   renderPctBars('appt-prog-bars',{
     'MC Users with ≥1 Appt':     mcPct,
     'Non-MC Users with ≥1 Appt': nonPct,
