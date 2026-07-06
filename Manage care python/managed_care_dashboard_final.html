@@ -1557,11 +1557,11 @@ function renderOverview() {
   document.getElementById('kpi-dev-impr').textContent  = devImpr.toFixed(1) + '%';
   document.getElementById('kpi-nodev-impr').textContent = noDevImpr.toFixed(1) + '%';
 
-  // 5. Very High cohort from impact_scores
+  // 5. Very High cohort from policy_data (2026) or allocation (2025)
   const cohorts = getCohortSplit();
   const totalImpact = Object.values(cohorts).reduce((a,b)=>a+b,0);
   document.getElementById('kpi-vh').textContent    = fmt(cohorts['Very High']);
-  document.getElementById('kpi-vh-pct').textContent = pct(cohorts['Very High'], totalImpact) + ' of scored users';
+  document.getElementById('kpi-vh-pct').textContent = pct(cohorts['Very High'], totalImpact) + (SELECTED_YEAR === '2026' ? ' of enrolled' : ' of scored users');
 
   // 6. Appointments completed
   const apptCol  = SELECTED_YEAR === '2025' ? 'total_appts_ly' : 'total_appts_ty';
