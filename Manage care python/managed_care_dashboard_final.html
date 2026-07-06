@@ -1679,38 +1679,83 @@ function renderProgrammes() {
 }
 
 function renderCohorts() {
-  const impact = DATA.impact || [];
   const cohorts = getCohortSplit();
   const total   = Object.values(cohorts).reduce((a,b)=>a+b,0);
 
   document.getElementById('cohort-vh-n').textContent   = fmt(cohorts['Very High']);
-  document.getElementById('cohort-vh-pct').textContent = pct(cohorts['Very High'],total) + ' · Score ≥75';
+  document.getElementById('cohort-vh-pct').textContent = pct(cohorts['Very High'],total) + (SELECTED_YEAR === '2026' ? ' of enrolled' : ' · Score ≥75');
   document.getElementById('cohort-h-n').textContent    = fmt(cohorts['High']);
-  document.getElementById('cohort-h-pct').textContent  = pct(cohorts['High'],total) + ' · Score 50–74';
+  document.getElementById('cohort-h-pct').textContent  = pct(cohorts['High'],total) + (SELECTED_YEAR === '2026' ? ' of enrolled' : ' · Score 50–74');
   document.getElementById('cohort-m-n').textContent    = fmt(cohorts['Moderate']);
-  document.getElementById('cohort-m-pct').textContent  = pct(cohorts['Moderate'],total) + ' · Score 25–49';
+  document.getElementById('cohort-m-pct').textContent  = pct(cohorts['Moderate'],total) + (SELECTED_YEAR === '2026' ? ' of enrolled' : ' · Score 25–49');
 
-  // Matrix from impact_scores.csv grouped by impact + cohort
   const matrix = {};
-  impact.forEach(r => {
-    const prog = r.impact || 'Unknown';
-    const s    = safeN(r.scaled_score);
-    const c    = s>=75?'Very High':s>=50?'High':s>=25?'Moderate':'Low';
-    if (!matrix[prog]) matrix[prog] = {'Very High':0,'High':0,'Moderate':0,'Low':0,scores:[]};
-    matrix[prog][c]++;
-    matrix[prog].scores.push(s);
-  });
+
+  if (SELECTED_YEAR === '2026') {
+    // 2026: Build programme × cohort matrix from policy_data VYTAL enrolled users
+    const policy = DATA.policy_data || [];
+    const vytalCodes = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526','VYTAL0626','VYTAL0726','VYTAL0826','VYTAL0926','VYTAL01026'];
+    const progMap = {
+      'Diabetes Management':['VYTAL0126','VYTAL0626'],
+      'Dyslipidemia Management':['VYTAL0226','VYTAL0726'],
+      'Liver Care':['VYTAL0326','VYTAL0826'],
+      'Kidney Care':['VYTAL0426','VYTAL0926'],
+      'Thyroid Care':['VYTAL0526','VYTAL01026']
+    };
+    const seen = new Set();
+
+    policy.forEach(r => {
+      if (!vytalCodes.includes(r.mc_product_code)) return;
+      const hash = r.mobile_number_hash;
+      if (seen.has(hash)) return;
+      seen.add(hash);
+
+      // Find programme from product code
+      let prog = 'Unknown';
+      for (const [p, codes] of Object.entries(progMap)) {
+        if (codes.includes(r.mc_product_code)) { prog = p; break; }
+      }
+
+      const cohort = (r.cohort || 'Moderate').trim();
+      if (!matrix[prog]) matrix[prog] = {'Very High':0,'High':0,'Moderate':0,scores:[]};
+      if (matrix[prog].hasOwnProperty(cohort)) {
+        matrix[prog][cohort]++;
+      } else {
+        matrix[prog]['Moderate']++;
+      }
+    });
+  } else {
+    // 2025: Build programme × normalized_score bands matrix from impact_scores
+    const impact = DATA.impact || [];
+    impact.forEach(r => {
+      const prog = r.impact || 'Unknown';
+      const s    = safeN(r.scaled_score);
+      const c    = s>=75?'Very High':s>=50?'High':s>=25?'Moderate':'Low';
+      if (!matrix[prog]) matrix[prog] = {'Very High':0,'High':0,'Moderate':0,'Low':0,scores:[]};
+      matrix[prog][c]++;
+      matrix[prog].scores.push(s);
+    });
+  }
 
   const tbody = document.getElementById('cohort-matrix-body');
   if (tbody) {
     tbody.innerHTML = Object.entries(matrix).map(([prog,d]) => {
-      const tot = d['Very High']+d['High']+d['Moderate']+d['Low'];
-      const avg = d.scores.length>0?(d.scores.reduce((a,b)=>a+b,0)/d.scores.length).toFixed(0):'—';
+      let colsHtml = '';
+      if (SELECTED_YEAR === '2026') {
+        colsHtml = `<td><span class="pill pill-vh">${fmt(d['Very High']||0)}</span></td>
+                   <td><span class="pill pill-h">${fmt(d['High']||0)}</span></td>
+                   <td><span class="pill pill-m">${fmt(d['Moderate']||0)}</span></td>`;
+      } else {
+        colsHtml = `<td><span class="pill pill-vh">${fmt(d['Very High']||0)}</span></td>
+                   <td><span class="pill pill-h">${fmt(d['High']||0)}</span></td>
+                   <td><span class="pill pill-m">${fmt(d['Moderate']||0)}</span></td>
+                   <td><span class="pill pill-low">${fmt(d['Low']||0)}</span></td>`;
+      }
+      const tot = (d['Very High']||0)+(d['High']||0)+(d['Moderate']||0)+(d['Low']||0);
+      const avg = d.scores && d.scores.length>0?(d.scores.reduce((a,b)=>a+b,0)/d.scores.length).toFixed(0):'—';
       return `<tr>
         <td>${prog}</td>
-        <td><span class="pill pill-vh">${fmt(d['Very High'])}</span></td>
-        <td><span class="pill pill-h">${fmt(d['High'])}</span></td>
-        <td><span class="pill pill-m">${fmt(d['Moderate'])}</span></td>
+        ${colsHtml}
         <td style="font-weight:700">${fmt(tot)}</td>
         <td>${pct(tot,total)}</td>
         <td style="color:var(--green);font-weight:600">${avg}/100</td>
@@ -1721,8 +1766,8 @@ function renderCohorts() {
   // Bars
   const vhByProg={}, avgByProg={};
   Object.entries(matrix).forEach(([k,v])=>{
-    vhByProg[k]=v['Very High'];
-    avgByProg[k]=v.scores.length>0?v.scores.reduce((a,b)=>a+b,0)/v.scores.length:0;
+    vhByProg[k]=v['Very High']||0;
+    avgByProg[k]=v.scores && v.scores.length>0?v.scores.reduce((a,b)=>a+b,0)/v.scores.length:0;
   });
   renderBars('cohort-prog-bars', vhByProg, ()=>'var(--red)');
   renderPctBars('risk-score-bars', avgByProg, ()=>'var(--teal)');
