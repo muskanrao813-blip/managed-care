@@ -189,6 +189,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M2 7h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
     Appointments
   </div>
+  <div class="nav-item" data-section="engagement">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 8c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6S2 11.3 2 8z" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/></svg>
+    Engagement
+  </div>
   <div class="nav-item" data-section="yoy">
     <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 10l4-5 3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="1.5" fill="currentColor"/></svg>
     Year-on-Year
@@ -629,6 +633,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     </div>
   </section>
 
+  <!-- ══ ENGAGEMENT ══ -->
+  <section class="content" id="section-engagement">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Engagement Activity</h2><p>Meal, sleep, steps, weight logging by programme</p></div>
+    </div>
+    <div id="engagement-content" style="color:var(--muted);padding:20px">Loading engagement data…</div>
+  </section>
+
+  <!-- ══ VYTAL APPOINTMENTS ══ -->
+  <section class="content" id="section-vytal-appt">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>VYTAL Appointments Detail</h2><p>Source, specialty, and booking analysis</p></div>
+    </div>
+    <div id="vytal-appt-content" style="color:var(--muted);padding:20px">Loading VYTAL appointment data…</div>
+  </section>
+
   <!-- ══ RECOMMENDATIONS ══ -->
   <section class="content" id="section-recommendations">
     <div class="section-hdr" style="padding-top:20px">
@@ -740,6 +760,10 @@ const CODES_2026 = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526']
 // ══════════════════════════════════════════════════════════
 const DATA = { allocation:null, impact:null, comparison:null, device:null };
 let SELECTED_YEAR = '2025';  // default year — all current data uses PURELIFE codes (2025)
+let DATE_FROM = '2026-04-01';  // Programme Analytics default: Apr 2026
+let DATE_TO = '2027-05-31';    // Programme Analytics default: May 2027
+let CARE_OPS_DATE_FROM = '';   // Care Operations date range (empty = no filter)
+let CARE_OPS_DATE_TO = '';     // Care Operations date range (empty = no filter)
 
 // ══════════════════════════════════════════════════════════
 // HELPERS
@@ -815,35 +839,66 @@ async function reloadData() {
   const detected = await detectDataFolder();
   if (detected) DATA_FOLDER = detected;
 
-  const [alloc, impact, comp, dev, ins] = await Promise.all([
+  // Load all data sources in parallel
+  const [alloc, impact, comp, dev, ins, policy, appt, activity, engagement, hra, appt_src, device_2026, device_del, device_imp, benefit, camp_monthly, vytal_appt] = await Promise.all([
     loadCSV(DATA_FOLDER + 'managed_care_program_allocation.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_impact_scores.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_comparison.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_device_eligibility.csv'),
-    loadJSON(DATA_FOLDER + 'claude_insights.json')
+    loadJSON(DATA_FOLDER + 'claude_insights.json'),
+    loadCSV(DATA_FOLDER + 'managed_care_policy_data.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_appt_utilization.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_activity_logs.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_engagement_effect.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_hra_wellness.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_appt_source.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_device_eligibility_2026.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_device_delivered_2025.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_device_impact_2025.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_benefit_assignments_2026.csv'),
+    loadCSV(DATA_FOLDER + 'managed_care_camp_monthly.csv'),
+    loadCSV(DATA_FOLDER + 'vytal_appt_flat.csv')
   ]);
 
   const anyOk = alloc.ok || comp.ok || dev.ok || impact.ok;
   if (anyOk) {
-    // Store into both DATA and D so all render functions work
-    DATA.allocation = alloc.ok  ? alloc.data  : [];
-    DATA.impact     = impact.ok ? impact.data : [];
-    DATA.comparison = comp.ok   ? comp.data   : [];
-    DATA.device     = dev.ok    ? dev.data    : [];
-    DATA.insights   = ins || null;
-    // D is used by render functions — keep in sync with DATA
-    _detectedCodes = null; // reset so codes re-detected from new data
-  D.alloc   = DATA.allocation;
-    D.impact  = DATA.impact;
-    D.comp    = DATA.comparison;
-    D.device  = DATA.device;
-    DATA.insights= DATA.insights;
+    DATA.allocation = alloc.ok ? alloc.data : [];
+    DATA.impact = impact.ok ? impact.data : [];
+    DATA.comparison = comp.ok ? comp.data : [];
+    DATA.device = dev.ok ? dev.data : [];
+    DATA.insights = ins || null;
+    DATA.policy_data = policy.ok ? policy.data : [];
+    DATA.appt_util = appt.ok ? appt.data : [];
+    DATA.activity_logs = activity.ok ? activity.data : [];
+    DATA.engagement_effect = engagement.ok ? engagement.data : [];
+    DATA.hra_wellness = hra.ok ? hra.data : [];
+    DATA.appt_source = appt_src.ok ? appt_src.data : [];
+    DATA.device_2026 = device_2026.ok ? device_2026.data : [];
+    DATA.device_delivered = device_del.ok ? device_del.data : [];
+    DATA.device_impact = device_imp.ok ? device_imp.data : [];
+    DATA.benefit_assignments = benefit.ok ? benefit.data : [];
+    DATA.camp_monthly = camp_monthly.ok ? camp_monthly.data : [];
+    DATA.vytal_appt = vytal_appt.ok ? vytal_appt.data : [];
+
+    _detectedCodes = null;
+    D.alloc = DATA.allocation;
+    D.impact = DATA.impact;
+    D.comp = DATA.comparison;
+    D.device = DATA.device;
+    D.policy = DATA.policy_data;
+    D.appt = DATA.appt_util;
+    D.activity = DATA.activity_logs;
+    D.engagement = DATA.engagement_effect;
+    D.hra = DATA.hra_wellness;
+    D.appt_src = DATA.appt_source;
 
     const badge = [
       alloc.ok?'✅ allocation':'❌ allocation',
       comp.ok?'✅ comparison':'❌ comparison',
       dev.ok?'✅ device':'❌ device',
-      impact.ok?'✅ impact':'❌ impact'
+      impact.ok?'✅ impact':'❌ impact',
+      appt.ok?'✅ appt':'❌ appt',
+      activity.ok?'✅ activity':'❌ activity'
     ].join(' · ');
 
     document.getElementById('dataBadge').className = 'data-badge data-live';
@@ -853,13 +908,14 @@ async function reloadData() {
     document.getElementById('dataBadge').className = 'data-badge data-demo';
     document.getElementById('dataBadge').textContent = 'Demo Mode — run scripts first';
     document.getElementById('lastUpdated').textContent = 'CSVs not found in Data/ folder';
-    // Load demo data and sync to D
     loadDemo();
-    D.alloc   = DATA.allocation || [];
-    D.impact  = DATA.impact     || [];
-    D.comp    = DATA.comparison || [];
-    D.device  = DATA.device     || [];
-    DATA.insights= null;
+    D.alloc = DATA.allocation || [];
+    D.impact = DATA.impact || [];
+    D.comp = DATA.comparison || [];
+    D.device = DATA.device || [];
+    D.activity = DATA.activity_logs || [];
+    D.appt = DATA.appt_util || [];
+    DATA.insights = null;
   }
 
   try { renderAll(); } catch(e) { console.error('renderAll error:', e); }
@@ -1445,12 +1501,146 @@ function renderAll() {
     ['renderCohorts',         renderCohorts],
     ['renderDevices',         renderDevices],
     ['renderAppointments',    renderAppointments],
+    ['renderEngagement',      renderEngagement],
     ['renderYoY',             renderYoY],
     ['renderRecommendations', renderRecommendations],
   ];
   fns.forEach(([name,fn]) => {
     try { fn(); } catch(e) { console.error(`${name} failed:`, e.message, e); }
   });
+}
+
+// ══════════════════════════════════════════════════════════
+// CARE OPERATIONS DATE FILTERING
+// ══════════════════════════════════════════════════════════
+function setCareOpsDateRange(fromDate, toDate) {
+  CARE_OPS_DATE_FROM = fromDate;
+  CARE_OPS_DATE_TO = toDate;
+  const active = document.querySelector('.nav-item.active');
+  if (active) {
+    const section = active.dataset.section;
+    if (section === 'appointments') renderAppointments();
+    else if (section === 'engagement') renderEngagement();
+    else if (section === 'devices') renderDevices();
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// ENGAGEMENT ANALYTICS
+// ══════════════════════════════════════════════════════════
+function renderEngagement() {
+  const logs = DATA.activity_logs || [];
+  if (!logs.length) {
+    document.getElementById('section-engagement').innerHTML = '<p style="color:var(--muted);padding:20px">No engagement data loaded</p>';
+    return;
+  }
+
+  const progs = ['Diabetes Management','Dyslipidemia Management','Thyroid Care','Liver Care','Kidney Care'];
+  const activities = ['meal_logged','sleep_logged','steps_logged','weight_logged'];
+
+  let html = '<div class="section-hdr"><h2>Engagement Activity</h2><p>Meal, sleep, steps, weight logging % per programme</p></div>';
+
+  progs.forEach(prog => {
+    const prog_logs = logs.filter(r => r.programme === prog || getProgName(r.product_code) === prog);
+    const total = prog_logs.length;
+    if (total === 0) return;
+
+    html += `<div class="card"><div class="card-title">${prog}</div>`;
+    activities.forEach(act => {
+      const count = prog_logs.filter(r => r[act] === '1' || r[act] === 1 || r[act] === 'yes' || r[act] === 'Yes').length;
+      const pctVal = total > 0 ? (count / total * 100).toFixed(1) : 0;
+      html += `<div class="bar-row">
+        <div class="bar-label">${act.replace('_logged','').replace(/_/g,' ')}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pctVal}%;background:${pctVal>50?'var(--green-mid)':'var(--orange)'}"></div></div>
+        <div class="bar-val">${pctVal}%</div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  document.getElementById('section-engagement').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════
+// VYTAL APPOINTMENTS DETAIL
+// ══════════════════════════════════════════════════════════
+function renderVytalAppointments() {
+  const appts = DATA.vytal_appt || [];
+  if (!appts.length) {
+    document.getElementById('section-vytal-appt').innerHTML = '<p style="color:var(--muted);padding:20px">No VYTAL appointment data loaded</p>';
+    return;
+  }
+
+  let html = '<div class="section-hdr"><h2>VYTAL Appointments</h2><p>Source, specialty, and booking patterns</p></div>';
+
+  // Status breakdown
+  const statusCount = countBy(appts, 'status');
+  html += '<div class="card"><div class="card-title">Status Breakdown</div><div class="tab-row">';
+  Object.entries(statusCount).forEach(([status, count]) => {
+    html += `<div style="flex:1;padding:10px;background:var(--surface2);border-radius:6px;text-align:center">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase">Booked</div>
+      <div style="font-size:24px;font-weight:300">${count}</div>
+    </div>`;
+  });
+  html += '</div></div>';
+
+  // Specialty breakdown
+  const specCount = countBy(appts, 'speciality');
+  html += '<div class="card"><div class="card-title">By Specialty</div>';
+  Object.entries(specCount).forEach(([spec, count]) => {
+    const pct = (count / appts.length * 100).toFixed(1);
+    html += `<div class="bar-row">
+      <div class="bar-label">${spec || 'Unknown'}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--green-mid)"></div></div>
+      <div class="bar-val">${count}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  document.getElementById('section-vytal-appt').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════
+// EXPORT FUNCTIONS
+// ══════════════════════════════════════════════════════════
+function exportEligible2026() {
+  const device_2026 = DATA.device_2026 || [];
+  if (!device_2026.length) {
+    alert('No 2026 device eligibility data loaded');
+    return;
+  }
+
+  let csv = 'phr_id,mobile_hash,device_type,allocation_rank,engagement_score,cohort\n';
+  device_2026.forEach(r => {
+    csv += `${r.phr_id || ''},${r.mobile_number_hash || ''},${r.device_type || ''},${r.allocation_rank || ''},${r.engagement_score || ''},${r.cohort || ''}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `eligible_devices_2026_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+}
+
+function exportFollowupUsersList() {
+  const appts = DATA.appt_util || [];
+  if (!appts.length) {
+    alert('No appointment utilization data loaded');
+    return;
+  }
+
+  // Filter for follow-up due users
+  const followup = appts.filter(r => r.status === 'follow_up_due' || r.follow_up_due);
+  let csv = 'phr_id,benefit_service,cohort,due_date,status\n';
+  followup.forEach(r => {
+    csv += `${r.phr_id || ''},${r.benefit_name || ''},${r.cohort || ''},${r.due_date || ''},follow_up_due\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `followup_users_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
