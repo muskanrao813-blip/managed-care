@@ -1360,12 +1360,17 @@ function getCohortSplit() {
   const counts = { 'Very High':0, 'High':0, 'Borderline':0, 'Low':0, 'Moderate':0 };
 
   if (SELECTED_YEAR === '2026') {
-    // 2026: Count ENROLLED VYTAL users by cohort from policy_data
-    // Expected: High ~2,793, Very High ~2,395, Moderate ~868 (total 6,056)
+    // 2026: Count ONLY VYTAL enrolled users by cohort from policy_data
+    // CRITICAL: Filter to VYTAL codes only (policy_data mixes both PURELIFE and VYTAL)
+    // Expected: High ~2,793, Very High ~2,395, Moderate ~868 (total ~6,056)
     const policy = DATA.policy_data || [];
+    const vytalCodes = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526','VYTAL0626','VYTAL0726','VYTAL0826','VYTAL0926','VYTAL01026'];
     const seen = new Set();
 
     policy.forEach(r => {
+      // Only count VYTAL product codes
+      if (!vytalCodes.includes(r.mc_product_code)) return;
+
       const hash = r.mobile_number_hash;
       if (seen.has(hash)) return;  // Deduplicate by hash
       seen.add(hash);
@@ -1378,18 +1383,40 @@ function getCohortSplit() {
       }
     });
   } else {
-    // 2025: normalized_score bands from allocation (Very High <20, High 20-30, Borderline 30-40, Low >=40)
-    const alloc = DATA.allocation || [];
+    // 2025: Count ONLY PURELIFE enrolled users by cohort from policy_data
+    // CRITICAL: Filter to PURELIFE codes only
+    const policy = DATA.policy_data || [];
+    const purlifeCodes = ['PURELIFE1','PURELIFE2','PURELIFE3','PURELIFE4','PURELIFE5'];
     const seen = new Set();
-    alloc.forEach(r => {
+
+    policy.forEach(r => {
+      // Only count PURELIFE product codes
+      if (!purlifeCodes.includes(r.mc_product_code)) return;
+
       const hash = r.mobile_number_hash;
       if (seen.has(hash)) return;  // Deduplicate by hash
       seen.add(hash);
-      const score = safeN(r.normalized_score);
-      if      (score < 20)  counts['Very High']++;
-      else if (score < 30)  counts['High']++;
-      else if (score < 40)  counts['Borderline']++;
-      else                  counts['Low']++;
+
+      // For 2025: use normalized_score from allocation if available, else use cohort
+      // Try to get score from allocation first
+      const alloc = DATA.allocation || [];
+      const allocRow = alloc.find(a => a.mobile_number_hash === hash);
+
+      if (allocRow) {
+        const score = safeN(allocRow.normalized_score);
+        if      (score < 20)  counts['Very High']++;
+        else if (score < 30)  counts['High']++;
+        else if (score < 40)  counts['Borderline']++;
+        else                  counts['Low']++;
+      } else {
+        // Fallback to cohort if allocation not found
+        const cohort = (r.cohort || 'Moderate').trim();
+        if (counts.hasOwnProperty(cohort)) {
+          counts[cohort]++;
+        } else {
+          counts['Moderate']++;
+        }
+      }
     });
   }
   return counts;
