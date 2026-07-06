@@ -313,13 +313,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     <!-- Row 2: filter area — switches based on active group -->
     <div style="border-top:1px solid var(--border);padding:8px 28px;background:var(--surface2)">
 
-      <!-- Analytics filter (Section 1): year selector -->
-      <div id="filter-analytics" style="display:flex;align-items:center;gap:10px">
+      <!-- Analytics filter (Section 1): year selector + date range -->
+      <div id="filter-analytics" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Year</span>
         <button class="yr-btn active" data-yr="2026" onclick="setYear('2026')" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--green);color:#fff;font-size:11px;font-weight:600;cursor:pointer">2026</button>
         <button class="yr-btn" data-yr="2025" onclick="setYear('2025')" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer">2025</button>
+
         <span style="color:var(--border);margin:0 4px">|</span>
-        <span style="font-size:10px;color:var(--muted)">Programme-year view — Apr–Mar window</span>
+
+        <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Date</span>
+        <input type="date" id="prog-date-from" value="2026-04-01" onchange="setProgAnalyticsDateRange()" style="padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface);min-width:120px"/>
+        <span style="font-size:10px;color:var(--muted)">to</span>
+        <input type="date" id="prog-date-to" value="2027-05-31" onchange="setProgAnalyticsDateRange()" style="padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface);min-width:120px"/>
+
+        <span style="color:var(--border);margin:0 4px">|</span>
+        <span style="font-size:10px;color:var(--muted)" id="prog-filter-info">Apr 2026 – May 2027</span>
       </div>
 
       <!-- Operations filter (Section 2): date / month / year picker -->
@@ -1274,6 +1282,22 @@ function setYear(yr) {
   document.querySelectorAll('.yr-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.yr === yr);
   });
+  try { renderAll(); } catch(e) { console.error(e); }
+}
+
+function setProgAnalyticsDateRange() {
+  const from = document.getElementById('prog-date-from').value;
+  const to = document.getElementById('prog-date-to').value;
+  DATE_FROM = from || '2026-04-01';
+  DATE_TO = to || '2027-05-31';
+
+  // Format display
+  const fromDate = new Date(DATE_FROM);
+  const toDate = new Date(DATE_TO);
+  const fromStr = fromDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+  const toStr = toDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+  document.getElementById('prog-filter-info').textContent = fromStr + ' – ' + toStr;
+
   try { renderAll(); } catch(e) { console.error(e); }
 }
 
