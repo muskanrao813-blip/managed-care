@@ -1360,45 +1360,30 @@ function getCohortSplit() {
   const counts = { 'Very High':0, 'High':0, 'Borderline':0, 'Low':0, 'Moderate':0 };
 
   if (SELECTED_YEAR === '2026') {
-    // 2026: Try lob__c from policy_data first; if empty, use allocation scaled_score
+    // 2026: Count ENROLLED VYTAL users by cohort from policy_data
+    // Expected: High ~2,793, Very High ~2,395, Moderate ~868 (total 6,056)
     const policy = DATA.policy_data || [];
-    const alloc = DATA.allocation || [];
+    const seen = new Set();
 
-    // Check if policy has any non-empty cohort values
-    const policyWithCohort = policy.filter(r => r.cohort && String(r.cohort).trim());
+    policy.forEach(r => {
+      const hash = r.mobile_number_hash;
+      if (seen.has(hash)) return;  // Deduplicate by hash
+      seen.add(hash);
 
-    if (policyWithCohort.length > 0) {
-      // Use policy cohorts if available
-      const seen = new Set();
-      policy.forEach(r => {
-        const hash = r.mobile_number_hash;
-        if (seen.has(hash)) return;
-        seen.add(hash);
-        const cohort = (r.cohort || 'Moderate').trim();
-        if (counts.hasOwnProperty(cohort)) counts[cohort]++;
-        else counts['Moderate']++;  // fallback for unexpected cohort names
-      });
-    } else {
-      // Fallback: Use allocation scaled_score (Tier 2 programme-based proxy)
-      const seen = new Set();
-      alloc.forEach(r => {
-        const hash = r.mobile_number_hash;
-        if (seen.has(hash)) return;
-        seen.add(hash);
-        const score = safeN(r.scaled_score);
-        if      (score >= 75) counts['Very High']++;
-        else if (score >= 50) counts['High']++;
-        else if (score >= 25) counts['Moderate']++;
-        else                  counts['Low']++;
-      });
-    }
+      const cohort = (r.cohort || 'Moderate').trim();
+      if (counts.hasOwnProperty(cohort)) {
+        counts[cohort]++;
+      } else {
+        counts['Moderate']++;  // Unknown cohort values default to Moderate
+      }
+    });
   } else {
-    // 2025: normalized_score bands (Very High <20, High 20-30, Borderline 30-40, Low >=40)
+    // 2025: normalized_score bands from allocation (Very High <20, High 20-30, Borderline 30-40, Low >=40)
     const alloc = DATA.allocation || [];
     const seen = new Set();
     alloc.forEach(r => {
       const hash = r.mobile_number_hash;
-      if (seen.has(hash)) return;
+      if (seen.has(hash)) return;  // Deduplicate by hash
       seen.add(hash);
       const score = safeN(r.normalized_score);
       if      (score < 20)  counts['Very High']++;
