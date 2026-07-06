@@ -1357,15 +1357,34 @@ function getOverallImprRate() {
 
 // 4. COHORT SPLIT — from impact_scores.csv, scaled_score → Very High/High/Moderate/Low
 function getCohortSplit() {
-  const impact = DATA.impact || [];
-  const counts = { 'Very High':0, 'High':0, 'Moderate':0, 'Low':0 };
-  impact.forEach(r => {
-    const s = safeN(r.scaled_score);
-    if      (s >= 75) counts['Very High']++;
-    else if (s >= 50) counts['High']++;
-    else if (s >= 25) counts['Moderate']++;
-    else              counts['Low']++;
-  });
+  const counts = { 'Very High':0, 'High':0, 'Borderline':0, 'Low':0, 'Moderate':0 };
+
+  if (SELECTED_YEAR === '2026') {
+    // 2026: lob__c from policy_data (Moderate/High/Very High)
+    const policy = DATA.policy_data || [];
+    const seen = new Set();
+    policy.forEach(r => {
+      const hash = r.mobile_number_hash;
+      if (seen.has(hash)) return;
+      seen.add(hash);
+      const cohort = r.cohort || 'Moderate';
+      if (counts.hasOwnProperty(cohort)) counts[cohort]++;
+    });
+  } else {
+    // 2025: normalized_score bands (Very High <20, High 20-30, Borderline 30-40, Low >=40)
+    const alloc = DATA.allocation || [];
+    const seen = new Set();
+    alloc.forEach(r => {
+      const hash = r.mobile_number_hash;
+      if (seen.has(hash)) return;
+      seen.add(hash);
+      const score = safeN(r.normalized_score);
+      if      (score < 20)  counts['Very High']++;
+      else if (score < 30)  counts['High']++;
+      else if (score < 40)  counts['Borderline']++;
+      else                  counts['Low']++;
+    });
+  }
   return counts;
 }
 
@@ -1675,14 +1694,42 @@ function renderCohorts() {
   renderPctBars('risk-score-bars', avgByProg, ()=>'var(--teal)');
 }
 
+function getDevice2026Eligibility() {
+  // SKILL spec: Device allocation by Tier 1 (biomarker) + Tier 2 (programme-based)
+  // Returns eligibility counts per device type
+  const dev2026 = DATA.device_2026 || [];
+  const counts = { 'CGM': { eligible: 0, allocated: 0 }, 'Glucometer': { eligible: 0, allocated: 0 }, 'Weighing Machine': { eligible: 0, allocated: 0 }, 'BP Monitor': { eligible: 0, allocated: 0 } };
+
+  dev2026.forEach(r => {
+    const dt = r.device_type || 'Weighing Machine';
+    if (counts[dt]) {
+      counts[dt].eligible++;
+      if (r.allocation_rank <= 100) counts[dt].allocated++;
+    }
+  });
+  return counts;
+}
+
 function renderDevices() {
   const dev = DATA.device || [];
   const devCounts = countBy(dev, 'primary_device');
 
-  document.getElementById('dev-cgm').textContent    = fmt(devCounts['CGM']             ||0);
-  document.getElementById('dev-gluco').textContent  = fmt(devCounts['Glucometer']       ||0);
-  document.getElementById('dev-weight').textContent = fmt(devCounts['Weighing Machine'] ||0);
-  document.getElementById('dev-bp').textContent     = fmt(devCounts['BP Monitor']       ||0);
+  // Show 2026 eligibility if available, else fallback to general device
+  const dev2026Counts = SELECTED_YEAR === '2026' ? getDevice2026Eligibility() : null;
+
+  if (dev2026Counts) {
+    // 2026: Show eligibility vs allocation per SKILL spec
+    document.getElementById('dev-cgm').textContent    = fmt(dev2026Counts['CGM'].eligible) + ' → ' + fmt(dev2026Counts['CGM'].allocated);
+    document.getElementById('dev-gluco').textContent  = fmt(dev2026Counts['Glucometer'].eligible) + ' → ' + fmt(dev2026Counts['Glucometer'].allocated);
+    document.getElementById('dev-weight').textContent = fmt(dev2026Counts['Weighing Machine'].eligible) + ' → ' + fmt(dev2026Counts['Weighing Machine'].allocated);
+    document.getElementById('dev-bp').textContent     = fmt(dev2026Counts['BP Monitor'].eligible) + ' → ' + fmt(dev2026Counts['BP Monitor'].allocated);
+  } else {
+    // 2025: Show general device counts
+    document.getElementById('dev-cgm').textContent    = fmt(devCounts['CGM']             ||0);
+    document.getElementById('dev-gluco').textContent  = fmt(devCounts['Glucometer']       ||0);
+    document.getElementById('dev-weight').textContent = fmt(devCounts['Weighing Machine'] ||0);
+    document.getElementById('dev-bp').textContent     = fmt(devCounts['BP Monitor']       ||0);
+  }
 
   // Lifestyle
   const lsCounts={};
@@ -2052,6 +2099,18 @@ function getFilteredApptUtil() {
   if (APPT_YEAR_FILTER !== 'all') {
     filtered = filtered.filter(r => String(r.year||'') === APPT_YEAR_FILTER);
   }
+
+  // CARE_OPS date filtering — by appt_date (not claim_date) per SKILL spec
+  if (CARE_OPS_DATE_FROM || CARE_OPS_DATE_TO) {
+    filtered = filtered.filter(r => {
+      const apptDate = r.appt_date || r.appointment_date || r.claim_month || '';
+      if (CARE_OPS_DATE_FROM && apptDate < CARE_OPS_DATE_FROM) return false;
+      if (CARE_OPS_DATE_TO && apptDate > CARE_OPS_DATE_TO) return false;
+      return true;
+    });
+  }
+
+  // Legacy APPT_DATE filters (for backwards compatibility)
   if (APPT_DATE_FROM) {
     const fromYM = APPT_DATE_FROM.slice(0,7);
     filtered = filtered.filter(r => String(r.claim_month||'') >= fromYM);
