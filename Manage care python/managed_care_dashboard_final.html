@@ -529,22 +529,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 
     <div class="kpi-row cols-3">
       <div class="kpi">
-        <div class="kpi-label">Very High Risk (≥75)</div>
+        <div class="kpi-label" id="cohort-vh-label">Very High Risk</div>
         <div class="kpi-value" style="color:var(--red)" id="cohort-vh-n">—</div>
         <div class="kpi-sub" id="cohort-vh-pct">—</div>
-        <div class="kpi-badge badge-red">Immediate intervention</div>
+        <div class="kpi-badge badge-red" id="cohort-vh-badge">Immediate intervention</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">High Risk (50–74)</div>
+        <div class="kpi-label" id="cohort-h-label">High Risk</div>
         <div class="kpi-value" style="color:var(--orange)" id="cohort-h-n">—</div>
         <div class="kpi-sub" id="cohort-h-pct">—</div>
-        <div class="kpi-badge" style="background:var(--orange-light);color:var(--orange)">Active managed care</div>
+        <div class="kpi-badge" id="cohort-h-badge" style="background:var(--orange-light);color:var(--orange)">Active managed care</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">Moderate Risk (25–49)</div>
+        <div class="kpi-label" id="cohort-m-label">Moderate Risk</div>
         <div class="kpi-value" style="color:var(--gold)" id="cohort-m-n">—</div>
         <div class="kpi-sub" id="cohort-m-pct">—</div>
-        <div class="kpi-badge badge-gold">Preventive monitoring</div>
+        <div class="kpi-badge badge-gold" id="cohort-m-badge">Preventive monitoring</div>
       </div>
     </div>
 
@@ -1705,6 +1705,22 @@ function renderProgrammes() {
 function renderCohorts() {
   const cohorts = getCohortSplit();
   const total   = Object.values(cohorts).reduce((a,b)=>a+b,0);
+
+  if (SELECTED_YEAR === '2026') {
+    document.getElementById('cohort-vh-label').textContent = 'Very High Risk';
+    document.getElementById('cohort-h-label').textContent = 'High Risk';
+    document.getElementById('cohort-m-label').textContent = 'Moderate Risk';
+    document.getElementById('cohort-vh-badge').textContent = 'Immediate intervention';
+    document.getElementById('cohort-h-badge').textContent = 'Active managed care';
+    document.getElementById('cohort-m-badge').textContent = 'Preventive monitoring';
+  } else {
+    document.getElementById('cohort-vh-label').textContent = 'Very High Risk (≥75)';
+    document.getElementById('cohort-h-label').textContent = 'High Risk (50–74)';
+    document.getElementById('cohort-m-label').textContent = 'Moderate Risk (25–49)';
+    document.getElementById('cohort-vh-badge').textContent = 'Immediate intervention';
+    document.getElementById('cohort-h-badge').textContent = 'Active managed care';
+    document.getElementById('cohort-m-badge').textContent = 'Preventive monitoring';
+  }
 
   document.getElementById('cohort-vh-n').textContent   = fmt(cohorts['Very High']);
   document.getElementById('cohort-vh-pct').textContent = pct(cohorts['Very High'],total) + (SELECTED_YEAR === '2026' ? ' of enrolled' : ' · Score ≥75');
