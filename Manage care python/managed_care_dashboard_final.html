@@ -151,6 +151,80 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── SIDEBAR GROUPS ── */
+.sidebar-group-label{padding:14px 14px 5px;font-size:8.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-top:6px}
+.sidebar-divider{height:1px;background:rgba(255,255,255,.07);margin:8px 14px}
+
+/* ── YEAR / PROG FILTER PILLS (Section 1) ── */
+.yr-filter-btn,.prog-filter-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+.yr-filter-btn:hover,.prog-filter-btn:hover{background:var(--surface2);color:var(--text)}
+.yr-filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.prog-filter-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* ── DATE / MONTH / YEAR PICKER (Section 2) ── */
+.dmy-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dmy-mode-row{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:2px;gap:2px}
+.dmy-mode-btn{padding:4px 11px;border-radius:4px;border:none;background:transparent;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;transition:.12s;white-space:nowrap}
+.dmy-mode-btn.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.dmy-panel{display:flex;align-items:center;gap:6px}
+.dmy-panel input[type=date],.dmy-panel input[type=number],.dmy-panel select{padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface2);font-family:inherit;outline:none;min-width:90px}
+.dmy-panel input[type=date]:focus,.dmy-panel select:focus{border-color:var(--green)}
+.dmy-apply-btn{padding:5px 12px;border-radius:6px;border:none;background:var(--green);color:#fff;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit}
+.dmy-preset-row{display:flex;gap:4px;flex-wrap:wrap}
+.dmy-preset{padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:9.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.dmy-preset:hover,.dmy-preset.dp-active{background:var(--green-light);color:var(--green);border-color:var(--green)}
+.dmy-label{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap}
+#ops-date-range-info{font-size:10px;color:var(--muted);font-style:italic}
+
+/* ── DATE FILTER BAR ── */
+.date-filter-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:16px}
+.date-filter-bar label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.date-filter-bar input[type=date]{padding:5px 10px;border-radius:6px;border:1px solid var(--border);font-size:11px;color:var(--text);background:var(--surface2);font-family:inherit;outline:none}
+.date-filter-bar input[type=date]:focus{border-color:var(--green)}
+.date-filter-bar .filter-btn{padding:6px 14px;border-radius:6px;border:none;background:var(--green);color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.date-filter-bar .filter-preset{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:10px;cursor:pointer;font-family:inherit}
+.date-filter-bar .filter-preset:hover,.date-filter-bar .filter-preset.active{background:var(--green-light);color:var(--green);border-color:var(--green)}
+
+/* ── REPEAT BOOKING TABLE ── */
+.freq-table{width:100%;border-collapse:collapse;font-size:11px}
+.freq-table thead th{background:var(--surface2);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--border);text-align:center}
+.freq-table thead th:first-child{text-align:left}
+.freq-table tbody td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:center;color:var(--text)}
+.freq-table tbody td:first-child{text-align:left;font-weight:500}
+.freq-table tbody tr:last-child td{border-bottom:none}
+.freq-table tbody tr:hover td{background:var(--surface2)}
+.freq-count{display:inline-flex;align-items:center;justify-content:center;min-width:32px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.freq-2x{background:#E0F0F0;color:var(--teal)}
+.freq-3x{background:var(--gold-light);color:var(--gold)}
+.freq-4x{background:var(--orange-light);color:var(--orange)}
+.freq-5x{background:var(--red-light);color:var(--red)}
+
+/* ── FOLLOWUP PENDING GRID ── */
+.fu-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fu-card{border-radius:8px;padding:16px;border:1px solid var(--border)}
+.fu-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.fu-cohort-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fu-cohort-label{font-size:11px;width:90px;flex-shrink:0;font-weight:500}
+.fu-cohort-bar{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.fu-cohort-fill{height:100%;border-radius:4px}
+.fu-cohort-meta{font-size:10px;color:var(--muted);width:80px;text-align:right;flex-shrink:0}
+.fu-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-left:6px}
+
+/* ── ENGAGEMENT SECTION ── */
+.eng-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.eng-stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.eng-stat-label{font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.eng-stat-value{font-size:28px;font-weight:300;line-height:1.1;color:var(--text)}
+.eng-stat-sub{font-size:10px;color:var(--muted);margin-top:3px}
+.freq-donut{display:flex;align-items:center;gap:16px}
+.freq-legend{display:flex;flex-direction:column;gap:6px}
+.freq-leg-item{display:flex;align-items:center;gap:6px;font-size:11px}
+.freq-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── MINI SPARKLINE ── */
+.sparkline-wrap{position:relative;height:60px;margin:8px 0}
+.sparkline-wrap canvas{width:100%;height:100%}
 </style>
 </head>
 <body>
@@ -168,36 +242,42 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     <div class="sidebar-logo-sub">Bajaj Finserv Health</div>
   </div>
 
-  <div class="sidebar-section">Dashboard</div>
-  <div class="nav-item active" data-section="overview">
+  <!-- ── GROUP 1: PROGRAMME ANALYTICS ── -->
+  <div class="sidebar-group-label">Programme Analytics</div>
+  <div class="nav-item active" data-section="overview" data-group="analytics">
     <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="2" width="5" height="5" rx="1" fill="currentColor"/><rect x="2" y="9" width="5" height="5" rx="1" fill="currentColor"/><rect x="9" y="9" width="5" height="5" rx="1" fill="currentColor"/></svg>
     Overview
   </div>
-  <div class="nav-item" data-section="programmes">
+  <div class="nav-item" data-section="programmes" data-group="analytics">
     <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 12L6 7l3 3 3-4 2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Programme Outcomes
   </div>
-  <div class="nav-item" data-section="cohorts">
+  <div class="nav-item" data-section="cohorts" data-group="analytics">
     <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     Cohort Analysis
   </div>
-  <div class="nav-item" data-section="devices">
-    <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 5h4M6 8h4M6 11h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-    Devices & Lifestyle
-  </div>
-  <div class="nav-item" data-section="appointments">
-    <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M2 7h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-    Appointments
-  </div>
-  <div class="nav-item" data-section="engagement">
-    <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 8c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6S2 11.3 2 8z" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/></svg>
-    Engagement
-  </div>
-  <div class="nav-item" data-section="yoy">
+  <div class="nav-item" data-section="yoy" data-group="analytics">
     <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M2 10l4-5 3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="1.5" fill="currentColor"/></svg>
     Year-on-Year
   </div>
-  <div class="nav-item" data-section="recommendations">
+
+  <div class="sidebar-divider"></div>
+
+  <!-- ── GROUP 2: CARE OPERATIONS ── -->
+  <div class="sidebar-group-label">Care Operations</div>
+  <div class="nav-item" data-section="devices" data-group="operations">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 5h4M6 8h4M6 11h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Devices &amp; Lifestyle
+  </div>
+  <div class="nav-item" data-section="appointments" data-group="operations">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M2 7h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Appointments
+  </div>
+  <div class="nav-item" data-section="engagement" data-group="operations">
+    <svg class="icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Engagement Activity
+  </div>
+  <div class="nav-item" data-section="recommendations" data-group="operations">
     <svg class="icon" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
     Recommendations
   </div>
@@ -216,17 +296,91 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 
 <!-- MAIN -->
 <main class="main">
-  <div class="topbar">
-    <div>
-      <div class="topbar-title">Managed Care 3.0</div>
+  <div class="topbar" style="flex-direction:column;align-items:stretch;gap:0;padding:0">
+
+    <!-- Row 1: title + badge -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 28px 8px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="topbar-title">Managed Care 3.0</div>
+        <span style="font-size:10px;color:var(--muted);background:var(--surface2);padding:2px 8px;border-radius:4px;border:1px solid var(--border)" id="active-section-label">Overview</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="data-badge" id="dataBadge">Loading…</span>
+        <div class="topbar-meta" id="lastUpdated">—</div>
+      </div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="data-badge" id="dataBadge">Loading…</span>
-      <div style="display:flex;gap:6px;align-items:center">
+
+    <!-- Row 2: filter area — switches based on active group -->
+    <div style="border-top:1px solid var(--border);padding:8px 28px;background:var(--surface2)">
+
+      <!-- Analytics filter (Section 1): year selector -->
+      <div id="filter-analytics" style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Year</span>
         <button class="yr-btn active" data-yr="2026" onclick="setYear('2026')" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--green);color:#fff;font-size:11px;font-weight:600;cursor:pointer">2026</button>
         <button class="yr-btn" data-yr="2025" onclick="setYear('2025')" style="padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer">2025</button>
+        <span style="color:var(--border);margin:0 4px">|</span>
+        <span style="font-size:10px;color:var(--muted)">Programme-year view — Apr–Mar window</span>
       </div>
-      <div class="topbar-meta" id="lastUpdated">—</div>
+
+      <!-- Operations filter (Section 2): date / month / year picker -->
+      <div id="filter-operations" style="display:none">
+        <div class="dmy-bar">
+          <!-- Mode toggle -->
+          <div class="dmy-mode-row">
+            <button class="dmy-mode-btn active" id="dmy-btn-date"  onclick="setDmyMode('date')">Date</button>
+            <button class="dmy-mode-btn"        id="dmy-btn-month" onclick="setDmyMode('month')">Month</button>
+            <button class="dmy-mode-btn"        id="dmy-btn-year"  onclick="setDmyMode('year')">Year</button>
+          </div>
+
+          <!-- DATE panel -->
+          <div class="dmy-panel" id="dmy-date-panel">
+            <span class="dmy-label">From</span>
+            <input type="date" id="ops-date-from" onchange="applyOpsFilter()"/>
+            <span class="dmy-label">To</span>
+            <input type="date" id="ops-date-to" onchange="applyOpsFilter()"/>
+          </div>
+
+          <!-- MONTH panel -->
+          <div class="dmy-panel" id="dmy-month-panel" style="display:none">
+            <span class="dmy-label">Month</span>
+            <select id="ops-month" onchange="applyOpsFilter()">
+              <option value="01">January</option><option value="02">February</option>
+              <option value="03">March</option><option value="04">April</option>
+              <option value="05">May</option><option value="06" selected>June</option>
+              <option value="07">July</option><option value="08">August</option>
+              <option value="09">September</option><option value="10">October</option>
+              <option value="11">November</option><option value="12">December</option>
+            </select>
+            <input type="number" id="ops-month-year" value="2026" min="2024" max="2030"
+                   style="width:68px" onchange="applyOpsFilter()"/>
+          </div>
+
+          <!-- YEAR panel -->
+          <div class="dmy-panel" id="dmy-year-panel" style="display:none">
+            <span class="dmy-label">Year</span>
+            <select id="ops-year" onchange="applyOpsFilter()">
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+            </select>
+          </div>
+
+          <span style="color:var(--border)">|</span>
+
+          <!-- Quick presets -->
+          <div class="dmy-preset-row">
+            <button class="dmy-preset" onclick="opsPreset('today')">Today</button>
+            <button class="dmy-preset" onclick="opsPreset('this_week')">This Week</button>
+            <button class="dmy-preset" onclick="opsPreset('this_month')" id="ops-preset-thismonth">This Month</button>
+            <button class="dmy-preset" onclick="opsPreset('last_30d')">Last 30d</button>
+            <button class="dmy-preset" onclick="opsPreset('this_year')">This Year</button>
+            <button class="dmy-preset" onclick="opsPreset('all')">All Time</button>
+          </div>
+
+          <span id="ops-date-range-info"></span>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -484,42 +638,160 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
   <!-- ══ APPOINTMENTS ══ -->
   <section class="content" id="section-appointments">
     <div class="section-hdr" style="padding-top:20px">
-      <div><h2>Appointment Engagement</h2><p>Post-programme allocation (June 1, 2026) · dl_standard_pbireporting.f_appointmentflattable</p></div>
+      <div><h2>Appointment Engagement</h2><p>f_claim · f_appointmentflattable (deduped by appointmentid) · d_policy join</p></div>
+    </div>
+
+    <!-- Year + Product Code Filter -->
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+      <div style="display:flex;gap:4px;align-items:center">
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:4px">Year</span>
+        <button id="ybtn-all"  class="yr-filter-btn"        onclick="setApptYear('all',this)">All</button>
+        <button id="ybtn-2025" class="yr-filter-btn"        onclick="setApptYear('2025',this)">2025 – PURELIFE (closed)</button>
+        <button id="ybtn-2026" class="yr-filter-btn active" onclick="setApptYear('2026',this)">2026 – VYTAL ✓ Active</button>
+      </div>
+      <span style="color:var(--border)">|</span>
+      <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:4px">Programme</span>
+        <button id="pbtn-all"  class="prog-filter-btn active" onclick="setApptProg('all',this)">All</button>
+        <button id="pbtn-DM"   class="prog-filter-btn" onclick="setApptProg('Diabetes Management',this)">Diabetes</button>
+        <button id="pbtn-Dys"  class="prog-filter-btn" onclick="setApptProg('Dyslipidemia Management',this)">Dyslipidemia</button>
+        <button id="pbtn-Thy"  class="prog-filter-btn" onclick="setApptProg('Thyroid Care',this)">Thyroid</button>
+        <button id="pbtn-Liv"  class="prog-filter-btn" onclick="setApptProg('Liver Care',this)">Liver</button>
+        <button id="pbtn-Kid"  class="prog-filter-btn" onclick="setApptProg('Kidney Care',this)">Kidney</button>
+      </div>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="date-filter-bar">
+      <label>Date Range</label>
+      <button class="filter-preset active" onclick="apptPreset('all',this)">All Time</button>
+      <button class="filter-preset" onclick="apptPreset('this_month',this)">This Month</button>
+      <button class="filter-preset" onclick="apptPreset('last_3m',this)">Last 3 Mo</button>
+      <button class="filter-preset" onclick="apptPreset('last_6m',this)">Last 6 Mo</button>
+      <span style="color:var(--border);margin:0 4px">|</span>
+      <label>From</label>
+      <input type="date" id="appt-date-from" onchange="apptFilter()"/>
+      <label>To</label>
+      <input type="date" id="appt-date-to" onchange="apptFilter()"/>
+      <span id="appt-filter-info" style="font-size:10px;color:var(--muted);margin-left:4px"></span>
     </div>
 
     <div class="kpi-row cols-4">
       <div class="kpi dark">
-        <div class="kpi-label">Total Appointments Booked</div>
+        <div class="kpi-label">Total Unique Appointments</div>
         <div class="kpi-value" id="appt-total">—</div>
-        <div class="kpi-sub">Post-allocation date</div>
+        <div class="kpi-sub" id="appt-period-sub">unique by appointmentid</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">Completed</div>
+        <div class="kpi-label">Completed (COM)</div>
         <div class="kpi-value" style="color:var(--green)" id="appt-completed">—</div>
         <div class="kpi-sub" id="appt-rate-sub">completion rate</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">Zero-Appointment Users</div>
-        <div class="kpi-value" style="color:var(--red)" id="appt-zero">—</div>
-        <div class="kpi-sub" id="appt-zero-pct">% of enrolled</div>
+        <div class="kpi-label">Upcoming / Booked</div>
+        <div class="kpi-value" style="color:var(--teal)" id="appt-upcoming">—</div>
+        <div class="kpi-sub">scheduled appointments</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">Avg Appointments/User</div>
-        <div class="kpi-value" id="appt-avg">—</div>
-        <div class="kpi-sub">among users with ≥1 appt</div>
+        <div class="kpi-label">Never Booked (enrolled)</div>
+        <div class="kpi-value" style="color:var(--red)" id="appt-zero">—</div>
+        <div class="kpi-sub" id="appt-zero-pct">of enrolled users</div>
       </div>
     </div>
 
     <div class="grid-2">
       <div class="card">
-        <div class="card-title">Appointment Types Completed</div>
-        <div class="card-sub">By appointment_type from f_appointmentflattable</div>
+        <div class="card-title">Appointment Types Booked</div>
+        <div class="card-sub">By benefit type — filtered by date range above</div>
         <div id="appt-type-bars"></div>
       </div>
       <div class="card">
-        <div class="card-title">Completion Rate by Programme</div>
-        <div class="card-sub">Appts completed / booked per programme cohort</div>
-        <div id="appt-prog-bars"></div>
+        <div class="card-title">Monthly Booking Trend</div>
+        <div class="card-sub">Claims per month across all benefit types</div>
+        <div id="appt-monthly-trend"></div>
+      </div>
+    </div>
+
+    <!-- Follow-Up Due (from flat table actual appointment dates) -->
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div class="card-title">Follow-Up Due — Based on Completed Appointment Date</div>
+        <span id="fu-flat-badge" style="font-size:9.5px;background:var(--surface2);padding:3px 9px;border-radius:12px;color:var(--muted);border:1px solid var(--border)">from f_appointmentflattable</span>
+      </div>
+      <div class="card-sub">Calculated from actual <strong>appointmentdate</strong> (not claim month). Due date = appointment_date + threshold. Doctor/Diet: VH 30d · High 60d · Moderate 90d. Lab: VH/High 90d · Moderate 180d.</div>
+      <div id="fu-flat-note" style="margin:10px 0;padding:9px 12px;border-radius:6px;font-size:11px;display:none"></div>
+      <div class="fu-grid" style="margin-top:10px">
+        <div class="fu-card">
+          <div class="fu-card-title" style="color:var(--navy)">Diet Consultations (Nutritionist)</div>
+          <div id="fu-diet-flat">
+            <div style="color:var(--muted);font-size:11px;padding:8px 0">Run script 08 (benefit_appointment_deep) to populate</div>
+          </div>
+        </div>
+        <div class="fu-card">
+          <div class="fu-card-title" style="color:var(--teal)">Doctor Consultations (Teleconsultation)</div>
+          <div id="fu-doctor-flat">
+            <div style="color:var(--muted);font-size:11px;padding:8px 0">Run script 08 to populate</div>
+          </div>
+        </div>
+      </div>
+      <!-- Upcoming follow-up calendar -->
+      <div style="margin-top:14px">
+        <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px">Users with follow-up due in the next 30 days</div>
+        <div id="fu-upcoming-list">
+          <div style="color:var(--muted);font-size:11px">Run script 08 to see individual follow-up due dates</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Repeat Booking View -->
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div class="card-title">Repeat Booking Frequency</div>
+        <span id="repeat-filter-badge" style="font-size:9.5px;background:var(--surface2);padding:3px 9px;border-radius:12px;color:var(--muted);border:1px solid var(--border)"></span>
+      </div>
+      <div class="card-sub">Users with multiple claims for the same benefit · unique claim_ids from f_claim via d_policy join (no duplication)</div>
+      <div style="overflow:auto">
+        <table class="freq-table" id="repeat-booking-table">
+          <thead><tr>
+            <th style="text-align:left">Benefit / Service</th>
+            <th>Total Users</th>
+            <th>Booked Once</th>
+            <th>2×</th>
+            <th>3×</th>
+            <th>4×</th>
+            <th>5×</th>
+            <th>5×+</th>
+            <th>Repeat %</th>
+            <th>Avg Gap</th>
+          </tr></thead>
+          <tbody id="repeat-booking-body">
+            <tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">Run script 07 to load repeat booking data</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Follow-Up Pending -->
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div class="card-title">Follow-Up Pending — Post Appointment Completion</div>
+        <span id="fu-filter-badge" style="font-size:9.5px;background:var(--surface2);padding:3px 9px;border-radius:12px;color:var(--muted);border:1px solid var(--border)"></span>
+      </div>
+      <div class="card-sub">Users who completed an appointment but have not booked a follow-up within their cohort threshold. Doctor/Diet: VH 30d · High 60d · Moderate 90d. Lab Tests: VH 90d · High 90d · Moderate 180d.</div>
+      <div id="fu-year-note" style="margin-bottom:12px;padding:10px 14px;border-radius:7px;font-size:11px;display:none"></div>
+      <div class="fu-grid" id="followup-grid">
+        <div class="fu-card" style="background:var(--surface2)">
+          <div class="fu-card-title" style="color:var(--navy)">Doctor &amp; Diet Consultations</div>
+          <div id="fu-doctor-diet">
+            <div style="color:var(--muted);font-size:11px">Run script 07 to compute follow-up pending data</div>
+          </div>
+        </div>
+        <div class="fu-card" style="background:var(--surface2)">
+          <div class="fu-card-title" style="color:var(--teal)">Lab Tests &amp; Health Monitoring</div>
+          <div id="fu-lab">
+            <div style="color:var(--muted);font-size:11px">Run script 07 to compute follow-up pending data</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -547,6 +819,107 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
             <div class="is-seg" style="width:31%;background:var(--red)">31%</div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ENGAGEMENT ACTIVITIES ══ -->
+  <section class="content" id="section-engagement">
+    <div class="section-hdr" style="padding-top:20px">
+      <div><h2>Engagement Activities</h2><p>Daily logging adherence · deltalake.dl_central_activity_tracker.activity · managed_care_activity_logs.csv</p></div>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="date-filter-bar">
+      <label>Date Range</label>
+      <button class="filter-preset active" onclick="engPreset('last_30d',this)">Last 30 Days</button>
+      <button class="filter-preset" onclick="engPreset('last_7d',this)">Last 7 Days</button>
+      <button class="filter-preset" onclick="engPreset('last_90d',this)">Last 90 Days</button>
+      <button class="filter-preset" onclick="engPreset('all',this)">All Time</button>
+      <span style="color:var(--border);margin:0 4px">|</span>
+      <label>From</label>
+      <input type="date" id="eng-date-from" onchange="engFilter()"/>
+      <label>To</label>
+      <input type="date" id="eng-date-to" onchange="engFilter()"/>
+      <span id="eng-filter-info" style="font-size:10px;color:var(--muted);margin-left:4px"></span>
+    </div>
+
+    <!-- KPI row -->
+    <div class="eng-stat-row">
+      <div class="eng-stat">
+        <div class="eng-stat-label">Total Enrolled</div>
+        <div class="eng-stat-value" id="eng-enrolled">—</div>
+        <div class="eng-stat-sub">across all programmes</div>
+      </div>
+      <div class="eng-stat">
+        <div class="eng-stat-label">Active Loggers (30d)</div>
+        <div class="eng-stat-value" style="color:var(--green)" id="eng-active-30d">—</div>
+        <div class="eng-stat-sub" id="eng-active-30d-pct">% of enrolled</div>
+      </div>
+      <div class="eng-stat">
+        <div class="eng-stat-label">Daily Adherence</div>
+        <div class="eng-stat-value" style="color:var(--teal)" id="eng-daily-count">—</div>
+        <div class="eng-stat-sub">≥ 120 logging days</div>
+      </div>
+      <div class="eng-stat">
+        <div class="eng-stat-label">Inactive Users</div>
+        <div class="eng-stat-value" style="color:var(--red)" id="eng-inactive">—</div>
+        <div class="eng-stat-sub">zero logs in any category</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Activity type adherence -->
+      <div class="card">
+        <div class="card-title">Adherence by Activity Type</div>
+        <div class="card-sub">% of enrolled users who logged at least once · avg days logged</div>
+        <div id="eng-type-bars"></div>
+      </div>
+
+      <!-- Frequency distribution donut -->
+      <div class="card">
+        <div class="card-title">Logging Frequency Distribution</div>
+        <div class="card-sub">Daily (≥120d) · Weekly (30–119d) · Occasional (1–29d) · Inactive (0d)</div>
+        <div id="eng-freq-donut" style="display:flex;align-items:center;justify-content:center;padding:10px 0"></div>
+      </div>
+    </div>
+
+    <!-- Time of day distribution -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Logging Time of Day</div>
+        <div class="card-sub">When do users typically log their activities? (from Trino activity table)</div>
+        <div id="eng-tod-bars"></div>
+        <div id="eng-tod-fallback" style="display:none;color:var(--muted);font-size:11px;padding:8px 0">Run script 07 with OAuth to see time-of-day data from Trino</div>
+      </div>
+
+      <!-- Daily trend sparkline -->
+      <div class="card">
+        <div class="card-title">Daily Active Users Trend</div>
+        <div class="card-sub">Unique users logging per day in selected period (from Trino activity table)</div>
+        <div id="eng-daily-trend" style="min-height:80px"></div>
+        <div id="eng-trend-fallback" style="display:none;color:var(--muted);font-size:11px;padding:8px 0">Run script 07 with OAuth to see the daily trend chart</div>
+      </div>
+    </div>
+
+    <!-- Programme-level adherence table -->
+    <div class="card">
+      <div class="card-title">Programme-Level Adherence</div>
+      <div class="card-sub">Active loggers and average days logged per programme</div>
+      <div style="overflow:auto">
+        <table class="data-table" id="eng-prog-table">
+          <thead><tr>
+            <th>Programme</th>
+            <th>Enrolled</th>
+            <th>Active Loggers</th>
+            <th>Adherence %</th>
+            <th>Avg Days Logged</th>
+            <th>Engagement Level</th>
+          </tr></thead>
+          <tbody id="eng-prog-body">
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Run script 07 to load engagement data</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -633,22 +1006,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
     </div>
   </section>
 
-  <!-- ══ ENGAGEMENT ══ -->
-  <section class="content" id="section-engagement">
-    <div class="section-hdr" style="padding-top:20px">
-      <div><h2>Engagement Activity</h2><p>Meal, sleep, steps, weight logging by programme</p></div>
-    </div>
-    <div id="engagement-content" style="color:var(--muted);padding:20px">Loading engagement data…</div>
-  </section>
-
-  <!-- ══ VYTAL APPOINTMENTS ══ -->
-  <section class="content" id="section-vytal-appt">
-    <div class="section-hdr" style="padding-top:20px">
-      <div><h2>VYTAL Appointments Detail</h2><p>Source, specialty, and booking analysis</p></div>
-    </div>
-    <div id="vytal-appt-content" style="color:var(--muted);padding:20px">Loading VYTAL appointment data…</div>
-  </section>
-
   <!-- ══ RECOMMENDATIONS ══ -->
   <section class="content" id="section-recommendations">
     <div class="section-hdr" style="padding-top:20px">
@@ -724,46 +1081,72 @@ const CSV_PATHS = {
   allocation:  DATA_FOLDER + 'managed_care_program_allocation.csv',
   impact:      DATA_FOLDER + 'managed_care_impact_scores.csv',
   comparison:  DATA_FOLDER + 'managed_care_comparison.csv',
-  device:      DATA_FOLDER + 'managed_care_device_eligibility.csv'
+  device:      DATA_FOLDER + 'managed_care_device_eligibility.csv',
+  appt_util:   DATA_FOLDER + 'managed_care_appt_utilization.csv',
 };
 
 // Product code → programme name
-// All known MC identifiers — raw codes AND programme names
-// CSV may store either format
 const PRODUCT_PROGRAM = {
   'PURELIFE1':'Diabetes Management','PURELIFE2':'Dyslipidemia Management',
   'PURELIFE3':'Thyroid Care','PURELIFE4':'Liver Care','PURELIFE5':'Kidney Care',
   'VYTAL0126':'Diabetes Management','VYTAL0226':'Dyslipidemia Management',
-  'VYTAL0326':'Thyroid Care','VYTAL0426':'Liver Care','VYTAL0526':'Kidney Care',
-  // Programme names map to themselves (CSV stores names not codes)
-  'Diabetes Management':'Diabetes Management',
-  'Dyslipidemia Management':'Dyslipidemia Management',
-  'Thyroid Care':'Thyroid Care','Liver Care':'Liver Care','Kidney Care':'Kidney Care'
+  'VYTAL0326':'Liver Care','VYTAL0426':'Kidney Care','VYTAL0526':'Thyroid Care'
 };
-const PROG_IMPACTS = {
-  'Diabetes Management':['Diabetes','Diabetes mellitus'],
-  'Dyslipidemia Management':['Dyslipidemia'],
-  'Thyroid Care':['Thyroid dysfunction','Thyroid dsyfunction'],
-  'Liver Care':['Liver dysfunction'],
-  'Kidney Care':['Kidney dysfunction']
-};
-const ALL_MC_IDS = [
-  'PURELIFE1','PURELIFE2','PURELIFE3','PURELIFE4','PURELIFE5',
-  'VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526',
-  'Diabetes Management','Dyslipidemia Management','Thyroid Care','Liver Care','Kidney Care'
-];
+
+// Product codes per year
 const CODES_2025 = ['PURELIFE1','PURELIFE2','PURELIFE3','PURELIFE4','PURELIFE5'];
-const CODES_2026 = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526'];
+const CODES_2026 = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526',
+                     'VYTAL0626','VYTAL0726','VYTAL0826','VYTAL0926','VYTAL01026'];
 
 // ══════════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════════
-const DATA = { allocation:null, impact:null, comparison:null, device:null };
-let SELECTED_YEAR = '2025';  // default year — all current data uses PURELIFE codes (2025)
-let DATE_FROM = '2026-04-01';  // Programme Analytics default: Apr 2026
-let DATE_TO = '2027-05-31';    // Programme Analytics default: May 2027
-let CARE_OPS_DATE_FROM = '';   // Care Operations date range (empty = no filter)
-let CARE_OPS_DATE_TO = '';     // Care Operations date range (empty = no filter)
+const DATA = { allocation:null, impact:null, comparison:null, device:null, appt_util:null, appt_deep:null, benefit_deep:null, policy_data:null, device_2026:null, device_delivered:null, device_impact:null };
+const D    = {};
+let SELECTED_YEAR = '2026';
+
+// Programme Analytics date range (default: Apr 2026 – May 2027)
+let DATE_FROM = '2026-04-01';
+let DATE_TO = '2027-05-31';
+
+// Care Operations date range (filters Appointments, Engagement, Devices)
+let CARE_OPS_DATE_FROM = null;
+let CARE_OPS_DATE_TO = null;
+
+// ── Navigation group ──────────────────────────────────────
+const SECTION_GROUP = {
+  'overview':'analytics','programmes':'analytics','cohorts':'analytics','yoy':'analytics',
+  'devices':'operations','appointments':'operations','engagement':'operations','recommendations':'operations',
+};
+
+// Appointment (appt_util) filter state
+let APPT_DATE_FROM   = null;
+let APPT_DATE_TO     = null;
+let APPT_YEAR_FILTER = '2026';
+let APPT_PROG_FILTER = 'all';
+
+// Operations (Section 2) date/month/year filter state
+let OPS_MODE       = 'date';   // 'date' | 'month' | 'year'
+let OPS_DATE_FROM  = null;
+let OPS_DATE_TO    = null;
+
+// Engagement filter state
+let ENG_DATE_FROM  = null;
+let ENG_DATE_TO    = null;
+
+// Programme → product codes (all years)
+const PROG_TO_CODES = {
+  'Diabetes Management':    ['PURELIFE1','VYTAL0126','VYTAL0626'],
+  'Dyslipidemia Management':['PURELIFE2','VYTAL0226','VYTAL0726'],
+  'Thyroid Care':           ['PURELIFE3','VYTAL0526','VYTAL01026'],
+  'Liver Care':             ['PURELIFE4','VYTAL0326','VYTAL0826'],
+  'Kidney Care':            ['PURELIFE5','VYTAL0426','VYTAL0926'],
+};
+const YEAR_CODES = {
+  '2025': ['PURELIFE1','PURELIFE2','PURELIFE3','PURELIFE4','PURELIFE5'],
+  '2026': ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526',
+           'VYTAL0626','VYTAL0726','VYTAL0826','VYTAL0926','VYTAL01026'],
+};
 
 // ══════════════════════════════════════════════════════════
 // HELPERS
@@ -777,45 +1160,8 @@ function countBy(arr, key) {
   return arr.reduce((a,r)=>{ const k=r[key]||'Unknown'; a[k]=(a[k]||0)+1; return a; }, {});
 }
 
-// Detect which MC codes/names are actually in the comparison CSV
-let _detectedCodes = null;
-function detectCodesFromCSV() {
-  if (_detectedCodes) return _detectedCodes;
-  const comp = DATA.comparison || [];
-  if (!comp.length) return null;
-  const found = new Set();
-  comp.forEach(r => {
-    const v = (r.mc_product_code || r.managed_care_program || '').toString().trim();
-    if (v && v !== 'None' && v !== 'nan' && v !== '' && ALL_MC_IDS.includes(v)) found.add(v);
-  });
-  _detectedCodes = found.size > 0 ? [...found] : null;
-  if (_detectedCodes) console.log('MC codes detected in CSV:', _detectedCodes);
-  return _detectedCodes;
-}
-
 function getEnrolledCodes() {
-  // First try to detect from CSV content
-  const detected = detectCodesFromCSV();
-  if (detected && detected.length > 0) return detected;
-  // Fallback to hardcoded year codes
   return SELECTED_YEAR === '2025' ? CODES_2025 : CODES_2026;
-}
-
-// Check if a row is a managed care user
-function isMCRow(r) {
-  const v = (r.mc_product_code || '').toString().trim();
-  return v && v !== 'None' && v !== 'nan' && v !== '' && ALL_MC_IDS.includes(v);
-}
-
-// Get programme name from any identifier
-function getProgName(code) {
-  return PRODUCT_PROGRAM[code] || code || 'Unknown';
-}
-
-// Get matching impacts for a programme code/name
-function getImpacts(code) {
-  const prog = getProgName(code);
-  return PROG_IMPACTS[prog] || [prog];
 }
 
 // ══════════════════════════════════════════════════════════
@@ -831,6 +1177,22 @@ function loadCSV(path) {
   });
 }
 
+function loadJSON(path) {
+  return fetch(path)
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null);
+}
+
+function loadDemo() {
+  // Populate DATA with empty arrays so render functions don't crash
+  DATA.allocation = DATA.allocation || [];
+  DATA.impact     = DATA.impact     || [];
+  DATA.comparison = DATA.comparison || [];
+  DATA.device     = DATA.device     || [];
+  DATA.appt_util  = DATA.appt_util  || [];
+  DATA.appt_deep  = DATA.appt_deep  || null;
+}
+
 async function reloadData() {
   document.getElementById('loadingOverlay').style.display = 'flex';
   document.getElementById('loadingText').textContent = 'Loading CSV data…';
@@ -839,66 +1201,49 @@ async function reloadData() {
   const detected = await detectDataFolder();
   if (detected) DATA_FOLDER = detected;
 
-  // Load all data sources in parallel
-  const [alloc, impact, comp, dev, ins, policy, appt, activity, engagement, hra, appt_src, device_2026, device_del, device_imp, benefit, camp_monthly, vytal_appt] = await Promise.all([
+  const [alloc, impact, comp, dev, appt_util, ins, appt_deep, benefit_deep, policy, dev2026, dev_del, dev_imp] = await Promise.all([
     loadCSV(DATA_FOLDER + 'managed_care_program_allocation.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_impact_scores.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_comparison.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_device_eligibility.csv'),
-    loadJSON(DATA_FOLDER + 'claude_insights.json'),
-    loadCSV(DATA_FOLDER + 'managed_care_policy_data.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_appt_utilization.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_activity_logs.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_engagement_effect.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_hra_wellness.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_appt_source.csv'),
+    loadJSON(DATA_FOLDER + 'claude_insights.json'),
+    loadJSON(DATA_FOLDER + 'managed_care_appt_deep.json'),
+    loadJSON(DATA_FOLDER + 'managed_care_benefit_deep.json'),
+    loadCSV(DATA_FOLDER + 'managed_care_policy_data.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_device_eligibility_2026.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_device_delivered_2025.csv'),
     loadCSV(DATA_FOLDER + 'managed_care_device_impact_2025.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_benefit_assignments_2026.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_camp_monthly.csv'),
-    loadCSV(DATA_FOLDER + 'vytal_appt_flat.csv')
   ]);
 
   const anyOk = alloc.ok || comp.ok || dev.ok || impact.ok;
   if (anyOk) {
-    DATA.allocation = alloc.ok ? alloc.data : [];
-    DATA.impact = impact.ok ? impact.data : [];
-    DATA.comparison = comp.ok ? comp.data : [];
-    DATA.device = dev.ok ? dev.data : [];
-    DATA.insights = ins || null;
-    DATA.policy_data = policy.ok ? policy.data : [];
-    DATA.appt_util = appt.ok ? appt.data : [];
-    DATA.activity_logs = activity.ok ? activity.data : [];
-    DATA.engagement_effect = engagement.ok ? engagement.data : [];
-    DATA.hra_wellness = hra.ok ? hra.data : [];
-    DATA.appt_source = appt_src.ok ? appt_src.data : [];
-    DATA.device_2026 = device_2026.ok ? device_2026.data : [];
-    DATA.device_delivered = device_del.ok ? device_del.data : [];
-    DATA.device_impact = device_imp.ok ? device_imp.data : [];
-    DATA.benefit_assignments = benefit.ok ? benefit.data : [];
-    DATA.camp_monthly = camp_monthly.ok ? camp_monthly.data : [];
-    DATA.vytal_appt = vytal_appt.ok ? vytal_appt.data : [];
-
-    _detectedCodes = null;
-    D.alloc = DATA.allocation;
-    D.impact = DATA.impact;
-    D.comp = DATA.comparison;
-    D.device = DATA.device;
-    D.policy = DATA.policy_data;
-    D.appt = DATA.appt_util;
-    D.activity = DATA.activity_logs;
-    D.engagement = DATA.engagement_effect;
-    D.hra = DATA.hra_wellness;
-    D.appt_src = DATA.appt_source;
+    // Store into both DATA and D so all render functions work
+    DATA.allocation = alloc.ok      ? alloc.data      : [];
+    DATA.impact     = impact.ok     ? impact.data     : [];
+    DATA.comparison = comp.ok       ? comp.data       : [];
+    DATA.device     = dev.ok        ? dev.data        : [];
+    DATA.appt_util    = appt_util.ok  ? appt_util.data  : [];
+    DATA.appt_deep    = appt_deep     || null;
+    DATA.benefit_deep = benefit_deep  || null;
+    DATA.insights     = ins           || null;
+    DATA.policy_data  = policy.ok  ? policy.data  : [];
+    DATA.device_2026  = dev2026.ok ? dev2026.data : [];
+    DATA.device_delivered = dev_del.ok ? dev_del.data : [];
+    DATA.device_impact    = dev_imp.ok ? dev_imp.data : [];
+    // D is used by render functions — keep in sync with DATA
+    D.alloc   = DATA.allocation;
+    D.impact  = DATA.impact;
+    D.comp    = DATA.comparison;
+    D.device  = DATA.device;
+    D.policy  = DATA.policy_data;
+    DATA.insights= DATA.insights;
 
     const badge = [
       alloc.ok?'✅ allocation':'❌ allocation',
       comp.ok?'✅ comparison':'❌ comparison',
       dev.ok?'✅ device':'❌ device',
-      impact.ok?'✅ impact':'❌ impact',
-      appt.ok?'✅ appt':'❌ appt',
-      activity.ok?'✅ activity':'❌ activity'
+      impact.ok?'✅ impact':'❌ impact'
     ].join(' · ');
 
     document.getElementById('dataBadge').className = 'data-badge data-live';
@@ -908,14 +1253,13 @@ async function reloadData() {
     document.getElementById('dataBadge').className = 'data-badge data-demo';
     document.getElementById('dataBadge').textContent = 'Demo Mode — run scripts first';
     document.getElementById('lastUpdated').textContent = 'CSVs not found in Data/ folder';
+    // Load demo data and sync to D
     loadDemo();
-    D.alloc = DATA.allocation || [];
-    D.impact = DATA.impact || [];
-    D.comp = DATA.comparison || [];
-    D.device = DATA.device || [];
-    D.activity = DATA.activity_logs || [];
-    D.appt = DATA.appt_util || [];
-    DATA.insights = null;
+    D.alloc   = DATA.allocation || [];
+    D.impact  = DATA.impact     || [];
+    D.comp    = DATA.comparison || [];
+    D.device  = DATA.device     || [];
+    DATA.insights= null;
   }
 
   try { renderAll(); } catch(e) { console.error('renderAll error:', e); }
@@ -927,7 +1271,6 @@ async function reloadData() {
 // ══════════════════════════════════════════════════════════
 function setYear(yr) {
   SELECTED_YEAR = yr;
-  _detectedCodes = null; // reset cache so detection re-runs for new year
   document.querySelectorAll('.yr-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.yr === yr);
   });
@@ -938,12 +1281,20 @@ function setYear(yr) {
 // CORE DATA COMPUTATIONS
 // ══════════════════════════════════════════════════════════
 
-// 1. ENROLLED — count unique users with matching policy product codes
+// 1. ENROLLED — use JSON for 2026 (VYTAL), CSV for 2025 (PURELIFE)
 function getEnrolled() {
+  // 2026 has VYTAL codes which only exist in JSON, not in CSV
+  if (SELECTED_YEAR === '2026') {
+    const bd = DATA.benefit_deep;
+    if (bd && bd.by_year && bd.by_year['2026'] && bd.by_year['2026'].enrolled_users) {
+      return bd.by_year['2026'].enrolled_users;
+    }
+  }
+  // 2025 has PURELIFE codes in CSV
   const codes = getEnrolledCodes();
   const comp  = DATA.comparison || [];
   const users = new Set(
-    comp.filter(r => isMCRow(r))
+    comp.filter(r => codes.includes(r.mc_product_code))
         .map(r => r.mobile_number_hash)
   );
   return users.size;
@@ -954,8 +1305,8 @@ function getProgDistribution() {
   const codes = getEnrolledCodes();
   const comp  = DATA.comparison || [];
   const dist  = {};
-  comp.filter(r => isMCRow(r)).forEach(r => {
-    const prog = getProgName(r.mc_product_code);
+  comp.filter(r => codes.includes(r.mc_product_code)).forEach(r => {
+    const prog = PRODUCT_PROGRAM[r.mc_product_code] || r.mc_product_code;
     dist[prog] = (dist[prog]||0) + 1;
   });
   return dist;
@@ -972,12 +1323,8 @@ function getPivotData() {
   // Group by impact → mc_product_code → improvement_flag counts
   const pivot = {};
   comp.forEach(r => {
-    const impact   = r.impact || 'Unknown';
-    // Resolve to programme name — handles both raw codes and programme names in CSV
-    const rawCode  = (r.mc_product_code || '').toString().trim();
-    const product  = (rawCode && rawCode !== 'None' && ALL_MC_IDS.includes(rawCode))
-                     ? getProgName(rawCode)
-                     : 'None';
+    const impact   = r.impact        || 'Unknown';
+    const product  = r.mc_product_code || 'None';
     const flag     = r.improvement_flag || 'Unknown';
 
     if (!pivot[impact]) pivot[impact] = {};
@@ -994,7 +1341,7 @@ function getOverallImprRate() {
   const codes = getEnrolledCodes();
   const comp  = DATA.comparison || [];
 
-  const mc   = comp.filter(r => isMCRow(r));
+  const mc   = comp.filter(r => codes.includes(r.mc_product_code));
   const none = comp.filter(r => !r.mc_product_code || r.mc_product_code === 'None');
 
   const mcImpr   = mc.filter(r => r.improvement_flag === 'Improved').length;
@@ -1024,23 +1371,21 @@ function getCohortSplit() {
 
 // 5. ZERO APPOINTMENT USERS — out of enrolled, how many had 0 appts
 function getZeroApptUsers() {
-  const comp = DATA.comparison || [];
-  const dev  = DATA.device     || [];
+  const codes = getEnrolledCodes();
+  const comp  = DATA.comparison || [];
+  const apptCol = SELECTED_YEAR === '2025' ? 'total_appts_ly' : 'total_appts_ty';
 
-  // Build enrolled hash set from comparison (MC users only)
-  const enrolledHashes = new Set(
-    comp.filter(r => isMCRow(r)).map(r => r.mobile_number_hash)
-  );
-
-  // Build appt_booked lookup from device CSV (actual column name)
-  const devMap = {};
-  dev.forEach(r => { devMap[r.mobile_number_hash] = safeN(r.appt_booked); });
-
-  // Count zero-appt enrolled users
-  let zero = 0;
-  enrolledHashes.forEach(h => { if ((devMap[h] || 0) === 0) zero++; });
-
-  return { zero, total: enrolledHashes.size };
+  const enrolled = comp.filter(r => codes.includes(r.mc_product_code));
+  // Deduplicate by mobile hash
+  const seen = {}, zeroCount = {Y:0,N:0};
+  enrolled.forEach(r => {
+    if (seen[r.mobile_number_hash]) return;
+    seen[r.mobile_number_hash] = true;
+    const appts = safeN(r[apptCol]);
+    if (appts === 0) zeroCount.Y++;
+    else             zeroCount.N++;
+  });
+  return { zero: zeroCount.Y, total: zeroCount.Y + zeroCount.N };
 }
 
 // 6. DEVICE IMPROVEMENT — from device_eligibility.csv
@@ -1165,9 +1510,11 @@ function renderOverview() {
   document.getElementById('kpi-vh').textContent    = fmt(cohorts['Very High']);
   document.getElementById('kpi-vh-pct').textContent = pct(cohorts['Very High'], totalImpact) + ' of scored users';
 
-  // 6. Appointments completed — sourced from device_eligibility CSV (appt_booked / appt_completed)
-  const totalAppts = dev.reduce((s,r)=>s+safeN(r.appt_booked),0);
-  const doneAppts  = dev.reduce((s,r)=>s+safeN(r.appt_completed),0);
+  // 6. Appointments completed
+  const apptCol  = SELECTED_YEAR === '2025' ? 'total_appts_ly' : 'total_appts_ty';
+  const doneCol  = SELECTED_YEAR === '2025' ? 'appts_completed_ly' : 'appts_completed_ty';
+  const totalAppts = comp.reduce((s,r)=>s+safeN(r[apptCol]),0);
+  const doneAppts  = comp.reduce((s,r)=>s+safeN(r[doneCol]),0);
   document.getElementById('kpi-appt-done').textContent = fmt(doneAppts);
   document.getElementById('kpi-appt-rate').textContent = pct(doneAppts, totalAppts) + ' completion rate';
 
@@ -1195,7 +1542,7 @@ function renderOverview() {
     const codes = getEnrolledCodes();
     let imp=0, tot=0;
     Object.entries(products).forEach(([prod, d]) => {
-      if (ALL_MC_IDS.includes(prod)) { imp += d.Improved||0; tot += d.total||0; }
+      if (codes.includes(prod)) { imp += d.Improved||0; tot += d.total||0; }
     });
     if (tot > 0) yoyRates[impact] = imp/tot*100;
   });
@@ -1226,7 +1573,7 @@ function renderProgrammes() {
   Object.entries(pivot).forEach(([impact, products]) => {
     let imp=0, tot=0;
     Object.entries(products).forEach(([prod,d]) => {
-      if (ALL_MC_IDS.includes(prod)) { imp+=d.Improved||0; tot+=d.total||0; }
+      if (codes.includes(prod)) { imp+=d.Improved||0; tot+=d.total||0; }
     });
     const r = tot>0 ? imp/tot*100 : 0;
     if (r > bestRate) { bestRate=r; bestName=impact; }
@@ -1244,10 +1591,10 @@ function renderProgrammes() {
     let noImp=0, noNC=0, noWor=0, noNR=0, noTot=0;
 
     Object.entries(products).forEach(([prod, d]) => {
-      if (ALL_MC_IDS.includes(prod)) {
+      if (codes.includes(prod)) {
         mcImp+=d.Improved||0; mcNC+=d['No Change']||0;
         mcWor+=d.Worsened||0; mcNR+=d['No Risk']||0; mcTot+=d.total||0;
-      } else if (prod==='None' || !ALL_MC_IDS.includes(prod)) {
+      } else if (prod==='None'||!prod) {
         noImp+=d.Improved||0; noNC+=d['No Change']||0;
         noWor+=d.Worsened||0; noNR+=d['No Risk']||0; noTot+=d.total||0;
       }
@@ -1366,59 +1713,878 @@ function renderDevices() {
     <div class="is-seg" style="width:${(100-noDevImpr).toFixed(0)}%;background:var(--red)"></div>`;
 }
 
+// ══════════════════════════════════════════════════════════
+// DATE FILTER HELPERS
+// ══════════════════════════════════════════════════════════
+function todayStr() {
+  return new Date().toISOString().slice(0,10);
+}
+function monthsAgo(n) {
+  const d = new Date(); d.setMonth(d.getMonth()-n); return d.toISOString().slice(0,7);
+}
+
+// ══════════════════════════════════════════════════════════
+// NAVIGATION — GROUP-AWARE (Section 1: analytics, Section 2: ops)
+// ══════════════════════════════════════════════════════════
+function switchSection(sectionId) {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+  const item = document.querySelector(`.nav-item[data-section="${sectionId}"]`);
+  if (item) item.classList.add('active');
+  const sec = document.getElementById(`section-${sectionId}`);
+  if (sec) sec.classList.add('active');
+
+  const group = SECTION_GROUP[sectionId] || 'analytics';
+  document.getElementById('filter-analytics').style.display  = group==='analytics'  ? 'flex' : 'none';
+  document.getElementById('filter-operations').style.display = group==='operations' ? 'block' : 'none';
+
+  const labels = {
+    'overview':'Overview','programmes':'Programme Outcomes','cohorts':'Cohort Analysis',
+    'yoy':'Year-on-Year','devices':'Devices & Lifestyle','appointments':'Appointments',
+    'engagement':'Engagement Activity','recommendations':'Recommendations'
+  };
+  const lbl = document.getElementById('active-section-label');
+  if (lbl) lbl.textContent = labels[sectionId] || sectionId;
+}
+
+// ══════════════════════════════════════════════════════════
+// DATE / MONTH / YEAR FILTER (Section 2 — Care Operations)
+// ══════════════════════════════════════════════════════════
+function setDmyMode(mode) {
+  OPS_MODE = mode;
+  ['date','month','year'].forEach(m => {
+    const btn = document.getElementById(`dmy-btn-${m}`);
+    const pan = document.getElementById(`dmy-${m}-panel`);
+    if (btn) btn.classList.toggle('active', m===mode);
+    if (pan) pan.style.display = m===mode ? 'flex' : 'none';
+  });
+  applyOpsFilter();
+}
+
+function opsPreset(preset) {
+  document.querySelectorAll('.dmy-preset').forEach(b=>b.classList.remove('dp-active'));
+  const today = new Date();
+  const fmt   = d => d.toISOString().slice(0,10);
+  const ym    = d => d.toISOString().slice(0,7);
+
+  if (preset === 'today') {
+    setDmyMode('date');
+    document.getElementById('ops-date-from').value = fmt(today);
+    document.getElementById('ops-date-to').value   = fmt(today);
+    OPS_DATE_FROM = fmt(today); OPS_DATE_TO = fmt(today);
+  } else if (preset === 'this_week') {
+    setDmyMode('date');
+    const mon = new Date(today); mon.setDate(today.getDate() - today.getDay() + 1);
+    const sun = new Date(mon);   sun.setDate(mon.getDate() + 6);
+    document.getElementById('ops-date-from').value = fmt(mon);
+    document.getElementById('ops-date-to').value   = fmt(sun);
+    OPS_DATE_FROM = fmt(mon); OPS_DATE_TO = fmt(sun);
+  } else if (preset === 'this_month') {
+    setDmyMode('month');
+    document.getElementById('ops-month').value      = String(today.getMonth()+1).padStart(2,'0');
+    document.getElementById('ops-month-year').value = today.getFullYear();
+    _computeMonthRange();
+  } else if (preset === 'last_30d') {
+    setDmyMode('date');
+    const from = new Date(today); from.setDate(today.getDate()-30);
+    document.getElementById('ops-date-from').value = fmt(from);
+    document.getElementById('ops-date-to').value   = fmt(today);
+    OPS_DATE_FROM = fmt(from); OPS_DATE_TO = fmt(today);
+  } else if (preset === 'this_year') {
+    setDmyMode('year');
+    document.getElementById('ops-year').value = today.getFullYear();
+    _computeYearRange();
+  } else if (preset === 'all') {
+    OPS_DATE_FROM = null; OPS_DATE_TO = null;
+    document.getElementById('ops-date-from').value = '';
+    document.getElementById('ops-date-to').value   = '';
+  }
+  _updateOpsInfo();
+  renderOperationsSection();
+}
+
+function applyOpsFilter() {
+  if (OPS_MODE === 'date') {
+    OPS_DATE_FROM = document.getElementById('ops-date-from').value || null;
+    OPS_DATE_TO   = document.getElementById('ops-date-to').value   || null;
+  } else if (OPS_MODE === 'month') {
+    _computeMonthRange();
+  } else if (OPS_MODE === 'year') {
+    _computeYearRange();
+  }
+  _updateOpsInfo();
+  renderOperationsSection();
+}
+
+function _computeMonthRange() {
+  const m   = document.getElementById('ops-month').value;
+  const yr  = document.getElementById('ops-month-year').value;
+  const lastDay = new Date(yr, parseInt(m), 0).getDate();
+  OPS_DATE_FROM = `${yr}-${m}-01`;
+  OPS_DATE_TO   = `${yr}-${m}-${String(lastDay).padStart(2,'0')}`;
+}
+
+function _computeYearRange() {
+  const yr = document.getElementById('ops-year').value;
+  OPS_DATE_FROM = `${yr}-01-01`;
+  OPS_DATE_TO   = `${yr}-12-31`;
+}
+
+function _updateOpsInfo() {
+  const el = document.getElementById('ops-date-range-info');
+  if (!el) return;
+  if (OPS_DATE_FROM || OPS_DATE_TO) {
+    el.textContent = `${OPS_DATE_FROM||'start'} → ${OPS_DATE_TO||'now'}`;
+  } else {
+    el.textContent = 'All time';
+  }
+}
+
+// Render the right operations section based on currently active tab
+function renderOperationsSection() {
+  const active = document.querySelector('.nav-item.active');
+  const sec = active ? active.dataset.section : '';
+  if      (sec==='devices')         { try { renderDevices();         } catch(e){console.error(e);} }
+  else if (sec==='appointments')    { try { renderAppointments();    } catch(e){console.error(e);} }
+  else if (sec==='engagement')      { try { renderEngagement();      } catch(e){console.error(e);} }
+  else if (sec==='recommendations') { try { renderRecommendations(); } catch(e){console.error(e);} }
+}
+
+// ── Filter any appt records by OPS date range ───────────
+function filterByOpsDate(arr, dateKey) {
+  if (!OPS_DATE_FROM && !OPS_DATE_TO) return arr;
+  return arr.filter(r => {
+    const d = String(r[dateKey]||'').slice(0,10);
+    if (OPS_DATE_FROM && d < OPS_DATE_FROM) return false;
+    if (OPS_DATE_TO   && d > OPS_DATE_TO)   return false;
+    return true;
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER FOLLOW-UP FROM FLAT TABLE (accurate appointmentdate)
+// ══════════════════════════════════════════════════════════
+function renderFollowUpFromFlat() {
+  const bd  = DATA.benefit_deep;
+  const yr  = APPT_YEAR_FILTER !== 'all' ? APPT_YEAR_FILTER : '2026';
+  const yrData = bd && bd.by_year && bd.by_year[yr] ? bd.by_year[yr] : null;
+  const fp  = yrData ? yrData.followup_pending : null;
+
+  // Context note
+  const noteEl = document.getElementById('fu-flat-note');
+  const bdg    = document.getElementById('fu-flat-badge');
+  if (bdg) bdg.textContent = yrData ? `${yrData.year_label} · from f_appointmentflattable` : 'benefit_deep.json not loaded';
+
+  // Get flat table appointments for filtering
+  const allAppts = yrData && yrData.appt_flat_summary ? yrData.appt_flat_summary : {};
+
+  function renderFuCat(domId, catKey, label, color) {
+    const el = document.getElementById(domId);
+    if (!el) return;
+    const catFp = fp && fp[catKey] ? fp[catKey] : null;
+
+    if (!catFp || catFp.no_data) {
+      el.innerHTML = `<div style="color:var(--muted);font-size:11px;padding:6px 0">
+        ${catFp?.note || 'Run script 08 to populate actual appointment date data'}
+      </div>`;
+      return;
+    }
+
+    let html = '';
+    const cohorts = [
+      {key:'very_high', label:'Very High', color:'var(--red)',    thr: catKey==='lab'?90:30},
+      {key:'high',      label:'High',      color:'var(--orange)', thr: catKey==='lab'?90:60},
+      {key:'moderate',  label:'Moderate',  color:'var(--gold)',   thr: catKey==='lab'?180:90},
+    ];
+
+    const totalUsers = safeN(catFp.total_users || catFp.unique_users || 0);
+
+    cohorts.forEach(coh => {
+      const cd = catFp[coh.key];
+      const total   = cd ? safeN(cd.total_with_appt || totalUsers) : 0;
+      const pending = cd ? safeN(cd.pending_followup) : 0;
+      const pct     = total > 0 ? (pending/total*100).toFixed(1) : 0;
+      const fillW   = Math.min(parseFloat(pct), 100);
+
+      html += `<div class="fu-cohort-row">
+        <div class="fu-cohort-label" style="color:${coh.color}">${coh.label}</div>
+        <div style="flex:1">
+          <div class="fu-cohort-bar"><div class="fu-cohort-fill" style="width:${fillW}%;background:${coh.color}"></div></div>
+        </div>
+        <div class="fu-cohort-meta">
+          <strong style="color:${coh.color}">${fmt(pending)}</strong>
+          <span style="color:var(--muted)"> pending</span>
+        </div>
+        <div style="font-size:9.5px;color:var(--muted);margin-left:4px">&gt;${coh.thr}d</div>
+      </div>`;
+    });
+
+    const totPending = cohorts.reduce((s,c)=>s+safeN((catFp[c.key]||{}).pending_followup),0);
+    if (totPending === 0 && totalUsers > 0) {
+      // Show when first users become pending
+      const lastApptRange = catFp.last_appt_range || {};
+      const maxDate = lastApptRange.max;
+      if (maxDate) {
+        const thr = catKey==='lab' ? 90 : 30;
+        const dueDate = new Date(maxDate); dueDate.setDate(dueDate.getDate() + thr);
+        html += `<div style="margin-top:8px;padding:7px 10px;background:var(--green-light);border-radius:6px;font-size:11px;color:var(--green)">
+          ✓ All ${fmt(totalUsers)} users within follow-up window. First VH due: <strong>${dueDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</strong>
+        </div>`;
+      }
+    } else if (totPending > 0) {
+      html += `<div style="margin-top:8px;padding:7px 10px;background:var(--red-light);border-radius:6px;display:flex;gap:8px;align-items:center">
+        <span style="font-size:18px;font-weight:300;color:var(--red)">${fmt(totPending)}</span>
+        <span style="font-size:10px;color:var(--red)">users overdue for follow-up</span>
+      </div>`;
+    }
+
+    el.innerHTML = html;
+  }
+
+  renderFuCat('fu-diet-flat',   'diet',   'Diet Consultations', 'var(--navy)');
+  renderFuCat('fu-doctor-flat', 'doctor', 'Doctor Consultations', 'var(--teal)');
+
+  // Upcoming follow-up list (users booked Jun 11-15, VH due Jul 11-15)
+  const upcomingEl = document.getElementById('fu-upcoming-list');
+  if (upcomingEl && yrData && yrData.daily_trend_flat && yrData.daily_trend_flat.length > 0) {
+    const today    = new Date().toISOString().slice(0,10);
+    const in30days = new Date(Date.now()+30*86400000).toISOString().slice(0,10);
+
+    // Filter trend to completed appointments whose VH due date is within 30 days
+    const filteredTrend = filterByOpsDate(yrData.daily_trend_flat, 'date');
+
+    if (filteredTrend.length > 0) {
+      upcomingEl.innerHTML = `<div style="display:flex;gap:2px;align-items:flex-end;height:50px;padding:4px 0">
+        ${filteredTrend.map(d => {
+          const h = Math.max(20, Math.min(100, safeN(d.unique_users)*5));
+          return `<div title="${d.date}: ${d.unique_users} completed"
+                      style="flex:1;min-width:6px;height:${h}%;background:var(--green);border-radius:2px 2px 0 0;opacity:.8"></div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px">
+        <span>${filteredTrend[0]?.date||''}</span>
+        <span>${filteredTrend[filteredTrend.length-1]?.date||''}</span>
+      </div>`;
+    } else {
+      upcomingEl.innerHTML = '<div style="color:var(--muted);font-size:11px">No appointments in selected period</div>';
+    }
+  }
+}
+
+// Year filter
+function setApptYear(yr, btn) {
+  APPT_YEAR_FILTER = yr;
+  document.querySelectorAll('.yr-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAppointments();
+}
+
+// Programme filter
+function setApptProg(prog, btn) {
+  APPT_PROG_FILTER = prog;
+  document.querySelectorAll('.prog-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAppointments();
+}
+
+// Appointment date filter controls
+function apptPreset(preset, btn) {
+  document.querySelectorAll('#section-appointments .filter-preset').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const today = todayStr();
+  const fromEl = document.getElementById('appt-date-from');
+  const toEl   = document.getElementById('appt-date-to');
+  if (preset==='all')             { APPT_DATE_FROM=null; APPT_DATE_TO=null; fromEl.value=''; toEl.value=''; }
+  else if (preset==='this_month') { APPT_DATE_FROM=monthsAgo(0).slice(0,7)+'-01'; APPT_DATE_TO=today; fromEl.value=APPT_DATE_FROM; toEl.value=APPT_DATE_TO; }
+  else if (preset==='last_3m')    { APPT_DATE_FROM=monthsAgo(3).slice(0,7)+'-01'; APPT_DATE_TO=today; fromEl.value=APPT_DATE_FROM; toEl.value=APPT_DATE_TO; }
+  else if (preset==='last_6m')    { APPT_DATE_FROM=monthsAgo(6).slice(0,7)+'-01'; APPT_DATE_TO=today; fromEl.value=APPT_DATE_FROM; toEl.value=APPT_DATE_TO; }
+  renderAppointments();
+}
+function apptFilter() {
+  APPT_DATE_FROM = document.getElementById('appt-date-from').value || null;
+  APPT_DATE_TO   = document.getElementById('appt-date-to').value   || null;
+  document.querySelectorAll('#section-appointments .filter-preset').forEach(b=>b.classList.remove('active'));
+  renderAppointments();
+}
+
+// Engagement date filter controls
+function engPreset(preset, btn) {
+  document.querySelectorAll('#section-engagement .filter-preset').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const today = todayStr();
+  const fromEl = document.getElementById('eng-date-from');
+  const toEl   = document.getElementById('eng-date-to');
+  if (preset==='all')      { ENG_DATE_FROM=null; ENG_DATE_TO=null; fromEl.value=''; toEl.value=''; }
+  else if (preset==='last_7d')  { ENG_DATE_FROM=new Date(Date.now()-7*86400000).toISOString().slice(0,10); ENG_DATE_TO=today; fromEl.value=ENG_DATE_FROM; toEl.value=ENG_DATE_TO; }
+  else if (preset==='last_30d') { ENG_DATE_FROM=new Date(Date.now()-30*86400000).toISOString().slice(0,10); ENG_DATE_TO=today; fromEl.value=ENG_DATE_FROM; toEl.value=ENG_DATE_TO; }
+  else if (preset==='last_90d') { ENG_DATE_FROM=new Date(Date.now()-90*86400000).toISOString().slice(0,10); ENG_DATE_TO=today; fromEl.value=ENG_DATE_FROM; toEl.value=ENG_DATE_TO; }
+  renderEngagement();
+}
+function engFilter() {
+  ENG_DATE_FROM = document.getElementById('eng-date-from').value || null;
+  ENG_DATE_TO   = document.getElementById('eng-date-to').value   || null;
+  document.querySelectorAll('#section-engagement .filter-preset').forEach(b=>b.classList.remove('active'));
+  renderEngagement();
+}
+
+// Resolve which product codes are active given year + programme filters
+function getActiveCodes() {
+  let codes = [];
+  if (APPT_YEAR_FILTER === 'all') {
+    codes = [...(YEAR_CODES['2025']||[]), ...(YEAR_CODES['2026']||[])];
+  } else {
+    codes = YEAR_CODES[APPT_YEAR_FILTER] || [];
+  }
+  if (APPT_PROG_FILTER !== 'all') {
+    const progCodes = PROG_TO_CODES[APPT_PROG_FILTER] || [];
+    codes = codes.filter(c => progCodes.includes(c));
+  }
+  return codes;
+}
+
+// Filter appt_util rows by year, programme, and date range
+function getFilteredApptUtil() {
+  const rows   = DATA.appt_util || [];
+  const codes  = getActiveCodes();
+  let filtered = rows.filter(r => codes.includes(String(r.mc_product_code||'')));
+
+  // Year filter also via year column (belt-and-suspenders)
+  if (APPT_YEAR_FILTER !== 'all') {
+    filtered = filtered.filter(r => String(r.year||'') === APPT_YEAR_FILTER);
+  }
+  if (APPT_DATE_FROM) {
+    const fromYM = APPT_DATE_FROM.slice(0,7);
+    filtered = filtered.filter(r => String(r.claim_month||'') >= fromYM);
+  }
+  if (APPT_DATE_TO) {
+    const toYM = APPT_DATE_TO.slice(0,7);
+    filtered = filtered.filter(r => String(r.claim_month||'') <= toYM);
+  }
+  return filtered;
+}
+
+// Pick the correct pre-computed slice from the JSON based on current filters
+function getDeepSlice() {
+  const deep = DATA.appt_deep;
+  if (!deep || !deep.appointments) return null;
+  const appt = deep.appointments;
+
+  if (APPT_YEAR_FILTER === 'all' && APPT_PROG_FILTER === 'all') {
+    return appt.combined || null;
+  }
+  if (APPT_YEAR_FILTER !== 'all') {
+    const yrData = (appt.by_year || {})[APPT_YEAR_FILTER];
+    if (!yrData) return null;
+    if (APPT_PROG_FILTER === 'all') return yrData;
+    // Find the product code(s) for this programme in this year
+    const progCodes = (PROG_TO_CODES[APPT_PROG_FILTER] || [])
+                        .filter(c => (YEAR_CODES[APPT_YEAR_FILTER]||[]).includes(c));
+    // Return the first matching product code slice (usually just one per year)
+    for (const code of progCodes) {
+      const prodSlice = (yrData.by_product_code || {})[code];
+      if (prodSlice) return prodSlice;
+    }
+    return null;
+  }
+  // Year=all but prog filter set — no pre-computed slice, fall back to CSV
+  return null;
+}
+
+// Build a human-readable filter label for the topbar/info
+function getFilterLabel() {
+  const yr   = APPT_YEAR_FILTER === 'all' ? 'All Years' : APPT_YEAR_FILTER + (APPT_YEAR_FILTER==='2025'?' (PURELIFE)':' (VYTAL)');
+  const prog = APPT_PROG_FILTER === 'all' ? 'All Programmes' : APPT_PROG_FILTER;
+  return `${yr} · ${prog}`;
+}
+
+// ══════════════════════════════════════════════════════════
+// APPOINTMENTS RENDER (with date filter + repeat bookings + follow-up)
+// ══════════════════════════════════════════════════════════
 function renderAppointments() {
-  const comp = DATA.comparison || [];
-  const dev  = DATA.device     || [];
+  const comp    = DATA.comparison || [];
+  const codes   = getEnrolledCodes();
+  const apptCol = SELECTED_YEAR==='2025'?'total_appts_ly':'total_appts_ty';
+  const doneCol = SELECTED_YEAR==='2025'?'appts_completed_ly':'appts_completed_ty';
+  const labCol  = SELECTED_YEAR==='2025'?'lab_tests_ly':'lab_tests_ty';
+  const clinCol = SELECTED_YEAR==='2025'?'clinic_appts_ly':'clinic_appts_ty';
 
-  // Enrolled hash set — MC users from comparison CSV
-  const enrolledHashes = new Set(
-    comp.filter(r => isMCRow(r)).map(r => r.mobile_number_hash)
-  );
-  const nonMCHashes = new Set(
-    comp.filter(r => !r.mc_product_code || r.mc_product_code === 'None')
-        .map(r => r.mobile_number_hash)
-  );
+  // ── KPIs from appt_util (date-filtered) ──────────────
+  const apptUtil  = getFilteredApptUtil();
+  const non_cancelled = ['authorized','redeemed','paid'];
+  const completed_statuses = ['redeemed','paid'];
 
-  // Device CSV has actual columns: appt_booked, appt_completed, lab_tests_count, clinic_appts_count
-  const enrolledDev = dev.filter(r => enrolledHashes.has(r.mobile_number_hash));
-  const nonMCDev    = dev.filter(r => nonMCHashes.has(r.mobile_number_hash));
+  const totalAppts = apptUtil.filter(r=>non_cancelled.includes(String(r.claim_status||'').toLowerCase()))
+                              .reduce((s,r)=>s+safeN(r.claim_count||1),0);
+  const doneAppts  = apptUtil.filter(r=>completed_statuses.includes(String(r.claim_status||'').toLowerCase()))
+                              .reduce((s,r)=>s+safeN(r.claim_count||1),0);
 
-  const totalAppts = enrolledDev.reduce((s,r)=>s+safeN(r.appt_booked),0);
-  const doneAppts  = enrolledDev.reduce((s,r)=>s+safeN(r.appt_completed),0);
-  const labTests   = enrolledDev.reduce((s,r)=>s+safeN(r.lab_tests_count),0);
-  const clinAppts  = enrolledDev.reduce((s,r)=>s+safeN(r.clinic_appts_count),0);
+  // Zero-appt enrolled users (using comp CSV as enrolled baseline)
+  const enrolled  = comp.filter(r=>codes.includes(r.mc_product_code));
+  const totalApptsFallback = enrolled.reduce((s,r)=>s+safeN(r[apptCol]),0);
+  const doneApptsFallback  = enrolled.reduce((s,r)=>s+safeN(r[doneCol]),0);
+  const labTests   = enrolled.reduce((s,r)=>s+safeN(r[labCol]),0);
+  const clinAppts  = enrolled.reduce((s,r)=>s+safeN(r[clinCol]),0);
 
-  // Deduplicate by mobile hash for zero-appt count
   const seenHash={}, zeroAppt=[];
-  enrolledDev.forEach(r=>{
+  enrolled.forEach(r=>{
     if(seenHash[r.mobile_number_hash]) return;
     seenHash[r.mobile_number_hash]=true;
-    if(safeN(r.appt_booked)===0) zeroAppt.push(r.mobile_number_hash);
+    if(safeN(r[apptCol])===0) zeroAppt.push(r.mobile_number_hash);
   });
-  const enrolledUniq = enrolledHashes.size || 1;
+  const enrolledUniq = Object.keys(seenHash).length;
 
-  document.getElementById('appt-total').textContent     = fmt(totalAppts);
-  document.getElementById('appt-completed').textContent = fmt(doneAppts);
-  document.getElementById('appt-rate-sub').textContent  = pct(doneAppts,totalAppts)+' completion';
+  const displayTotal = apptUtil.length > 0 ? totalAppts : totalApptsFallback;
+  const displayDone  = apptUtil.length > 0 ? doneAppts  : doneApptsFallback;
+
+  document.getElementById('appt-total').textContent     = fmt(displayTotal);
+  document.getElementById('appt-completed').textContent = fmt(displayDone);
+  document.getElementById('appt-rate-sub').textContent  = pct(displayDone,displayTotal)+' completion';
   document.getElementById('appt-zero').textContent      = fmt(zeroAppt.length);
   document.getElementById('appt-zero-pct').textContent  = pct(zeroAppt.length,enrolledUniq)+' of enrolled';
-  document.getElementById('appt-avg').textContent       = enrolledUniq>0?(totalAppts/enrolledUniq).toFixed(1):'—';
+  document.getElementById('appt-avg').textContent       = enrolledUniq>0?(displayTotal/enrolledUniq).toFixed(1):'—';
 
-  // Type breakdown
-  renderBars('appt-type-bars',{
-    'Clinic Appointments': clinAppts,
-    'Lab Tests':           labTests,
-  },l=>l==='Clinic Appointments'?'var(--navy)':'var(--teal)');
+  // Filter info label
+  const fi = document.getElementById('appt-filter-info');
+  if (fi) {
+    const label = getFilterLabel();
+    const dateStr = (APPT_DATE_FROM||APPT_DATE_TO)
+      ? ` · ${(APPT_DATE_FROM||'').slice(0,7)||'start'} → ${(APPT_DATE_TO||'').slice(0,7)||'now'}`
+      : '';
+    fi.textContent = `${label}${dateStr} · ${apptUtil.length.toLocaleString()} rows`;
+  }
 
-  // MC vs non-MC — % of users with ≥1 appointment
-  const mcPct  = enrolledDev.length > 0
-    ? enrolledDev.filter(r=>safeN(r.appt_booked)>0).length / enrolledDev.length * 100 : 0;
-  const nonPct = nonMCDev.length > 0
-    ? nonMCDev.filter(r=>safeN(r.appt_booked)>0).length / nonMCDev.length * 100 : 0;
-  renderPctBars('appt-prog-bars',{
-    'MC Users with ≥1 Appt':     mcPct,
-    'Non-MC Users with ≥1 Appt': nonPct,
-  },l=>l.includes('MC Users')?'var(--green)':'var(--red)','%');
+  // Update period sub-text on KPI
+  const periodEl = document.getElementById('appt-period-sub');
+  if (periodEl) {
+    const slice = getDeepSlice();
+    const label = getFilterLabel();
+    periodEl.textContent = slice
+      ? `${label} · ${fmt(slice.unique_users||0)} unique users`
+      : label;
+  }
+
+  // ── Benefit type bars (from date-filtered appt_util) ──
+  if (apptUtil.length > 0) {
+    const typeCounts = {};
+    apptUtil.filter(r=>non_cancelled.includes(String(r.claim_status||'').toLowerCase()))
+      .forEach(r=>{ const b=r.benefit_name||'Unknown'; typeCounts[b]=(typeCounts[b]||0)+safeN(r.claim_count||1); });
+    renderBars('appt-type-bars', typeCounts,
+      l=>l.toLowerCase().includes('lab')||l.toLowerCase().includes('health monit')?'var(--teal)':
+         l.toLowerCase().includes('nutrition')||l.toLowerCase().includes('wellness')||l.toLowerCase().includes('tele')?'var(--navy)':
+         'var(--green)');
+  } else {
+    renderBars('appt-type-bars',{ 'Clinic Appointments': clinAppts, 'Lab Tests': labTests },
+      l=>l==='Clinic Appointments'?'var(--navy)':'var(--teal)');
+  }
+
+  // ── Upcoming booked KPI (from benefit_deep flat table) ──
+  const bd = DATA.benefit_deep;
+  const bdYr = bd && bd.by_year && bd.by_year[APPT_YEAR_FILTER !== 'all' ? APPT_YEAR_FILTER : '2026'];
+  if (bdYr) {
+    const flatSummary = bdYr.appt_flat_summary || {};
+    let totalFlat = 0, completedFlat = 0, bookedFlat = 0;
+    Object.values(flatSummary).forEach(v => {
+      if (v.__totals__) {
+        totalFlat     += safeN(v.__totals__.total_unique_appts);
+        completedFlat += safeN(v.__totals__.completed_COM);
+        bookedFlat    += safeN(v.__totals__.booked);
+      }
+    });
+    document.getElementById('appt-total').textContent     = fmt(totalFlat || displayTotal);
+    document.getElementById('appt-completed').textContent = fmt(completedFlat || displayDone);
+    document.getElementById('appt-upcoming').textContent  = fmt(bookedFlat);
+    const enrolled6056 = safeN(bdYr.enrolled_users || enrolledUniq);
+    document.getElementById('appt-zero').textContent     = fmt(Math.max(0, enrolled6056 - (totalFlat || displayTotal)));
+    document.getElementById('appt-zero-pct').textContent = `of ${fmt(enrolled6056)} enrolled`;
+    document.getElementById('appt-rate-sub').textContent = totalFlat > 0 ? pct(completedFlat,totalFlat)+' completion' : '—';
+  } else {
+    const upcomingEl = document.getElementById('appt-upcoming');
+    if (upcomingEl) upcomingEl.textContent = '—';
+  }
+
+  // ── Follow-up from flat table (actual appointment dates) ─
+  renderFollowUpFromFlat();
+
+  // ── Monthly trend bars ────────────────────────────────
+  renderApptMonthlyTrend();
+
+  // ── Repeat booking table ──────────────────────────────
+  renderRepeatBookings();
+
+  // ── Follow-up pending (from appt_deep JSON / claims) ─
+  renderFollowUpPending();
+}
+
+function renderApptMonthlyTrend() {
+  const el = document.getElementById('appt-monthly-trend');
+  if (!el) return;
+
+  // First try deep JSON monthly_trend
+  const deep = DATA.appt_deep;
+  if (deep && deep.appointments && deep.appointments.monthly_trend && deep.appointments.monthly_trend.length > 0) {
+    const raw = deep.appointments.monthly_trend;
+    // Aggregate by month (sum all benefit types)
+    const byMonth = {};
+    raw.forEach(r=>{
+      const m = r.claim_month || r.month || '';
+      if (!m) return;
+      if (APPT_DATE_FROM && m < APPT_DATE_FROM.slice(0,7)) return;
+      if (APPT_DATE_TO   && m > APPT_DATE_TO.slice(0,7))   return;
+      byMonth[m] = (byMonth[m]||0) + safeN(r.claim_count||r.total_claims||0);
+    });
+    const months = Object.keys(byMonth).sort().slice(-12);
+    const monthData = {};
+    months.forEach(m=>{ monthData[m] = byMonth[m]; });
+    renderBars('appt-monthly-trend', monthData, ()=>'var(--green)');
+    return;
+  }
+
+  // Fallback: aggregate appt_util by month
+  const rows = DATA.appt_util || [];
+  if (rows.length === 0) { el.innerHTML='<div style="color:var(--muted);font-size:11px;padding:8px">No data — run scripts first</div>'; return; }
+
+  const byMonth = {};
+  const nc = ['authorized','redeemed','paid'];
+  rows.forEach(r=>{
+    const m = String(r.claim_month||'');
+    if (!m) return;
+    if (APPT_DATE_FROM && m < APPT_DATE_FROM.slice(0,7)) return;
+    if (APPT_DATE_TO   && m > APPT_DATE_TO.slice(0,7))   return;
+    if (!nc.includes(String(r.claim_status||'').toLowerCase())) return;
+    byMonth[m] = (byMonth[m]||0) + safeN(r.claim_count||1);
+  });
+  const months = Object.keys(byMonth).sort().slice(-12);
+  const monthData = {};
+  months.forEach(m=>{ monthData[m.slice(0,7)] = byMonth[m]; });
+  if (Object.keys(monthData).length > 0) {
+    renderBars('appt-monthly-trend', monthData, ()=>'var(--green)');
+  } else {
+    el.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:8px">No data in selected date range</div>';
+  }
+}
+
+function renderRepeatBookings() {
+  const tbody = document.getElementById('repeat-booking-body');
+  if (!tbody) return;
+
+  // Try the pre-computed JSON slice first (year + programme aware)
+  const slice = getDeepSlice();
+  const rows  = slice && slice.repeat_bookings && slice.repeat_bookings.length > 0
+                ? slice.repeat_bookings
+                : null;
+
+  // Update filter badge
+  const badge = document.getElementById('repeat-filter-badge');
+  if (badge) badge.textContent = getFilterLabel();
+
+  if (!rows) {
+    renderRepeatBookingsFromCSV(tbody);
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const total    = safeN(r.total_booked_users);
+    const repeatN  = safeN(r.repeat_users || (total - safeN(r.users_1x)));
+    const repeatPct= total>0 ? (repeatN/total*100).toFixed(1)+'%' : '—';
+    const gap      = r.median_gap_months != null ? r.median_gap_months+'mo' : '—';
+    const catColor = r.benefit_category==='lab' ? 'var(--teal)' : r.benefit_category==='doctor_diet' ? 'var(--navy)' : 'var(--green)';
+    return `<tr>
+      <td><span style="font-size:9px;background:var(--surface2);padding:2px 5px;border-radius:3px;color:${catColor};margin-right:6px;font-weight:700">${(r.benefit_category||'').toUpperCase()}</span>${r.benefit_name}</td>
+      <td style="font-weight:600">${fmt(total)}</td>
+      <td style="color:var(--muted)">${fmt(r.users_1x)}</td>
+      <td><span class="freq-count freq-2x">${fmt(r.users_2x)}</span></td>
+      <td><span class="freq-count freq-3x">${fmt(r.users_3x)}</span></td>
+      <td><span class="freq-count freq-4x">${fmt(r.users_4x)}</span></td>
+      <td><span class="freq-count freq-5x">${fmt(r.users_5x)}</span></td>
+      <td><span class="freq-count freq-5x">${fmt(r.users_5x_plus)}</span></td>
+      <td style="font-weight:600;color:${safeN(r.users_2x)+safeN(r.users_3x)+safeN(r.users_4x)+safeN(r.users_5x)+safeN(r.users_5x_plus)>0?'var(--green)':'var(--muted)'}">${repeatPct}</td>
+      <td style="color:var(--muted)">${gap}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderRepeatBookingsFromCSV(tbody) {
+  const rows = DATA.appt_util || [];
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">Run script 07 to load detailed repeat booking data</td></tr>';
+    return;
+  }
+
+  const codes = getEnrolledCodes();
+  const nc = ['authorized','redeemed','paid'];
+  const filtered = rows.filter(r =>
+    codes.includes(r.mc_product_code) &&
+    nc.includes(String(r.claim_status||'').toLowerCase())
+  );
+
+  // Aggregate total claims per user per benefit_name
+  const userBenefit = {};
+  filtered.forEach(r => {
+    const key = (r.mobile_number_hash||r.phr_id||'') + '|||' + (r.benefit_name||'');
+    if (!key.includes('|||')) return;
+    userBenefit[key] = (userBenefit[key]||0) + safeN(r.claim_count||1);
+  });
+
+  // Build frequency table per benefit
+  const benefitStats = {};
+  Object.entries(userBenefit).forEach(([key, cnt]) => {
+    const [, benefit] = key.split('|||');
+    if (!benefit) return;
+    if (!benefitStats[benefit]) benefitStats[benefit] = {1:0,2:0,3:0,4:0,5:0,'5+':0};
+    if      (cnt===1) benefitStats[benefit][1]++;
+    else if (cnt===2) benefitStats[benefit][2]++;
+    else if (cnt===3) benefitStats[benefit][3]++;
+    else if (cnt===4) benefitStats[benefit][4]++;
+    else if (cnt===5) benefitStats[benefit][5]++;
+    else              benefitStats[benefit]['5+']++;
+  });
+
+  if (Object.keys(benefitStats).length === 0) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">No appointment data for selected year/period</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = Object.entries(benefitStats).map(([benefit, cnts]) => {
+    const n1=cnts[1], n2=cnts[2], n3=cnts[3], n4=cnts[4], n5=cnts[5], n5p=cnts['5+'];
+    const total = n1+n2+n3+n4+n5+n5p;
+    const repeat= n2+n3+n4+n5+n5p;
+    const pctR  = total>0 ? (repeat/total*100).toFixed(1)+'%' : '—';
+    const bcat  = benefit.toLowerCase().includes('lab')||benefit.toLowerCase().includes('health monit') ? 'lab'
+                : benefit.toLowerCase().includes('nutri')||benefit.toLowerCase().includes('wellness')||benefit.toLowerCase().includes('tele') ? 'doctor_diet'
+                : 'other';
+    const catColor = bcat==='lab'?'var(--teal)':bcat==='doctor_diet'?'var(--navy)':'var(--green)';
+    return `<tr>
+      <td><span style="font-size:9px;background:var(--surface2);padding:2px 5px;border-radius:3px;color:${catColor};margin-right:6px;font-weight:700">${bcat.toUpperCase()}</span>${benefit}</td>
+      <td style="font-weight:600">${fmt(total)}</td>
+      <td style="color:var(--muted)">${fmt(n1)}</td>
+      <td><span class="freq-count freq-2x">${fmt(n2)}</span></td>
+      <td><span class="freq-count freq-3x">${fmt(n3)}</span></td>
+      <td><span class="freq-count freq-4x">${fmt(n4)}</span></td>
+      <td><span class="freq-count freq-5x">${fmt(n5)}</span></td>
+      <td><span class="freq-count freq-5x">${fmt(n5p)}</span></td>
+      <td style="font-weight:600;color:${repeat>0?'var(--green)':'var(--muted)'}">${pctR}</td>
+      <td style="color:var(--muted)">—</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderFollowUpPending() {
+  // Try year+programme-aware pre-computed slice
+  const slice = getDeepSlice();
+  const fp    = slice && slice.followup_pending && Object.keys(slice.followup_pending).length > 0
+                ? slice.followup_pending
+                : (DATA.appt_deep && DATA.appt_deep.appointments && DATA.appt_deep.appointments.followup_pending)
+                  ? DATA.appt_deep.appointments.followup_pending
+                  : null;
+
+  if (!fp) return;
+
+  // Update filter badge
+  const fuBadge = document.getElementById('fu-filter-badge');
+  if (fuBadge) fuBadge.textContent = getFilterLabel();
+
+  // Year-specific context note
+  const noteEl = document.getElementById('fu-year-note');
+  if (noteEl) {
+    if (APPT_YEAR_FILTER === '2025') {
+      noteEl.style.display = 'block';
+      noteEl.style.background = 'var(--gold-light)';
+      noteEl.style.color = 'var(--gold)';
+      noteEl.style.border = '1px solid #e8c96a';
+      noteEl.innerHTML = '<strong>2025 PURELIFE — Programme year closed (ended Mar 2026).</strong> All users show 100% pending because the plan has ended. This is a historical view. Focus on VYTAL 2026 for active outreach.';
+    } else if (APPT_YEAR_FILTER === '2026') {
+      noteEl.style.display = 'block';
+      noteEl.style.background = 'var(--green-light)';
+      noteEl.style.color = 'var(--green)';
+      noteEl.style.border = '1px solid #8ecfb0';
+      const slice = getDeepSlice();
+      const vhDoc = (slice && slice.followup_pending && slice.followup_pending.doctor_diet && slice.followup_pending.doctor_diet.very_high) || {};
+      const pending = safeN(vhDoc.pending_followup);
+      if (pending === 0) {
+        noteEl.innerHTML = '<strong>2026 VYTAL — Active programme.</strong> 0 pending today: all VYTAL appointments were booked in Jun 2026 (14 days ago). VH users will become pending from <strong>Jul 16, 2026</strong>. Refresh daily to track.';
+      } else {
+        noteEl.innerHTML = `<strong>2026 VYTAL — Active programme.</strong> ${pending.toLocaleString()} users now overdue for follow-up. Prioritise VH cohort outreach.`;
+      }
+    } else {
+      noteEl.style.display = 'none';
+    }
+  }
+
+  function renderFUSection(domId, data, catLabel) {
+    const el = document.getElementById(domId);
+    if (!el || !data) return;
+
+    const cohorts = [
+      { key:'very_high', label:'Very High', color:'var(--red)',    badge:'badge-red'   },
+      { key:'high',      label:'High',      color:'var(--orange)', badge:''            },
+      { key:'moderate',  label:'Moderate',  color:'var(--gold)',   badge:'badge-gold'  },
+    ];
+
+    el.innerHTML = cohorts.map(coh => {
+      const d = data[coh.key];
+      if (!d) return '';
+      const pending = safeN(d.pending_followup);
+      const completed = safeN(d.completed_users);
+      const pctV = completed > 0 ? pending/completed*100 : 0;
+      const fillW = Math.min(pctV, 100).toFixed(0);
+      return `
+        <div class="fu-cohort-row">
+          <div class="fu-cohort-label" style="color:${coh.color}">${coh.label}</div>
+          <div style="flex:1">
+            <div class="fu-cohort-bar">
+              <div class="fu-cohort-fill" style="width:${fillW}%;background:${coh.color}"></div>
+            </div>
+          </div>
+          <div class="fu-cohort-meta">
+            <strong style="color:${coh.color}">${fmt(pending)}</strong>
+            <span style="color:var(--muted)"> / ${fmt(completed)}</span>
+          </div>
+          <div style="font-size:9.5px;color:var(--muted);margin-left:4px">&gt;${safeN(d.threshold_days)}d</div>
+        </div>`;
+    }).join('');
+
+    // Total pending banner
+    const totPending = cohorts.reduce((s,c)=>s+safeN((data[c.key]||{}).pending_followup),0);
+    const totComp    = cohorts.reduce((s,c)=>s+safeN((data[c.key]||{}).completed_users),0);
+    el.innerHTML += `<div style="margin-top:10px;padding:8px 10px;background:var(--red-light);border-radius:6px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:18px;font-weight:300;color:var(--red)">${fmt(totPending)}</span>
+      <span style="font-size:10px;color:var(--red)">users pending follow-up<br><span style="opacity:.7">${pct(totPending,totComp)} of completed</span></span>
+    </div>`;
+  }
+
+  renderFUSection('fu-doctor-diet', fp.doctor_diet, 'Doctor & Diet');
+  renderFUSection('fu-lab',         fp.lab,          'Lab Tests');
+}
+
+// ══════════════════════════════════════════════════════════
+// ENGAGEMENT RENDER
+// ══════════════════════════════════════════════════════════
+function renderEngagement() {
+  const deep = DATA.appt_deep;
+  const eng  = (deep && deep.engagement) ? deep.engagement : null;
+
+  // ── KPIs ──────────────────────────────────────────────
+  const enrolled = safeN(eng && eng.total_enrolled);
+  document.getElementById('eng-enrolled').textContent = enrolled > 0 ? fmt(enrolled) : fmt(getEnrolled());
+
+  const active90 = safeN(eng && eng.total_active_90d);
+  document.getElementById('eng-active-30d').textContent = active90 > 0 ? fmt(active90) : '—';
+  const active90Pct = enrolled > 0 ? pct(active90, enrolled) : '—';
+  const active30El = document.getElementById('eng-active-30d-pct');
+  if (active30El) active30El.textContent = (active90 > 0 ? active90Pct : '—') + ' of enrolled';
+
+  const freq = (eng && eng.frequency_dist) || {};
+  document.getElementById('eng-daily-count').textContent = freq.daily != null ? fmt(freq.daily) : '—';
+  document.getElementById('eng-inactive').textContent    = freq.inactive != null ? fmt(freq.inactive) : '—';
+
+  // ── Activity type bars ─────────────────────────────────
+  const actEl = document.getElementById('eng-type-bars');
+  if (actEl) {
+    if (eng && eng.activity_summary) {
+      const typeData = {};
+      Object.entries(eng.activity_summary).forEach(([k,v]) => {
+        const label = k.charAt(0).toUpperCase() + k.slice(1) + ` (${v.pct_enrolled}% · avg ${v.avg_days_logged}d)`;
+        typeData[label] = v.pct_enrolled;
+      });
+      renderPctBars('eng-type-bars', typeData,
+        l=>l.startsWith('Steps')?'var(--green)':l.startsWith('Meal')?'var(--teal)':
+           l.startsWith('Sleep')?'var(--navy)':'var(--gold)', '%');
+    } else {
+      // fallback from activity_logs CSV directly
+      const act = DATA.appt_util || [];
+      actEl.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:8px">Run script 07 to load engagement metrics</div>';
+    }
+  }
+
+  // ── Frequency donut ────────────────────────────────────
+  if (freq && Object.keys(freq).length > 0) {
+    renderDonut('eng-freq-donut', [
+      { label:`Daily (≥120d)`,    val: safeN(freq.daily),      color:'var(--green)'  },
+      { label:`Weekly (30–119d)`, val: safeN(freq.weekly),     color:'var(--teal)'   },
+      { label:`Occasional (1–29d)`,val:safeN(freq.occasional), color:'var(--gold)'   },
+      { label:`Inactive (0d)`,    val: safeN(freq.inactive),   color:'var(--border)' },
+    ]);
+  } else {
+    const engDonutEl = document.getElementById('eng-freq-donut');
+    if (engDonutEl) engDonutEl.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:20px;text-align:center">Run script 07 to see frequency distribution</div>';
+  }
+
+  // ── Time of day bars ───────────────────────────────────
+  const tod = (eng && eng.log_time_dist) ? eng.log_time_dist : null;
+  const todEl = document.getElementById('eng-tod-bars');
+  const todFbEl = document.getElementById('eng-tod-fallback');
+  if (tod && Object.keys(tod).length > 0) {
+    if (todEl) todEl.style.display = 'block';
+    if (todFbEl) todFbEl.style.display = 'none';
+    const todData = {};
+    if (tod.morning_0_11   != null) todData['Morning (0–11)']    = tod.morning_0_11;
+    if (tod.afternoon_12_17!= null) todData['Afternoon (12–17)'] = tod.afternoon_12_17;
+    if (tod.evening_18_23  != null) todData['Evening (18–23)']   = tod.evening_18_23;
+    if (Object.keys(todData).length > 0) {
+      renderPctBars('eng-tod-bars', todData,
+        l=>l.startsWith('Morning')?'var(--gold)':l.startsWith('Afternoon')?'var(--green)':'var(--navy)', '%');
+    }
+  } else {
+    if (todEl) todEl.style.display = 'none';
+    if (todFbEl) todFbEl.style.display = 'block';
+  }
+
+  // ── Daily trend ────────────────────────────────────────
+  renderEngDailyTrend(eng);
+
+  // ── Programme adherence table ──────────────────────────
+  const tbody = document.getElementById('eng-prog-body');
+  if (tbody && eng && eng.programme_adherence && eng.programme_adherence.length > 0) {
+    tbody.innerHTML = eng.programme_adherence.map(p => {
+      const tier = p.adherence_pct >= 60 ? '<span class="pill" style="background:var(--green-light);color:var(--green)">High</span>'
+                  : p.adherence_pct >= 35 ? '<span class="pill" style="background:var(--gold-light);color:var(--gold)">Moderate</span>'
+                  : '<span class="pill" style="background:var(--red-light);color:var(--red)">Low</span>';
+      return `<tr>
+        <td>${p.programme}</td>
+        <td>${fmt(p.enrolled)}</td>
+        <td style="color:var(--green);font-weight:600">${fmt(p.active_loggers)}</td>
+        <td style="font-weight:700">${safeN(p.adherence_pct).toFixed(1)}%</td>
+        <td>${safeN(p.avg_days_logged).toFixed(0)} days</td>
+        <td>${tier}</td>
+      </tr>`;
+    }).join('');
+  } else if (tbody) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">Run script 07 to load programme adherence data</td></tr>';
+  }
+}
+
+function renderEngDailyTrend(eng) {
+  const trendEl = document.getElementById('eng-daily-trend');
+  const fbEl    = document.getElementById('eng-trend-fallback');
+  if (!trendEl) return;
+
+  let trend = (eng && eng.daily_trend) ? eng.daily_trend : [];
+
+  // Apply date filter
+  if (ENG_DATE_FROM) trend = trend.filter(d => d.date >= ENG_DATE_FROM);
+  if (ENG_DATE_TO)   trend = trend.filter(d => d.date <= ENG_DATE_TO);
+
+  if (trend.length === 0) {
+    if (fbEl) fbEl.style.display = 'block';
+    trendEl.innerHTML = '';
+    return;
+  }
+
+  if (fbEl) fbEl.style.display = 'none';
+
+  const maxVal = Math.max(...trend.map(d=>safeN(d.active_users)), 1);
+  // Simple bar sparkline
+  trendEl.innerHTML = `
+    <div style="display:flex;align-items:flex-end;gap:2px;height:80px;padding:4px 0">
+      ${trend.slice(-60).map(d => {
+        const h = maxVal > 0 ? (safeN(d.active_users)/maxVal*100).toFixed(0) : 0;
+        return `<div title="${d.date}: ${d.active_users} users" style="flex:1;min-width:3px;height:${h}%;background:var(--green);border-radius:2px 2px 0 0;opacity:0.8"></div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px">
+      <span>${trend[0]?.date||''}</span>
+      <span>Peak: ${fmt(maxVal)} users/day</span>
+      <span>${trend[trend.length-1]?.date||''}</span>
+    </div>`;
 }
 
 function renderYoY() {
@@ -1492,6 +2658,94 @@ function renderRecommendations() {
 }
 
 // ══════════════════════════════════════════════════════════
+// MISSING SKILL FUNCTIONS
+// ══════════════════════════════════════════════════════════
+
+function filterCompByDate(rows) {
+  return (rows || []).filter(r => {
+    const d = r.latest_camp_date || r.latest_camp || '';
+    return d >= DATE_FROM && d <= DATE_TO;
+  });
+}
+
+function getProgPivot() {
+  const comp = filterCompByDate(DATA.comparison || []);
+  const pivot = {};
+  comp.forEach(r => {
+    const prog = r.managed_care_program || 'Unknown';
+    const isMC = r.managed_care_flag === 'Y' || r.managed_care_flag === 'Yes';
+    if (!pivot[prog]) pivot[prog] = { mc: 0, mc_impr: 0, none: 0, none_impr: 0 };
+    if (isMC) {
+      pivot[prog].mc++;
+      if (r.impact === 'Improved') pivot[prog].mc_impr++;
+    } else {
+      pivot[prog].none++;
+      if (r.impact === 'Improved') pivot[prog].none_impr++;
+    }
+  });
+  return pivot;
+}
+
+function setCareOpsDateRange(from, to) {
+  CARE_OPS_DATE_FROM = from || null;
+  CARE_OPS_DATE_TO = to || null;
+  const active = document.querySelector('.nav-item.active');
+  if (active) {
+    const sec = active.dataset.section;
+    if (sec === 'appointments') renderAppointments();
+    else if (sec === 'engagement') renderEngagement();
+    else if (sec === 'devices') renderDevices();
+  }
+}
+
+function exportEligible2026() {
+  const dev = DATA.device_2026 || [];
+  if (dev.length === 0) { alert('No 2026 device data loaded'); return; }
+  let csv = 'phr_id,device_type,engagement_score,cohort,allocation_rank\n';
+  dev.forEach(r => {
+    csv += `${r.phr_id || ''},${r.device_type || ''},${r.engagement_score || ''},${r.cohort || ''},${r.allocation_rank || ''}\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `eligible_2026_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+}
+
+function exportFollowupUsersList() {
+  const appt = DATA.appt_util || [];
+  const followup = appt.filter(r => r.follow_up_due || r.status === 'follow_up_due');
+  if (followup.length === 0) { alert('No follow-up users found'); return; }
+  let csv = 'phr_id,benefit_service,cohort,due_date,status\n';
+  followup.forEach(r => {
+    csv += `${r.phr_id || ''},${r.benefit_name || ''},${r.cohort || ''},${r.due_date || ''},follow_up_due\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `followup_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+}
+
+function renderVytalAppointments() {
+  const appts = DATA.appt_util || [];
+  if (appts.length === 0) return;
+  const specCount = {};
+  appts.forEach(r => {
+    const spec = r.speciality || r.speciality_grp || 'Unknown';
+    specCount[spec] = (specCount[spec] || 0) + 1;
+  });
+  let html = '<div class="card"><div class="card-title">Appointments by Specialty</div>';
+  Object.entries(specCount).sort((a,b) => b[1] - a[1]).forEach(([spec, count]) => {
+    const pct = (count / appts.length * 100).toFixed(1);
+    html += `<div style="margin-bottom:8px;display:flex;justify-content:space-between"><span>${spec}</span><strong>${count} (${pct}%)</strong></div>`;
+  });
+  html += '</div>';
+  const sec = document.getElementById('section-appointments');
+  if (sec && !sec.innerHTML.includes('by Specialty')) sec.innerHTML += html;
+}
+
+// ══════════════════════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════════════════════
 function renderAll() {
@@ -1510,150 +2764,18 @@ function renderAll() {
   });
 }
 
-// ══════════════════════════════════════════════════════════
-// CARE OPERATIONS DATE FILTERING
-// ══════════════════════════════════════════════════════════
-function setCareOpsDateRange(fromDate, toDate) {
-  CARE_OPS_DATE_FROM = fromDate;
-  CARE_OPS_DATE_TO = toDate;
-  const active = document.querySelector('.nav-item.active');
-  if (active) {
-    const section = active.dataset.section;
-    if (section === 'appointments') renderAppointments();
-    else if (section === 'engagement') renderEngagement();
-    else if (section === 'devices') renderDevices();
-  }
-}
-
-// ══════════════════════════════════════════════════════════
-// ENGAGEMENT ANALYTICS
-// ══════════════════════════════════════════════════════════
-function renderEngagement() {
-  const logs = DATA.activity_logs || [];
-  if (!logs.length) {
-    document.getElementById('section-engagement').innerHTML = '<p style="color:var(--muted);padding:20px">No engagement data loaded</p>';
-    return;
-  }
-
-  const progs = ['Diabetes Management','Dyslipidemia Management','Thyroid Care','Liver Care','Kidney Care'];
-  const activities = ['meal_logged','sleep_logged','steps_logged','weight_logged'];
-
-  let html = '<div class="section-hdr"><h2>Engagement Activity</h2><p>Meal, sleep, steps, weight logging % per programme</p></div>';
-
-  progs.forEach(prog => {
-    const prog_logs = logs.filter(r => r.programme === prog || getProgName(r.product_code) === prog);
-    const total = prog_logs.length;
-    if (total === 0) return;
-
-    html += `<div class="card"><div class="card-title">${prog}</div>`;
-    activities.forEach(act => {
-      const count = prog_logs.filter(r => r[act] === '1' || r[act] === 1 || r[act] === 'yes' || r[act] === 'Yes').length;
-      const pctVal = total > 0 ? (count / total * 100).toFixed(1) : 0;
-      html += `<div class="bar-row">
-        <div class="bar-label">${act.replace('_logged','').replace(/_/g,' ')}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${pctVal}%;background:${pctVal>50?'var(--green-mid)':'var(--orange)'}"></div></div>
-        <div class="bar-val">${pctVal}%</div>
-      </div>`;
-    });
-    html += '</div>';
-  });
-
-  document.getElementById('section-engagement').innerHTML = html;
-}
-
-// ══════════════════════════════════════════════════════════
-// VYTAL APPOINTMENTS DETAIL
-// ══════════════════════════════════════════════════════════
-function renderVytalAppointments() {
-  const appts = DATA.vytal_appt || [];
-  if (!appts.length) {
-    document.getElementById('section-vytal-appt').innerHTML = '<p style="color:var(--muted);padding:20px">No VYTAL appointment data loaded</p>';
-    return;
-  }
-
-  let html = '<div class="section-hdr"><h2>VYTAL Appointments</h2><p>Source, specialty, and booking patterns</p></div>';
-
-  // Status breakdown
-  const statusCount = countBy(appts, 'status');
-  html += '<div class="card"><div class="card-title">Status Breakdown</div><div class="tab-row">';
-  Object.entries(statusCount).forEach(([status, count]) => {
-    html += `<div style="flex:1;padding:10px;background:var(--surface2);border-radius:6px;text-align:center">
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase">Booked</div>
-      <div style="font-size:24px;font-weight:300">${count}</div>
-    </div>`;
-  });
-  html += '</div></div>';
-
-  // Specialty breakdown
-  const specCount = countBy(appts, 'speciality');
-  html += '<div class="card"><div class="card-title">By Specialty</div>';
-  Object.entries(specCount).forEach(([spec, count]) => {
-    const pct = (count / appts.length * 100).toFixed(1);
-    html += `<div class="bar-row">
-      <div class="bar-label">${spec || 'Unknown'}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--green-mid)"></div></div>
-      <div class="bar-val">${count}</div>
-    </div>`;
-  });
-  html += '</div>';
-
-  document.getElementById('section-vytal-appt').innerHTML = html;
-}
-
-// ══════════════════════════════════════════════════════════
-// EXPORT FUNCTIONS
-// ══════════════════════════════════════════════════════════
-function exportEligible2026() {
-  const device_2026 = DATA.device_2026 || [];
-  if (!device_2026.length) {
-    alert('No 2026 device eligibility data loaded');
-    return;
-  }
-
-  let csv = 'phr_id,mobile_hash,device_type,allocation_rank,engagement_score,cohort\n';
-  device_2026.forEach(r => {
-    csv += `${r.phr_id || ''},${r.mobile_number_hash || ''},${r.device_type || ''},${r.allocation_rank || ''},${r.engagement_score || ''},${r.cohort || ''}\n`;
-  });
-
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `eligible_devices_2026_${new Date().toISOString().split('T')[0]}.csv`;
-  link.click();
-}
-
-function exportFollowupUsersList() {
-  const appts = DATA.appt_util || [];
-  if (!appts.length) {
-    alert('No appointment utilization data loaded');
-    return;
-  }
-
-  // Filter for follow-up due users
-  const followup = appts.filter(r => r.status === 'follow_up_due' || r.follow_up_due);
-  let csv = 'phr_id,benefit_service,cohort,due_date,status\n';
-  followup.forEach(r => {
-    csv += `${r.phr_id || ''},${r.benefit_name || ''},${r.cohort || ''},${r.due_date || ''},follow_up_due\n`;
-  });
-
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `followup_users_${new Date().toISOString().split('T')[0]}.csv`;
-  link.click();
-}
-
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
-    item.classList.add('active');
-    document.getElementById(`section-${item.dataset.section}`).classList.add('active');
+    switchSection(item.dataset.section);
   });
 });
 
 window.addEventListener('DOMContentLoaded', () => {
   setTimeout(()=>{ document.getElementById('loadingOverlay').style.display='none'; }, 8000);
+  // Init filter state: analytics group visible, ops hidden
+  switchSection('overview');
+  // Default ops filter to this month
+  opsPreset('this_month');
   reloadData();
 });
 </script>
