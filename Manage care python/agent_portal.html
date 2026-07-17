@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Managed Care 3.0 — Agent Portal (Dynamic Testing)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f4f3f0 0%, #f8f7f4 100%);
+            color: #1a1a1a;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #1a4a30;
+        }
+
+        .header p {
+            color: #6b6b69;
+            font-size: 14px;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #1a4a30;
+            position: relative;
+        }
+
+        .user-card.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e0db;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .user-id {
+            font-size: 12px;
+            color: #6b6b69;
+            margin-top: 4px;
+        }
+
+        .user-program {
+            font-size: 13px;
+            background: #e2f0e8;
+            color: #1a4a30;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .metrics {
+            background: #f8f7f4;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .metric:last-child { margin-bottom: 0; }
+
+        .metric-label {
+            color: #6b6b69;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #1a1a1a;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .plan-section {
+            margin-bottom: 16px;
+        }
+
+        .plan-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a4a30;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-content {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #1a1a1a;
+            background: #e2f0e8;
+            padding: 10px 12px;
+            border-radius: 6px;
+        }
+
+        .interaction-section {
+            border-top: 1px solid #e2e0db;
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .interaction-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            color: #6b6b69;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #e2e0db;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a4a30;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #1a4a30;
+            cursor: pointer;
+            border: none;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid #e2e0db;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 40px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-update {
+            background: #1a4a30;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background: #0f3820;
+        }
+
+        .btn-update:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-reset {
+            background: #f8f7f4;
+            color: #1a1a1a;
+            border: 1px solid #e2e0db;
+        }
+
+        .btn-reset:hover {
+            background: #e2e0db;
+        }
+
+        .status-message {
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        .status-success {
+            background: #e2f0e8;
+            color: #1a4a30;
+        }
+
+        .status-error {
+            background: #f8ecec;
+            color: #7b1a2a;
+        }
+
+        .status-info {
+            background: #f0e8f8;
+            color: #2e0046;
+        }
+
+        .content-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e0db;
+        }
+
+        .content-item {
+            font-size: 11px;
+            background: #f8f7f4;
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .content-item strong {
+            color: #1a4a30;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b6b69;
+            font-size: 12px;
+            margin-top: 40px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #1a4a30;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Agent Portal — Dynamic Behavior Testing</h1>
+            <p>5 User Profiles • Update Interactions • See Agent Plans Adapt in Real-Time</p>
+        </div>
+
+        <div class="users-grid" id="usersContainer">
+            <!-- Users will be loaded here -->
+        </div>
+
+        <div class="footer">
+            <p>Managed Care 3.0 — Agent 2 (Predictive Strategy) Adaptive Testing</p>
+            <p style="margin-top: 8px; color: #aaa;">Backend API: http://localhost:5000/api</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_URL}/users`);
+                const users = await response.json();
+                renderUsers(users);
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('usersContainer').innerHTML = `
+                    <div style="grid-column: 1/-1; padding: 40px; text-align: center;">
+                        <p style="color: #7b1a2a;">Error connecting to API</p>
+                        <p style="font-size: 12px; color: #6b6b69; margin-top: 8px;">Make sure Flask API is running on port 5000</p>
+                        <p style="font-size: 12px; color: #6b6b69; margin-top: 4px;">Run: python agent_portal_api.py</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderUsers(users) {
+            const container = document.getElementById('usersContainer');
+            container.innerHTML = users.map(user => `
+                <div class="user-card" id="card-${user.id}">
+                    <div class="user-header">
+                        <div>
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-id">${user.id}</div>
+                        </div>
+                        <div class="user-program">${user.program}</div>
+                    </div>
+
+                    <div class="metrics">
+                        <div class="metric">
+                            <span class="metric-label">Adherence</span>
+                            <span class="metric-value">${(user.current_metrics.adherence * 100).toFixed(0)}%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Response Rate</span>
+                            <span class="metric-value">${(user.current_metrics.response_rate * 100).toFixed(0)}%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">App Activity</span>
+                            <span class="metric-value">${user.current_metrics.app_activity} days</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Enrolled</span>
+                            <span class="metric-value">${user.current_metrics.days_enrolled} days</span>
+                        </div>
+                    </div>
+
+                    <div class="plan-section">
+                        <div class="plan-title">Current Plan</div>
+                        <div class="plan-content">
+                            <strong>Psychology Type:</strong> ${user.plan?.psychology_type || 'Loading...'}<br>
+                            <strong>Focus:</strong> ${user.plan?.priority_focus || 'Loading...'}<br>
+                            <strong>Channels:</strong> WhatsApp ${user.plan?.plan?.weekly_plan?.some(d => d.action_type === 'voice') ? '+ Voice' : ''} ${user.plan?.plan?.weekly_plan?.some(d => d.action_type === 'push') ? '+ Push' : ''}
+                        </div>
+                    </div>
+
+                    <div class="interaction-section">
+                        <div class="interaction-title">Change Interactions (Real-Time)</div>
+
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span>Adherence Rate</span>
+                                <span id="adh-${user.id}">${(user.current_metrics.adherence * 100).toFixed(0)}%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="${user.current_metrics.adherence * 100}"
+                                   id="input-adh-${user.id}" class="adherence-input"
+                                   data-user="${user.id}"
+                                   oninput="updateSlider('${user.id}', 'adh', this.value); updateInteractionRealtime('${user.id}')">
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span>Response Rate</span>
+                                <span id="resp-${user.id}">${(user.current_metrics.response_rate * 100).toFixed(0)}%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="${user.current_metrics.response_rate * 100}"
+                                   id="input-resp-${user.id}" class="response-input"
+                                   data-user="${user.id}"
+                                   oninput="updateSlider('${user.id}', 'resp', this.value); updateInteractionRealtime('${user.id}')">
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-label">
+                                <span>App Activity Days</span>
+                                <span id="app-${user.id}">${user.current_metrics.app_activity}</span>
+                            </div>
+                            <input type="range" min="0" max="50" value="${user.current_metrics.app_activity}"
+                                   id="input-app-${user.id}" class="app-input"
+                                   data-user="${user.id}"
+                                   oninput="updateSlider('${user.id}', 'app', this.value); updateInteractionRealtime('${user.id}')">
+                        </div>
+
+                        <div id="status-${user.id}"></div>
+
+                        <div id="comparison-${user.id}" style="display:none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e0db;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSlider(userId, metric, value) {
+            const labels = {
+                'adh': 'adh-',
+                'resp': 'resp-',
+                'app': 'app-'
+            };
+            const label = document.getElementById(labels[metric] + userId);
+            if (label) {
+                label.textContent = metric === 'app' ? value : value + '%';
+            }
+        }
+
+        // Debounce timers for real-time updates
+        const debounceTimers = {};
+
+        function updateInteractionRealtime(userId) {
+            // Clear existing timer
+            if (debounceTimers[userId]) {
+                clearTimeout(debounceTimers[userId]);
+            }
+
+            // Set new timer (wait 800ms after user stops moving slider)
+            debounceTimers[userId] = setTimeout(() => {
+                triggerUpdateInteraction(userId);
+            }, 800);
+        }
+
+        async function triggerUpdateInteraction(userId) {
+            const adhInput = document.getElementById(`input-adh-${userId}`);
+            const respInput = document.getElementById(`input-resp-${userId}`);
+            const appInput = document.getElementById(`input-app-${userId}`);
+
+            if (!adhInput || !respInput || !appInput) {
+                console.error('Inputs not found for user:', userId);
+                return;
+            }
+
+            const adherence = parseInt(adhInput.value) / 100;
+            const responseRate = parseInt(respInput.value) / 100;
+            const appActivity = parseInt(appInput.value);
+
+            const statusDiv = document.getElementById(`status-${userId}`);
+            const comparisonDiv = document.getElementById(`comparison-${userId}`);
+
+            if (!statusDiv) {
+                console.error('Status div not found for user:', userId);
+                return;
+            }
+
+            console.log(`Updating ${userId}: adherence=${adherence}, response=${responseRate}, app=${appActivity}`);
+
+            statusDiv.innerHTML = '<div class="status-info"><span class="loading-spinner"></span> Agent 2 regenerating...</div>';
+            if (comparisonDiv) comparisonDiv.style.display = 'none';
+
+            try {
+                console.log('Making API call...');
+                const response = await fetch(`${API_URL}/users/${userId}/update-interaction`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        adherence: adherence,
+                        response_rate: responseRate,
+                        app_activity: appActivity,
+                        description: `Real-time update: Adherence ${(adherence*100).toFixed(0)}%, Response ${(responseRate*100).toFixed(0)}%, App ${appActivity} days`
+                    })
+                });
+
+                console.log('Response status:', response.status);
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Result:', result);
+
+                    // Show success message
+                    statusDiv.innerHTML = `<div class="status-success">✓ Plan Updated! Psychology: ${result.new_plan.psychology_type}</div>`;
+
+                    // Show plan comparison
+                    const oldPsych = result.old_plan.psychology_type;
+                    const newPsych = result.new_plan.psychology_type;
+                    const oldChannels = result.old_plan.channels.join(', ') || 'none';
+                    const newChannels = result.new_plan.channels.join(', ') || 'none';
+
+                    let comparisonHTML = `
+                        <div class="plan-title" style="color: #1a4a30;">PLAN UPDATED BY AGENT 2</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+                            <div style="background: #f8ecec; padding: 12px; border-radius: 6px;">
+                                <strong style="color: #7b1a2a;">Before</strong>
+                                <div style="font-size: 12px; margin-top: 8px; color: #1a1a1a;">
+                                    <div><strong>Psychology:</strong> ${oldPsych}</div>
+                                    <div><strong>Channels:</strong> ${oldChannels}</div>
+                                    <div><strong>Tone:</strong> ${result.old_plan.tone}</div>
+                                </div>
+                            </div>
+                            <div style="background: #e2f0e8; padding: 12px; border-radius: 6px;">
+                                <strong style="color: #1a4a30;">After</strong>
+                                <div style="font-size: 12px; margin-top: 8px; color: #1a1a1a;">
+                                    <div><strong>Psychology:</strong> ${newPsych}</div>
+                                    <div><strong>Channels:</strong> ${newChannels}</div>
+                                    <div><strong>Tone:</strong> ${result.new_plan.tone}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    if (result.changes.psychology_type_changed || result.changes.channels_changed) {
+                        comparisonHTML += `<div style="background: #fdf0e4; padding: 12px; margin-top: 12px; border-radius: 6px; font-size: 12px; color: #8a3a00;">
+                            <strong style="font-weight: bold;">🎯 Agent 2 Decision:</strong> Psychology type shifted from "${oldPsych}" to "${newPsych}"
+                        </div>`;
+                    }
+
+                    // Show 7-day plan comparison
+                    comparisonHTML += `<div style="margin-top: 16px;">
+                        <strong style="font-size: 12px;">📅 Weekly Communication Plan (All 7 Days):</strong>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+                            <div style="background: #f8ecec; padding: 12px; border-radius: 6px; border-left: 3px solid #7b1a2a;">
+                                <strong style="color: #7b1a2a; font-size: 11px;">BEFORE</strong>
+                                <div style="font-size: 10px; margin-top: 8px;">`;
+
+                    // Add old weekly plan
+                    if (result.old_plan.weekly_plan && result.old_plan.weekly_plan.length > 0) {
+                        result.old_plan.weekly_plan.forEach(day => {
+                            const dayColor = day.action_type === 'none' ? '#999' : '#1a1a1a';
+                            const dayBg = day.action_type === 'none' ? '#f0f0f0' : '#fff';
+                            comparisonHTML += `<div style="background: ${dayBg}; padding: 6px; margin-bottom: 4px; border-radius: 3px; border-left: 2px solid #7b1a2a;">
+                                <strong style="color: ${dayColor};">Day ${day.day}</strong>: ${day.action_type === 'none' ? '(Rest)' : day.action_type.toUpperCase()}
+                                ${day.benefit_to_push ? `<br/><span style="font-size: 9px; color: #6b6b69;">${day.benefit_to_push}</span>` : ''}
+                                ${day.message_theme ? `<br/><span style="font-size: 9px; color: #6b6b69; font-style: italic;">"${day.message_theme}"</span>` : ''}
+                            </div>`;
+                        });
+                    } else {
+                        comparisonHTML += `<div style="color: #999; font-size: 10px;">No plan history available</div>`;
+                    }
+
+                    comparisonHTML += `</div></div>
+                            <div style="background: #e2f0e8; padding: 12px; border-radius: 6px; border-left: 3px solid #1a4a30;">
+                                <strong style="color: #1a4a30; font-size: 11px;">AFTER</strong>
+                                <div style="font-size: 10px; margin-top: 8px;">`;
+
+                    // Add new weekly plan
+                    if (result.new_plan.weekly_plan && result.new_plan.weekly_plan.length > 0) {
+                        result.new_plan.weekly_plan.forEach(day => {
+                            const dayColor = day.action_type === 'none' ? '#999' : '#1a1a1a';
+                            const dayBg = day.action_type === 'none' ? '#f0f0f0' : '#fff';
+                            comparisonHTML += `<div style="background: ${dayBg}; padding: 6px; margin-bottom: 4px; border-radius: 3px; border-left: 2px solid #1a4a30;">
+                                <strong style="color: ${dayColor};">Day ${day.day}</strong>: ${day.action_type === 'none' ? '(Rest)' : day.action_type.toUpperCase()}
+                                ${day.benefit_to_push ? `<br/><span style="font-size: 9px; color: #6b6b69;">${day.benefit_to_push}</span>` : ''}
+                                ${day.message_theme ? `<br/><span style="font-size: 9px; color: #6b6b69; font-style: italic;">"${day.message_theme}"</span>` : ''}
+                            </div>`;
+                        });
+                    } else {
+                        comparisonHTML += `<div style="color: #999; font-size: 10px;">No plan available</div>`;
+                    }
+
+                    comparisonHTML += `</div></div></div>`;
+
+                    if (comparisonDiv) {
+                        comparisonDiv.innerHTML = comparisonHTML;
+                        comparisonDiv.style.display = 'block';
+                    }
+
+                    // Update metrics display
+                    const adhLabel = document.getElementById(`adh-${userId}`);
+                    const respLabel = document.getElementById(`resp-${userId}`);
+                    const appLabel = document.getElementById(`app-${userId}`);
+
+                    if (adhLabel) adhLabel.textContent = Math.round(result.metrics.adherence * 100) + '%';
+                    if (respLabel) respLabel.textContent = Math.round(result.metrics.response_rate * 100) + '%';
+                    if (appLabel) appLabel.textContent = result.metrics.app_activity;
+
+                } else {
+                    const error = await response.text();
+                    console.error('API Error:', error);
+                    statusDiv.innerHTML = '<div class="status-error">Error: ' + error + '</div>';
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                statusDiv.innerHTML = '<div class="status-error">API Connection Error: ' + error.message + '</div>';
+            }
+        }
+
+        // Load users on page load
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+# Credentials — never commit
+config.py
+
+# Data files — contain sensitive health/PHI data, never commit
+Data/
+*.csv
+*.xlsx
+*.xls
+*.pdf
+*.docx
+*.doc
+*.mhtml
+*.htm
+
+# Logs
+logs/
+*.log
+api.log
+portal.log
+server.log
+notebook_execution.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+*.ipynb
+
+# Temp / debug / exploration scripts (one-off analysis, not production)
+check_*.py
+debug_*.py
+explore_*.py
+find_*.py
+search_*.py
+verify_*.py
+analyze_vytal_correct*.py
+analyze_vytal_engagement.py
+analyze_vytal_engagement_detailed.py
+analyze_vytal_engagement_v2.py
+analyze_vytal_final.py
+analyze_vytal_with_vasu.py
+analyze_app_activity*.py
+analyze_50_users.py
+analyze_other_tables.py
+analyze_outputs.py
+test_*.py
+temp_*.py
+query_*.py
+list_*.py
+get_*.py
+insert_*.py
+investigate_*.py
+reparse_*.py
+parse_*.py
+discover_*.py
+create_*.py
+calculate_*.py
+execute_*.py
+export_*.py
+daily_pipeline.py
+run_daily.py
+run_managed_care.sh
+keep_dashboard_alive.py
+
+# Temp output / debug files
+*.txt
+analysis_output.txt
+script04_output.txt
+voicebot_*.txt
+appt_source*.txt
+
+# Debug / test HTML
+debug.html
+DEBUG_DATA_LOADING.html
+DIAGNOSTIC.html
+QUICK_TEST.html
+test_*.html
+debug*.html
+campaign_dashboard_realtime.html
+
+# Markdown doc dumps (not source code)
+*.md
+
+# Setup scripts (one-time use)
+setup_*.ps1
+
+# Misc
+*.drawio
+Final_*.csv
+Final_*.xlsx
+vytal_users_han.csv
+orch_copy.xlsx
+HRA_Healthcamp_Raw.xlsx
+START_DASHBOARD.bat
+QUICK_REFERENCE.txt
+FIX_NOW.txt
+NUCLEAR_CACHE_CLEAR.txt
+CLEAR_CACHE_INSTRUCTIONS.txt
+portal.log
+api.log
+run_agent2_on_tests.py
+run_all_agents.py
+generate_initial_plans.py
+create_initial_signals.py
+create_varied_test_users.py
+insert_test_users.py
+
+# Non-production / superseded pipeline scripts
+00_discover_columns.py
+02b_3year_longitudinal_analysis.py
+03_device_eligibility_lifestyle.py
+03_policy_matching_analysis.py
+04_hra_journey_analysis.py
+05_hra_healthcamp_analysis.py
+06_activity_logs.py
+07_appointments_engagement_deep.py
+09_clinical_ops_analysis.py
+agent_analysis.py
+claim_mobile_user_data.py
+fetch_all_customer_details.py
+fetch_camp_date_range.py
+fetch_customer_names.py
+fetch_policy_claims_appts.py
+fetch_vytal_han.py
+map_phr_master_ids.py
+portal_server.py
+test_dashboard_numbers.sh
+agents/agent_db.sqlite
+
