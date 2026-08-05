@@ -21,7 +21,7 @@ SCHEMA = "managed_care"
 
 def qualified_table_name(name):
     """Return schema-qualified table name"""
-    return f"{SCHEMA}.{name}")
+    return f"{SCHEMA}.{name}"
 
 
 def save_dataframe(df: pd.DataFrame, table_name: str, if_exists: str = "replace"):
