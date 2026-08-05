@@ -13,9 +13,6 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
-SCRIPT_DIR = Path("D:/OneDrive - Bajaj Finserv Health Limited/Documents/manage care/Manage care python")
-REPO_DIR = Path("C:/Users/muskan.rao/Documents/managed-care-platform")
-
 os.environ["DATABASE_URL"] = "postgresql://neondb_owner:npg_RnjMpJ4DsKY7@ep-icy-tree-af8719ti.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require"
 
 def run_cmd(cmd, desc):
@@ -23,20 +20,18 @@ def run_cmd(cmd, desc):
     print(f"\n{'='*70}")
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {desc}")
     print(f"{'='*70}")
-    result = subprocess.run(cmd, shell=True, cwd=SCRIPT_DIR)
+    result = subprocess.run(cmd, shell=True)
     if result.returncode != 0:
-        print(f"✗ {desc} FAILED")
+        print(f"[FAIL] {desc} FAILED")
         return False
-    print(f"✓ {desc} SUCCESS")
+    print(f"[OK] {desc} SUCCESS")
     return True
 
 def main():
     print("\n" + "="*70)
-    print("MANAGED CARE 3.0 — DAILY PIPELINE (Claude CLI)")
+    print("MANAGED CARE 3.0 — DAILY PIPELINE")
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*70)
-
-    os.chdir(SCRIPT_DIR)
 
     # Step 1: Run scripts
     if not run_cmd("python run_scripts_clean.py", "Step 1: Run scripts 01-04"):
@@ -58,7 +53,6 @@ def main():
         print("ⓘ Skipping Claude recommendations (ANTHROPIC_API_KEY not set)")
 
     # Step 4: Git commit
-    os.chdir(REPO_DIR)
     print(f"\n{'='*70}")
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Step 4: Git commit + push")
     print(f"{'='*70}")
@@ -68,8 +62,8 @@ def main():
     subprocess.run("git push origin main", shell=True)
 
     print("\n" + "="*70)
-    print(f"✓ COMPLETE — {datetime.now().strftime('%H:%M:%S')}")
-    print("✓ Dashboard: https://managed-care-dashboard.onrender.com/")
+    print(f"[OK] COMPLETE — {datetime.now().strftime('%H:%M:%S')}")
+    print("[OK] Dashboard: https://managed-care-dashboard.onrender.com/")
     print("="*70)
 
 if __name__ == "__main__":
