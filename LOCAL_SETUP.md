@@ -1,4 +1,4 @@
-# Local Setup — Daily Scripts + PostgreSQL Push
+# Local Setup — Daily Scripts + Neon PostgreSQL
 
 ## Overview
 
@@ -6,45 +6,45 @@ Your scripts run **100% locally** on Task Scheduler with all your auth:
 1. Scripts 01-04 run daily at 6 AM
 2. Read from Trino (your OAuth)
 3. Process data
-4. Push to Render PostgreSQL
+4. Push to Neon PostgreSQL (shared with Dietician QA project)
 5. Dashboard auto-refreshes to show new data
 
-## Step 1: Create PostgreSQL on Render (2 min)
+## Step 0: Initialize Schema (One-time)
 
-See `POSTGRESQL_SETUP.md` → **Step 1** to create the database and get connection string.
+Run the schema initialization script to create the `managed_care` schema in Neon:
 
-Example:
+```bash
+cd "Manage care python"
+python init_neon_schema.py
 ```
-postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care
+
+Output should show:
+```
+✓ Schema created successfully
+✓ Tables created: 4
+  - managed_care.programme_allocation
+  - managed_care.comparison_retest
+  - managed_care.device_eligibility
+  - managed_care.dashboard_cache
 ```
 
-## Step 2: Configure Local Scripts (10 min)
+**Done!** Schema is ready. Proceed to Step 1.
 
-### 2.1 Copy Database Config
+## Step 1: No Database Setup Needed
+
+The Neon PostgreSQL connection is already configured in:
+- `db_layer.py` — Uses Neon connection by default
+- `db_config.py` — Points to Neon database
+
+Just copy it:
 ```bash
 cd "Manage care python"
 cp db_config.example.py db_config.py
 ```
 
-### 2.2 Edit db_config.py
-Set the Render PostgreSQL URL:
-```python
-DATABASE_URL = "postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care"
-```
+**No changes needed** — it already has the Neon connection string.
 
-Or set as environment variable (recommended):
-```bash
-# Windows (PowerShell)
-$env:DATABASE_URL = "postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care"
-
-# Windows (Command Prompt)
-set DATABASE_URL=postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care
-
-# Linux/Mac
-export DATABASE_URL="postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care"
-```
-
-### 2.3 Update Scripts to Push Data
+## Step 2: Update Scripts to Push Data
 For each script (01, 02, 03, 04), replace CSV saving with database writing.
 
 **Example: Script 01**
@@ -66,7 +66,7 @@ save_dataframe(df_filtered_latest, "programme_allocation")
 - `03b_device_eligibility_2026.py` → `save_dataframe(df, "device_eligibility")`
 - `04_claude_analysis.py` → `save_dataframe(df_insights, "dashboard_cache")`
 
-### 2.4 Test Locally
+### 2.5 Test Locally
 ```bash
 # Make sure DATABASE_URL is set
 echo $DATABASE_URL  # Linux/Mac

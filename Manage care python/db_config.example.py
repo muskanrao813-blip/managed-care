@@ -1,25 +1,18 @@
 """
 Database Configuration for Managed Care Scripts
-Copy this file to db_config.py and fill in your connection details.
-
-For Render: Get connection string from Render PostgreSQL service
-For Local: Leave as-is to use SQLite
+Uses Neon PostgreSQL (shared with Dietician QA project)
+Connects to managed_care schema.
 """
 
 import os
 
-# ── OPTION 1: Use Environment Variable (Recommended for Render) ──
-# Set DATABASE_URL in Render environment:
-# postgresql://user:password@host:5432/managed_care
-DATABASE_URL = os.getenv("DATABASE_URL", None)
+# ── Neon PostgreSQL (Production) ──
+# Shared database with Dietician QA project
+DATABASE_URL = os.getenv("DATABASE_URL",
+    "postgresql://neondb_owner:npg_RnjMpJ4DsKY7@ep-icy-tree-af8719ti.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require"
+)
 
-# ── OPTION 2: Local SQLite (Development) ──
-# Uncomment if no DATABASE_URL set:
-if not DATABASE_URL:
-    DATABASE_URL = "sqlite:///./dashboard_data.db"
+# ── Override with environment variable if needed ──
+# export DATABASE_URL="postgresql://..."
 
-# ── OPTION 3: PostgreSQL Connection Details (Local) ──
-# Uncomment and fill in if you want to specify connection details:
-# DATABASE_URL = "postgresql://username:password@localhost:5432/managed_care"
-
-print(f"[DB] Using: {DATABASE_URL.split('@')[0] if '@' in DATABASE_URL else 'SQLite'}")
+print(f"[DB] Connected to Neon PostgreSQL (managed_care schema)")
