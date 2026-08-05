@@ -1,4 +1,4 @@
-"""
+﻿"""
 PostgreSQL Database Layer for Managed Care Dashboard
 Connects to Neon PostgreSQL (shared with Dietician QA project)
 Uses managed_care schema for organization.

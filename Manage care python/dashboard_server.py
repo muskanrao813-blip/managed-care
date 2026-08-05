@@ -1,4 +1,4 @@
-"""
+﻿"""
 Managed Care Dashboard Server with PostgreSQL Backend
 Replaces CSV loading with database queries.
 Supports both local SQLite and Render PostgreSQL.

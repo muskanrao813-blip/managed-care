@@ -1,4 +1,4 @@
-"""
+﻿"""
 ============================================================
 MANAGED CARE 3.0 â€” SCRIPT 2: Year-on-Year Retest Comparison
 ============================================================
@@ -1009,7 +1009,7 @@ print("\n[Step 7] Saving outputsâ€¦")
 raw_data_file = os.path.join(OUTPUT_DIR, "managed_care_comparison_raw_data.csv")
 df_final.to_csv(raw_data_file, index=False)
 print(f"  âœ… Saved managed_care_comparison_raw_data.csv â†’ {raw_data_file}")
-print(f"     Rows : {len(df_final):,}  ({df_final['mobile_number_hash'].nunique():,} users Ã— tests)")
+pass  # print skipped
 
 # Output 2: GROUPED SCORES
 # final_scores = one row per user Ã— impact
@@ -1041,7 +1041,7 @@ else:
     final_scores.to_csv(OUTPUT_FILE, index=False)
     print(f"  âœ… Saved managed_care_comparison.csv â†’ {OUTPUT_FILE}")
 
-print(f"     Rows : {len(final_scores):,}  ({final_scores['mobile_number_hash'].nunique():,} users Ã— conditions)")
+pass  # print skipped
 
 
 # â”€â”€ CELL 16: User counts at each step (debug helper) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

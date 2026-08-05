@@ -1,4 +1,4 @@
-"""
+﻿"""
 Initialize Managed Care schema in Neon PostgreSQL
 Run this ONCE to create the managed_care schema and tables.
 """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Fetch Engagement Activity Data from Trino/Delta Lake
 Queries: Sleep, Steps, Weight, Meal logs for VYTAL users (2026)

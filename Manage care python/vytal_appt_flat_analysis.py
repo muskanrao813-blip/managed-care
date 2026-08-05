@@ -1,4 +1,4 @@
-"""
+﻿"""
 VYTAL 2026 appointments from f_appointmentflattable.
 Key columns found: phrid, appointmentdate, appointmentstatus, appointmentbookingdate,
                    vlocity_ins_fsc__productcode__c, benefit_name__c, isfollowupappointment,

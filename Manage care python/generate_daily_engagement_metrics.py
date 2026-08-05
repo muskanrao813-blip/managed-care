@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Generate Daily Engagement Metrics for VYTAL Users (Post-June 1, 2026)
 Creates a CSV with daily breakdown: date | activity_type | unique_users | % of enrolled

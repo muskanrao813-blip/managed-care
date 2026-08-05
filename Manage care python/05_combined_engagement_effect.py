@@ -1,4 +1,4 @@
-"""
+﻿"""
 Combined Engagement Effect Analysis
 Segments 2025 retested users by device + appointment + managed care combinations
 Shows improvement breakdown for each segment

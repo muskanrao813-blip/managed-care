@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 VYTAL Engagement Analysis - UNIQUE USERS ONLY
 Counts distinct users (not records), filters for post-June 1, 2026

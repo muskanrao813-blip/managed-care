@@ -1,4 +1,4 @@
-"""
+﻿"""
 Database Configuration for Managed Care Scripts
 Uses Neon PostgreSQL (shared with Dietician QA project)
 Connects to managed_care schema.

@@ -1,4 +1,4 @@
-# Imports
+﻿# Imports
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
@@ -537,9 +537,9 @@ if _impact_dfs:
 
 # â”€â”€ Output 3: PROGRAM ALLOCATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Save year-specific file + merge all years into master
-alloc_year_file = os.path.join(output_dir, f”managed_care_program_allocation_{SELECTED_CAMP_YEAR}.csv”)
+alloc_year_file = os.path.join(output_dir, 'managed_care_program_allocation_' + SELECTED_CAMP_YEAR + '.csv')
 top_impact_per_user.to_csv(alloc_year_file, index=False)
-save_dataframe(top_impact_per_user, “programme_allocation”, if_exists=”replace”)
+save_dataframe(top_impact_per_user, 'programme_allocation', if_exists='replace')
 print(f”âœ… Saved managed_care_program_allocation_{SELECTED_CAMP_YEAR}.csv â€” {len(top_impact_per_user):,} users”)
 print(f”âœ… Saved {len(top_impact_per_user):,} rows to managed_care.programme_allocation”)
 
