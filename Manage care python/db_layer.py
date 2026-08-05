@@ -35,11 +35,15 @@ def save_dataframe(df: pd.DataFrame, table_name: str, if_exists: str = "replace"
     """
     try:
         q_name = qualified_table_name(table_name)
+        print(f"[DB] Connecting to {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'unknown'}...")
+        print(f"[DB] Saving {len(df)} rows to {q_name}...")
         df.to_sql(table_name, engine, schema=SCHEMA, if_exists=if_exists, index=False)
-        print(f"✓ Saved {len(df)} rows to {q_name}")
+        print(f"[DB] SUCCESS: Saved {len(df)} rows to {q_name}")
     except Exception as e:
         q_name = qualified_table_name(table_name)
-        print(f"✗ Error saving to {q_name}: {e}")
+        print(f"[DB] FAILED saving to {q_name}: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
         raise
 
 

@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 import sqlparse
 import urllib
+from db_layer import save_dataframe
 
 
 #  CAMP YEAR CONFIG 
@@ -538,6 +539,8 @@ if _impact_dfs:
 # Save year-specific file + merge all years into master
 alloc_year_file = os.path.join(output_dir, f"managed_care_program_allocation_{SELECTED_CAMP_YEAR}.csv")
 top_impact_per_user.to_csv(alloc_year_file, index=False)
+print(f"[DEBUG] About to save {len(top_impact_per_user)} rows to database...")
+save_dataframe(top_impact_per_user, "programme_allocation", if_exists="replace")
 print(f" Saved managed_care_program_allocation_{SELECTED_CAMP_YEAR}.csv  {len(top_impact_per_user):,} users")
 
 _alloc_dfs = []

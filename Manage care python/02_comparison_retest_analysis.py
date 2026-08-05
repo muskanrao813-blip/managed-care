@@ -34,6 +34,7 @@ from sqlalchemy import create_engine, text
 import urllib
 
 from config import TRINO_HOST, TRINO_USER, TRINO_PASSWORD
+from db_layer import save_dataframe
 TRINO_CONFIG = {
     "user":     TRINO_USER,
     "password": TRINO_PASSWORD,
@@ -1018,6 +1019,7 @@ print(f"     Rows : {len(df_final):,}  ({df_final['mobile_number_hash'].nunique(
 # Save current year file (e.g. managed_care_comparison_2026.csv)
 year_file = os.path.join(OUTPUT_DIR, f"managed_care_comparison_{SELECTED_CAMP_YEAR}.csv")
 final_scores.to_csv(year_file, index=False)
+save_dataframe(final_scores, "comparison_retest", if_exists="replace")
 print(f"   Saved managed_care_comparison_{SELECTED_CAMP_YEAR}.csv  {year_file}")
 
 # Merge all available year files into managed_care_comparison.csv (dashboard master)

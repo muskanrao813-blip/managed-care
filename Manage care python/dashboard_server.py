@@ -38,65 +38,99 @@ def dashboard():
     return "Dashboard HTML not found", 404
 
 
+def load_csv_data(table_name):
+    """Try to load data from CSV files as fallback"""
+    csv_mappings = {
+        "programme_allocation": "managed_care_program_allocation.csv",
+        "comparison_retest": "managed_care_comparison.csv",
+        "device_eligibility": "managed_care_device_eligibility_2026.csv",
+    }
+
+    csv_file = csv_mappings.get(table_name)
+    if not csv_file:
+        return None
+
+    csv_path = Path(__file__).parent / "Data" / csv_file
+    if csv_path.exists():
+        try:
+            return pd.read_csv(csv_path, low_memory=False)
+        except:
+            return None
+    return None
+
+
 @app.route("/api/data/<table_name>")
 def get_table_data(table_name):
     """
     Fetch data from database table as JSON.
+    Falls back to CSV files if database not available.
     Usage: GET /api/data/programme_allocation
     """
-    if not read_table:
-        return jsonify({"error": "Database not initialized"}), 500
+    df = None
 
-    try:
-        df = read_table(table_name)
-        if df.empty:
-            return jsonify({"data": [], "rows": 0, "message": "No data"})
+    # Try database first
+    if read_table:
+        try:
+            df = read_table(table_name)
+        except:
+            df = None
 
-        # Convert to JSON-serializable format
-        data = df.to_dict(orient="records")
-        return jsonify({
-            "data": data,
-            "rows": len(data),
-            "columns": list(df.columns),
-            "last_updated": str(get_last_update(table_name))
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # Fall back to CSV
+    if df is None or df.empty:
+        df = load_csv_data(table_name)
+
+    if df is None or df.empty:
+        return jsonify({"data": [], "rows": 0, "message": "No data found"})
+
+    # Convert to JSON-serializable format
+    data = df.to_dict(orient="records")
+    return jsonify({
+        "data": data,
+        "rows": len(data),
+        "columns": list(df.columns),
+        "last_updated": "Fresh from CSV" if read_table is None else str(get_last_update(table_name))
+    })
 
 
 @app.route("/api/data/<table_name>/summary")
 def get_table_summary(table_name):
     """
     Get summary statistics for a table.
+    Falls back to CSV if database unavailable.
     Usage: GET /api/data/programme_allocation/summary
     """
-    if not read_table:
-        return jsonify({"error": "Database not initialized"}), 500
+    df = None
 
-    try:
-        df = read_table(table_name)
-        if df.empty:
-            return jsonify({"summary": {}})
+    # Try database first
+    if read_table:
+        try:
+            df = read_table(table_name)
+        except:
+            df = None
 
-        # Generate summary stats
-        summary = {
-            "total_rows": len(df),
-            "columns": list(df.columns),
-            "last_updated": str(get_last_update(table_name)),
-            "numeric_stats": {}
+    # Fall back to CSV
+    if df is None or df.empty:
+        df = load_csv_data(table_name)
+
+    if df is None or df.empty:
+        return jsonify({"summary": {}})
+
+    # Generate summary stats
+    summary = {
+        "total_rows": len(df),
+        "columns": list(df.columns),
+        "numeric_stats": {}
+    }
+
+    # Add numeric column stats
+    for col in df.select_dtypes(include=['number']).columns:
+        summary["numeric_stats"][col] = {
+            "mean": float(df[col].mean()),
+            "min": float(df[col].min()),
+            "max": float(df[col].max()),
         }
 
-        # Add numeric column stats
-        for col in df.select_dtypes(include=['number']).columns:
-            summary["numeric_stats"][col] = {
-                "mean": float(df[col].mean()),
-                "min": float(df[col].min()),
-                "max": float(df[col].max()),
-            }
-
-        return jsonify(summary)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return jsonify(summary)
 
 
 @app.route("/api/status")

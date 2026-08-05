@@ -38,8 +38,9 @@ POLICY_CSV  = os.path.join(DATA_DIR, "managed_care_policy_data.csv")
 HRA_CSV     = os.path.join(DATA_DIR, "managed_care_hra_wellness.csv")
 OUTPUT_PATH = os.path.join(DATA_DIR, "managed_care_device_eligibility_2026.csv")
 
-#  TRINO 
+#  TRINO
 from config import TRINO_HOST, TRINO_USER, TRINO_PASSWORD
+from db_layer import save_dataframe
 _pw  = urllib.parse.quote_plus(TRINO_PASSWORD)
 _ENG = None
 
@@ -650,6 +651,7 @@ def main():
     df_out = df_all[[c for c in final_cols if c in df_all.columns]].copy()
     df_out['run_date'] = pd.Timestamp.today().strftime('%Y-%m-%d')
     df_out.to_csv(OUTPUT_PATH, index=False)
+    save_dataframe(df_out, "device_eligibility", if_exists="replace")
 
     # Summary
     total = len(df_out)
