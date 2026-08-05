@@ -1,4 +1,4 @@
-﻿# Imports
+﻿?# Imports
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
@@ -7,9 +7,9 @@ import urllib
 from db_layer import save_dataframe
 
 
-# â”€â”€ CAMP YEAR CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# "2025" â†’ fiscal year Apr 2025â€“Mar 2026  |  product codes: BFLPL*
-# "2026" â†’ fiscal year Apr 2026â€“present   |  product codes: BPC*
+# ?"??"? CAMP YEAR CONFIG ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+# "2025" ??' fiscal year Apr 2025??"Mar 2026  |  product codes: BFLPL*
+# "2026" ??' fiscal year Apr 2026??"present   |  product codes: BPC*
 SELECTED_CAMP_YEAR = "2026"
 
 CAMP_CONFIG = {
@@ -34,7 +34,7 @@ _cfg        = CAMP_CONFIG[SELECTED_CAMP_YEAR]
 _codes_sql  = _cfg["codes_sql"]
 _date_from  = _cfg["date_from"]
 _date_to    = _cfg["date_to"]
-# Build date filter SQL â€” upper bound only added when present (2025 fiscal year)
+# Build date filter SQL ??" upper bound only added when present (2025 fiscal year)
 _date_lower = f"substring(cast(d.\"created_at\" as VARCHAR),1,7) >= '{_date_from}'"
 _date_upper = (f"and substring(cast(d.\"created_at\" as VARCHAR),1,7) <= '{_date_to}'"
                if _date_to else "")
@@ -95,9 +95,9 @@ def trino_query(query: str, retry: int = 0):
             return None, str(e)
 
 
-# Camp Data Query â€” fiscal year driven by SELECTED_CAMP_YEAR
+# Camp Data Query ??" fiscal year driven by SELECTED_CAMP_YEAR
 
-print(f"\n[Camp Year: {SELECTED_CAMP_YEAR}] Codes: {_codes_sql} | Period: {_date_from} â†’ {_date_to or 'present'}")
+pass
 
 df, err = trino_query(query=f"""
 
@@ -182,10 +182,7 @@ where rnk = 1
 
 """)
 
-
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Section 2 : Loading Lookups
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 lkp_r = pd.read_excel(
     "d:\\OneDrive - Bajaj Finserv Health Limited\\Documents\\manage care\\manage care python\\Final_BFL_Lookup_THR 5.xlsx",
@@ -287,10 +284,7 @@ lkp_h.rename(columns=rename_columns, inplace=True)
 lkp_a.rename(columns=rename_columns, inplace=True)
 lkp_j.rename(columns=rename_columns, inplace=True)
 
-
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Section 3 : Running Lookups to Map Outcome
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 df_r = df[
     ~df['provider'].isin([
@@ -411,10 +405,7 @@ df_filtered_latest = (
     )
 )
 
-
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Section 4 : Outcome Score Calculation
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def calculate_updated_outcome_value(row):
 
@@ -465,10 +456,7 @@ df_filtered2 = df_filtered_latest[
     df_filtered_latest['Outcome_COS'] > 0
 ].copy()
 
-
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Section 5 : Grouped Scores on Impact Level
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 import numpy as np
 
@@ -491,20 +479,17 @@ top_impact_per_user = (
            .drop_duplicates('mobile_number_hash', keep='first')
 )
 
-
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # OUTPUT
 # output_dir points to ./data/ next to this script
 # so the dashboard can read the CSVs automatically.
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 import os
 
 output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 os.makedirs(output_dir, exist_ok=True)
 
-# â”€â”€ Output 1: RAW DATA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# df_filtered_latest = one row per user Ã— loinc_id (test)
+# ?"??"? Output 1: RAW DATA ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+# df_filtered_latest = one row per user ?- loinc_id (test)
 # Columns: mobile_number_hash, order_id, product_code, phr_id, created_at, MT,
 #          loinc_id, test_name, value, units, provider, gender, rnk,
 #          impact, lkp_test_name, cos, operator, lower_bound, upper_bound,
@@ -514,14 +499,12 @@ df_filtered_latest.to_csv(
     os.path.join(output_dir, "managed_care_raw_data.csv"),
     index=False
 )
-print(f"âœ… Saved managed_care_raw_data.csv â€” {len(df_filtered_latest):,} rows "
-      f"({df_filtered_latest['mobile_number_hash'].nunique():,} users Ã— tests)")
 
-# â”€â”€ Output 2: GROUPED IMPACT SCORES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ---- Output 2: GROUPED IMPACT SCORES ----
 # Save year-specific file + merge all years into master
 impact_year_file = os.path.join(output_dir, f"managed_care_impact_scores_{SELECTED_CAMP_YEAR}.csv")
 grouped.to_csv(impact_year_file, index=False)
-print(f"âœ… Saved managed_care_impact_scores_{SELECTED_CAMP_YEAR}.csv â€” {len(grouped):,} rows")
+pass
 
 _impact_dfs = []
 for _yr in ["2025", "2026"]:
@@ -533,15 +516,15 @@ if _impact_dfs:
     pd.concat(_impact_dfs, ignore_index=True).to_csv(
         os.path.join(output_dir, "managed_care_impact_scores.csv"), index=False
     )
-    print(f"âœ… Saved managed_care_impact_scores.csv (master â€” all camp years)")
+    pass
 
-# â”€â”€ Output 3: PROGRAM ALLOCATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? Output 3: PROGRAM ALLOCATION ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 # Save year-specific file + merge all years into master
 alloc_year_file = os.path.join(output_dir, 'managed_care_program_allocation_' + SELECTED_CAMP_YEAR + '.csv')
 top_impact_per_user.to_csv(alloc_year_file, index=False)
 save_dataframe(top_impact_per_user, 'programme_allocation', if_exists='replace')
-print(f”âœ… Saved managed_care_program_allocation_{SELECTED_CAMP_YEAR}.csv â€” {len(top_impact_per_user):,} users”)
-print(f”âœ… Saved {len(top_impact_per_user):,} rows to managed_care.programme_allocation”)
+pass
+pass
 
 _alloc_dfs = []
 for _yr in ["2025", "2026"]:
@@ -552,7 +535,7 @@ if _alloc_dfs:
     pd.concat(_alloc_dfs, ignore_index=True).to_csv(
         os.path.join(output_dir, "managed_care_program_allocation.csv"), index=False
     )
-    print(f"âœ… Saved managed_care_program_allocation.csv (master â€” all camp years â€” {sum(len(d) for d in _alloc_dfs):,} users)")
+    pass
 
 
 

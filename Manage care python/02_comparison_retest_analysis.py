@@ -1,21 +1,21 @@
-﻿"""
+﻿?"""
 ============================================================
-MANAGED CARE 3.0 â€” SCRIPT 2: Year-on-Year Retest Comparison
+MANAGED CARE 3.0 ??" SCRIPT 2: Year-on-Year Retest Comparison
 ============================================================
 Comparison logic (updated):
   Retested = previous year PURELIFE policyholders who attended current year camp.
 
   2025 base year:
-    - Previous policyholders : PURELIFE1-5, d_policy Jun 2024 â€“ Apr 2025
-    - Previous camp tests     : BFLPL codes  Feb 2024 â€“ Mar 2025
-    - Current camp tests      : BPC01/02/03 + BFLPURE01/02  Apr 2025 â€“ Mar 2026
-    - Retested                : intersection of prev policyholders âˆ© current camp attendees
+    - Previous policyholders : PURELIFE1-5, d_policy Jun 2024 ??" Apr 2025
+    - Previous camp tests     : BFLPL codes  Feb 2024 ??" Mar 2025
+    - Current camp tests      : BPC01/02/03 + BFLPURE01/02  Apr 2025 ??" Mar 2026
+    - Retested                : intersection of prev policyholders ??? current camp attendees
 
   2026 base year:
-    - Previous policyholders : PURELIFE1-5, d_policy May 2025 â€“ Apr 2026
-    - Previous camp tests    : BPC01/02/03 + BFLPURE01/02  Apr 2025 â€“ Mar 2026
-    - Current camp tests     : BPC01/02/03  Apr 2026 â€“ present
-    - Retested               : intersection of prev policyholders âˆ© current camp attendees
+    - Previous policyholders : PURELIFE1-5, d_policy May 2025 ??" Apr 2026
+    - Previous camp tests    : BPC01/02/03 + BFLPURE01/02  Apr 2025 ??" Mar 2026
+    - Current camp tests     : BPC01/02/03  Apr 2026 ??" present
+    - Retested               : intersection of prev policyholders ??? current camp attendees
 
 Output:
   data/managed_care_comparison.csv
@@ -47,7 +47,7 @@ OUTPUT_DIR = r"D:\OneDrive - Bajaj Finserv Health Limited\Documents\manage care\
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "managed_care_comparison.csv")
 
-# â”€â”€ CAMP YEAR CONFIG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? CAMP YEAR CONFIG ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 # Change SELECTED_CAMP_YEAR to switch between 2025 and 2026 analysis.
 SELECTED_CAMP_YEAR = "2026"
 
@@ -55,27 +55,27 @@ PURELIFE_CODES = ["PURELIFE1", "PURELIFE2", "PURELIFE3", "PURELIFE4", "PURELIFE5
 
 COMPARISON_CONFIG = {
     "2025": {
-        # d_policy: 2024 policyholders (PURELIFE, Jun 2024 â€“ Mar 2025)
+        # d_policy: 2024 policyholders (PURELIFE, Jun 2024 ??" Mar 2025)
         "prev_policy_date_from": "2024-06",
         "prev_policy_date_to":   "2025-03",
-        # f_claim: 2024 camp tests (BFLPL codes, Apr 2024 â€“ Mar 2025)
+        # f_claim: 2024 camp tests (BFLPL codes, Apr 2024 ??" Mar 2025)
         "prev_camp_codes":  ["BFLPL01","BFLPL02","BFLPL03","BFLPLH01","BFLPLH02","BFLPL04"],
         "prev_date_from":   "2024-04",
         "prev_date_to":     "2025-03",
-        # f_claim: 2025 camp tests (BPC + BFLPURE, Apr 2025 â€“ Mar 2026)
+        # f_claim: 2025 camp tests (BPC + BFLPURE, Apr 2025 ??" Mar 2026)
         "curr_camp_codes":  ["BPC01","BPC02","BPC03","BFLPURE01","BFLPURE02"],
         "curr_date_from":   "2025-04",
         "curr_date_to":     "2026-03",
     },
     "2026": {
-        # d_policy: 2025 policyholders (PURELIFE, May 2025 â€“ Apr 2026)
+        # d_policy: 2025 policyholders (PURELIFE, May 2025 ??" Apr 2026)
         "prev_policy_date_from": "2025-05",
         "prev_policy_date_to":   "2026-04",
-        # f_claim: 2025 camp tests (BPC + BFLPURE, Apr 2025 â€“ Mar 2026)
+        # f_claim: 2025 camp tests (BPC + BFLPURE, Apr 2025 ??" Mar 2026)
         "prev_camp_codes":  ["BPC01","BPC02","BPC03","BFLPURE01","BFLPURE02"],
         "prev_date_from":   "2025-04",
         "prev_date_to":     "2026-03",
-        # f_claim: 2026 camp tests (BPC, Apr 2026 â€“ present)
+        # f_claim: 2026 camp tests (BPC, Apr 2026 ??" present)
         "curr_camp_codes":  ["BPC01","BPC02","BPC03"],
         "curr_date_from":   "2026-04",
         "curr_date_to":     None,
@@ -99,17 +99,17 @@ _curr_date_filter = (
 )
 
 print(f"\n{'='*60}")
-print(f"  MANAGED CARE 3.0 â€” Script 2: Retest Comparison")
+pass
 print(f"  Camp year   : {SELECTED_CAMP_YEAR}")
-print(f"  Prev policy : PURELIFE  {_cfg['prev_policy_date_from']} â†’ {_cfg['prev_policy_date_to']}")
-print(f"  Prev tests  : {', '.join(_cfg['prev_camp_codes'])}  {_cfg['prev_date_from']} â†’ {_cfg['prev_date_to']}")
-print(f"  Curr tests  : {', '.join(_cfg['curr_camp_codes'])}  {_cfg['curr_date_from']} â†’ {_cfg['curr_date_to'] or 'present'}")
+pass
+pass
+pass
 print(f"{'='*60}")
 
 
-# â”€â”€ EXACT get_trino_engine from comparison notebook â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? EXACT get_trino_engine from comparison notebook ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 def run_trino_query(query: str, config: dict, retry: int = 1):
-    """Execute query on Trino â€” same pattern as Script 1 (trino_query) which works."""
+    """Execute query on Trino ??" same pattern as Script 1 (trino_query) which works."""
 
     user     = config.get("user")
     password = config.get("password")
@@ -148,7 +148,7 @@ def run_trino_query(query: str, config: dict, retry: int = 1):
         return None
 
 
-# â”€â”€ Step 1a: Current year camp tests (date-filtered) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? Step 1a: Current year camp tests (date-filtered) ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 CURR_QUERY = f"""
 SELECT DISTINCT
     d.mobile_number_hash,
@@ -192,7 +192,7 @@ SELECT * FROM (
 ) x1 WHERE rnk = 1
 """
 
-# â”€â”€ Step 1b: Previous year camp tests (date-filtered) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? Step 1b: Previous year camp tests (date-filtered) ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 PREV_QUERY = f"""
 SELECT DISTINCT
     d.mobile_number_hash,
@@ -236,19 +236,19 @@ SELECT * FROM (
 ) x1 WHERE rnk = 1
 """
 
-print("\n[Step 1a] Querying current year camp testsâ€¦")
+pass
 df_curr = run_trino_query(CURR_QUERY, TRINO_CONFIG)
 if df_curr is None:
-    print("  âŒ Current camp query failed"); raise SystemExit(1)
-print(f"  âœ… {len(df_curr):,} rows | {df_curr['mobile_number_hash'].nunique():,} unique users in current camp")
+    pass
+pass
 
-print("\n[Step 1b] Querying previous year camp testsâ€¦")
+pass
 df_prev = run_trino_query(PREV_QUERY, TRINO_CONFIG)
 if df_prev is None:
-    print("  âŒ Previous camp query failed"); raise SystemExit(1)
-print(f"  âœ… {len(df_prev):,} rows | {df_prev['mobile_number_hash'].nunique():,} unique users in previous camp")
+    pass
+pass
 
-# â”€â”€ Step 1c: Fetch previous year PURELIFE policyholders from d_policy â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? Step 1c: Fetch previous year PURELIFE policyholders from d_policy ?"??"??"??"??"??"??"??"?
 _pl_codes_sql = ", ".join(f"'{c}'" for c in PURELIFE_CODES)
 POLICY_QUERY = f"""
 SELECT DISTINCT
@@ -261,25 +261,25 @@ WHERE vlocity_ins_fsc__productcode__c IN ({_pl_codes_sql})
   AND substring(cast(createddate AS VARCHAR), 1, 7) >= '{_cfg["prev_policy_date_from"]}'
   AND substring(cast(createddate AS VARCHAR), 1, 7) <= '{_cfg["prev_policy_date_to"]}'
 """
-print("\n[Step 1c] Fetching previous year policyholders from d_policyâ€¦")
+pass
 df_prev_policy = run_trino_query(POLICY_QUERY, TRINO_CONFIG)
 if df_prev_policy is None or df_prev_policy.empty:
-    print("  âš ï¸  No previous year policyholders found â€” check dates/codes"); df_prev_policy = pd.DataFrame()
+    pass
 
 prev_policy_hashes = set(df_prev_policy["mobile_number_hash"].dropna()) if not df_prev_policy.empty else set()
-print(f"  âœ… {len(prev_policy_hashes):,} unique previous year policyholders")
+pass
 
-# â”€â”€ Step 1d: Identify retested users â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-#
+# ?"??"? Step 1d: Identify retested users ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+
 # Total retested = users who attended BOTH previous camp AND current camp
 #                  (these are the population with before/after biomarker data)
-#
-# MC retested   = total retested âˆ© prev year PURELIFE policyholders
+
+# MC retested   = total retested ??? prev year PURELIFE policyholders
 #                 (tagged in Step 5b via d_policy lookup)
-#
-# Non-MC retested = total retested âˆ’ MC retested
+
+# Non-MC retested = total retested ??' MC retested
 #                   (comparison group for the improvement pivot)
-#
+
 curr_hashes      = set(df_curr["mobile_number_hash"].dropna())
 prev_camp_hashes = set(df_prev["mobile_number_hash"].dropna())
 retested_hashes  = curr_hashes & prev_camp_hashes
@@ -291,13 +291,13 @@ print(f"\n  Current camp attendees             : {len(curr_hashes):,}")
 print(f"  Previous camp attendees            : {len(prev_camp_hashes):,}")
 print(f"  Total retested (both camps)        : {len(retested_hashes):,}")
 print(f"  Prev year PURELIFE policyholders   : {len(prev_policy_hashes):,}")
-print(f"  MC retested  (âˆ© policy)            : {len(mc_in_policy):,}")
+pass
 print(f"  Non-MC retested                    : {len(non_mc):,}")
 
 if not retested_hashes:
-    print("  âš ï¸  No retested users found â€” check year config"); raise SystemExit(1)
+    pass
 
-# â”€â”€ Step 1e: Build combined biomarker dataset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? Step 1e: Build combined biomarker dataset ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 df_curr_retested = df_curr[df_curr["mobile_number_hash"].isin(retested_hashes)].copy()
 df_prev_retested = df_prev[df_prev["mobile_number_hash"].isin(retested_hashes)].copy()
 df = pd.concat([df_prev_retested, df_curr_retested], ignore_index=True)
@@ -305,8 +305,8 @@ print(f"\n[Step 1e] Combined dataset for retested users:")
 print(f"  {len(df):,} rows | {df['mobile_number_hash'].nunique():,} unique retested users")
 
 
-# â”€â”€ CELL 3: Load Lookups â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-print("\n[Step 2] Loading lookupsâ€¦")
+# ?"??"? CELL 3: Load Lookups ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+pass
 print(f"  Camp year : {SELECTED_CAMP_YEAR}")
 
 LOOKUP_FILE_PATH = LOOKUP_FILE
@@ -371,11 +371,11 @@ lkp_h = lookups["healthians"]
 lkp_a = lookups["apollo"]
 lkp_j = lookups["jehangir"]
 
-print("  âœ… Lookups loaded")
+pass
 
 
-# â”€â”€ CELL 5: Provider Mapping + Merge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-print("\n[Step 3] Merging with lookups by providerâ€¦")
+# ?"??"? CELL 5: Provider Mapping + Merge ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+pass
 
 PROVIDER_MAP = {
     "{'name': 'Thyrocare'}": "thyrocare",
@@ -437,12 +437,12 @@ df_filtered = df_merged[
     (df_merged["value"] >= df_merged["lower_bound"]) &
     (df_merged["value"] <= df_merged["upper_bound"])
 ]
-print(f"  âœ… {len(df_filtered):,} rows after merge + range filter")
+pass
 
 
-# â”€â”€ CELL 8: Retest Filter + Earliest/Latest Extraction â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-print("\n[Step 4] Filtering retested users (same loinc in both camp years)â€¦")
-# Retested users were already identified in Step 1d (prev policy âˆ© curr camp).
+# ?"??"? CELL 8: Retest Filter + Earliest/Latest Extraction ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+pass
+# Retested users were already identified in Step 1d (prev policy ??? curr camp).
 # Here we additionally require they have the same loinc in BOTH year periods
 # so we can compute a meaningful biomarker comparison.
 df_retests = df_filtered[
@@ -450,7 +450,7 @@ df_retests = df_filtered[
     .transform("count") > 1
 ].copy()
 
-print(f"  âœ… {df_retests['mobile_number_hash'].nunique():,} retested users with matching loinc in both years")
+pass
 
 # Earliest & Latest
 df_sorted = df_retests.sort_values(by="created_at")
@@ -463,7 +463,7 @@ df_latest = df_sorted.drop_duplicates(
     subset=["mobile_number_hash", "loinc_id"], keep="last"
 ).copy()
 
-# Rename Columns â€” Earliest
+# Rename Columns ??" Earliest
 df_earliest = df_earliest.rename(columns={
     "value":         "earliest_value",
     "order_id":      "earliest_order_id",
@@ -472,7 +472,7 @@ df_earliest = df_earliest.rename(columns={
     "outcome_value": "earliest_outcome_value"
 })
 
-# Rename Columns â€” Latest
+# Rename Columns ??" Latest
 df_latest = df_latest.rename(columns={
     "value":         "latest_value",
     "order_id":      "latest_order_id",
@@ -499,7 +499,7 @@ df_final = df_earliest.merge(
 df_final["earliest_created_at"] = pd.to_datetime(df_final["earliest_created_at"]).dt.strftime("%Y-%m-%d")
 df_final["latest_created_at"]   = pd.to_datetime(df_final["latest_created_at"]).dt.strftime("%Y-%m-%d")
 
-# Calculations â€” updated outcome
+# Calculations ??" updated outcome
 def calc_updated(value, outcome, outcome_value, lower_bound, upper_bound):
 
     if pd.isna(value):
@@ -527,7 +527,7 @@ df_final["earliest_updated_outcome"] = df_final.apply(
     axis=1
 )
 
-# Latest (uses latest bounds â€” FIXED from notebook)
+# Latest (uses latest bounds ??" FIXED from notebook)
 df_final["latest_updated_outcome"] = df_final.apply(
     lambda row: calc_updated(
         row["latest_value"],
@@ -543,7 +543,7 @@ df_final["latest_updated_outcome"] = df_final.apply(
 df_final["earliest_Outcome_COS"] = df_final["earliest_updated_outcome"] * df_final["cos"]
 df_final["latest_Outcome_COS"]   = df_final["latest_updated_outcome"]   * df_final["cos"]
 
-# Final Columns â€” exactly as notebook
+# Final Columns ??" exactly as notebook
 df_final = df_final[[
     'mobile_number_hash', 'product_code', 'phr_id',
     'loinc_id', 'test_name', 'units', 'gender', 'rnk',
@@ -578,11 +578,11 @@ df_final = df_final[[
     'earliest_Outcome_COS',
     'latest_Outcome_COS'
 ]]
-print(f"  âœ… {len(df_final):,} rows in df_final")
+pass
 
 
-# â”€â”€ CELL 9: Row-level Improvement Flag â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-print("\n[Step 5] Computing improvement_flagâ€¦")
+# ?"??"? CELL 9: Row-level Improvement Flag ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+pass
 
 df_final["improvement_flag"] = np.where(
     # Special case: no signal at all
@@ -607,28 +607,28 @@ df_final["improvement_flag"] = np.where(
 )
 
 
-# â”€â”€ STEP 5b: Managed Care Programme Flag â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? STEP 5b: Managed Care Programme Flag ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 # Out of all retested users, check who had a managed care policy in:
-#
+
 #   2025 (PURELIFE codes):
-#     PURELIFE1 â†’ Diabetes Management
-#     PURELIFE2 â†’ Dyslipidemia Management
-#     PURELIFE3 â†’ Thyroid Care
-#     PURELIFE4 â†’ Liver Care
-#     PURELIFE5 â†’ Kidney Care
-#
+#     PURELIFE1 ??' Diabetes Management
+#     PURELIFE2 ??' Dyslipidemia Management
+#     PURELIFE3 ??' Thyroid Care
+#     PURELIFE4 ??' Liver Care
+#     PURELIFE5 ??' Kidney Care
+
 #   2026 (VYTAL codes):
-#     VYTAL0126 â†’ Diabetes Management
-#     VYTAL0226 â†’ Dyslipidemia Management
-#     VYTAL0326 â†’ Thyroid Care
-#     VYTAL0426 â†’ Liver Care
-#     VYTAL0526 â†’ Kidney Care
-#
+#     VYTAL0126 ??' Diabetes Management
+#     VYTAL0226 ??' Dyslipidemia Management
+#     VYTAL0326 ??' Thyroid Care
+#     VYTAL0426 ??' Liver Care
+#     VYTAL0526 ??' Kidney Care
+
 # A user is tagged managed_care_flag = Y if they had a policy in EITHER year.
 # managed_care_year tells us which year (2025 / 2026 / Both).
-print(f"\n[Step 5b] Tagging managed care programme from previous year d_policy ({_cfg['prev_policy_date_from']} â€“ {_cfg['prev_policy_date_to']})â€¦")
+pass
 
-# â”€â”€ Product â†’ Programme mapping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? Product ??' Programme mapping ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 PRODUCT_PROGRAM_MAP = {
     # 2025 policies
     'PURELIFE1': 'Diabetes Management',
@@ -636,13 +636,13 @@ PRODUCT_PROGRAM_MAP = {
     'PURELIFE3': 'Thyroid Care',
     'PURELIFE4': 'Liver Care',
     'PURELIFE5': 'Kidney Care',
-    # 2026 policies — codes 01–05 (VYTAL0326=Liver, VYTAL0426=Kidney, VYTAL0526=Thyroid)
+    # 2026 policies - codes 01-05 (VYTAL0326=Liver, VYTAL0426=Kidney, VYTAL0526=Thyroid)
     'VYTAL0126': 'Diabetes Management',
     'VYTAL0226': 'Dyslipidemia Management',
     'VYTAL0326': 'Liver Care',
     'VYTAL0426': 'Kidney Care',
     'VYTAL0526': 'Thyroid Care',
-    # 2026 policies — codes 06–10
+    # 2026 policies - codes 06-10
     'VYTAL0626': 'Diabetes Management',
     'VYTAL0726': 'Dyslipidemia Management',
     'VYTAL0826': 'Liver Care',
@@ -652,7 +652,7 @@ PRODUCT_PROGRAM_MAP = {
 
 # Check managed care using retested users mobile hashes directly
 # We already have all retested users in df_final with their mobile_number_hash.
-# Query d_policy directly using mobile hashes â€” no orderid join needed.
+# Query d_policy directly using mobile hashes ??" no orderid join needed.
 # d_policy has mobile_number_hash for managed care product purchases.
 
 retest_hashes = df_final['mobile_number_hash'].dropna().unique().tolist()
@@ -667,11 +667,11 @@ for i in range(0, len(retest_hashes), CHUNK_SIZE):
     batch_num     = i // CHUNK_SIZE + 1
     total_batches = -(-len(retest_hashes) // CHUNK_SIZE)
 
-    # Source: d_policy table â€” has mobile_number_hash for managed care products
+    # Source: d_policy table ??" has mobile_number_hash for managed care products
     # Columns used:
-    #   mobile_number_hash  â€” user identifier (same hash used in camp data)
-    #   vlocity_ins_fsc__productcode__c â€” PURELIFE1-5 (2025) or VYTAL0126-0526 (2026)
-    #   created_at          â€” policy purchase date (used to extract year)
+    #   mobile_number_hash  ??" user identifier (same hash used in camp data)
+    #   vlocity_ins_fsc__productcode__c ??" PURELIFE1-5 (2025) or VYTAL0126-0526 (2026)
+    #   created_at          ??" policy purchase date (used to extract year)
     # If column names differ in d_policy, update them here only.
     # Tag using PREVIOUS year policy dates so the programme reflects last year's enrolment
     mc_q = (
@@ -760,7 +760,7 @@ else:
 
 
 
-# â”€â”€ STEP 5c: Appointment Count (non-critical â€” wrapped so CSV always saves) â”€â”€â”€
+# ?"??"? STEP 5c: Appointment Count (non-critical ??" wrapped so CSV always saves) ?"??"??"?
 LAST_YEAR_START = "2025-05-01"
 LAST_YEAR_END   = "2026-05-31"
 THIS_YEAR_START = "2026-06-01"
@@ -803,7 +803,7 @@ WHERE d.mobile_number_hash IN ({hashes_sql})
 """
         df_chunk = run_trino_query(q, TRINO_CONFIG)
         rows = len(df_chunk) if df_chunk is not None else 0
-        print(f"    Batch {batch_num}/{total_batches} â€” {rows} rows")
+        pass
         if df_chunk is not None and not df_chunk.empty:
             chunks.append(df_chunk)
     if chunks:
@@ -826,15 +826,15 @@ def agg_appts(df_appts, suffix):
     return agg
 
 
-print("\n[Step 5c] Querying appointmentsâ€¦")
+pass
 try:
     retest_hashes_for_appt = df_final["mobile_number_hash"].dropna().unique().tolist()
 
-    print(f"  Last year period ({LAST_YEAR_START} to {LAST_YEAR_END})â€¦")
+    pass
     df_appts_ly = fetch_appts_for_period(retest_hashes_for_appt, LAST_YEAR_START, LAST_YEAR_END)
     appt_agg_ly = agg_appts(df_appts_ly, suffix="ly")
 
-    print(f"  This year period ({THIS_YEAR_START} onwards)â€¦")
+    pass
     df_appts_ty = fetch_appts_for_period(retest_hashes_for_appt, THIS_YEAR_START)
     appt_agg_ty = agg_appts(df_appts_ty, suffix="ty")
 
@@ -863,7 +863,7 @@ try:
         print(f"  Non-MC: last year {nm_ly:,}/{non_total:,} | this year {nm_ty:,}/{non_total:,}")
 
 except Exception as _appt_err:
-    print(f"  âš ï¸  Appointment query failed (non-critical â€” will save without appt data): {_appt_err}")
+    pass
     for col in ["total_appts_ly","appts_completed_ly","lab_tests_ly","clinic_appts_ly",
                 "total_appts_ty","appts_completed_ty","lab_tests_ty","clinic_appts_ty"]:
         if col not in df_final.columns:
@@ -873,8 +873,8 @@ except Exception as _appt_err:
             df_final[col] = "N"
 
 
-# â”€â”€ CELL 12: Grouped Scores per (user Ã— impact) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-print("\n[Step 6] Grouping normalized scores per user Ã— impactâ€¦")
+# ?"??"? CELL 12: Grouped Scores per (user ?- impact) ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+pass
 
 grouped = df_final.groupby(['mobile_number_hash', 'impact']).agg(
     total_score_latest=('latest_Outcome_COS', 'sum'),
@@ -884,7 +884,7 @@ grouped = df_final.groupby(['mobile_number_hash', 'impact']).agg(
     num_tests_earliest=('earliest_Outcome_COS', 'count')
 ).reset_index()
 
-# Add latest_camp_date (YYYY-MM from df_curr) â€” dashboard filters by this
+# Add latest_camp_date (YYYY-MM from df_curr) ??" dashboard filters by this
 _date_map = (
     df_curr_retested.groupby('mobile_number_hash')['created_at']
                     .max().reset_index()
@@ -983,16 +983,16 @@ final_scores = grouped[[
     'latest_camp_date'
 ]]
 
-print(f"  âœ… {final_scores['mobile_number_hash'].nunique():,} unique users in final scores")
+pass
 print("\n  Improvement flag breakdown:")
 print(final_scores['improvement_flag'].value_counts().to_string())
 
 
-# â”€â”€ Save Outputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-print("\n[Step 7] Saving outputsâ€¦")
+# ?"??"? Save Outputs ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+pass
 
 # Output 1: RAW DATA
-# df_final = one row per user Ã— loinc_id (test)
+# df_final = one row per user ?- loinc_id (test)
 # Columns: mobile_number_hash, product_code, phr_id,
 #          loinc_id, test_name, units, gender, rnk,
 #          impact, lkp_test_name, cos, operator,
@@ -1008,11 +1008,11 @@ print("\n[Step 7] Saving outputsâ€¦")
 #          improvement_flag
 raw_data_file = os.path.join(OUTPUT_DIR, "managed_care_comparison_raw_data.csv")
 df_final.to_csv(raw_data_file, index=False)
-print(f"  âœ… Saved managed_care_comparison_raw_data.csv â†’ {raw_data_file}")
+pass
 pass  # print skipped
 
 # Output 2: GROUPED SCORES
-# final_scores = one row per user Ã— impact
+# final_scores = one row per user ?- impact
 # Columns: mobile_number_hash, impact,
 #          normalized_earliest, normalized_latest,
 #          score_change, improvement_flag
@@ -1020,8 +1020,8 @@ pass  # print skipped
 year_file = os.path.join(OUTPUT_DIR, f"managed_care_comparison_{SELECTED_CAMP_YEAR}.csv")
 final_scores.to_csv(year_file, index=False)
 save_dataframe(final_scores, "comparison_retest", if_exists="replace")
-print(f"  âœ… Saved managed_care_comparison_{SELECTED_CAMP_YEAR}.csv â†’ {year_file}")
-print(f"  âœ… Saved {len(final_scores):,} rows to managed_care.comparison_retest")
+pass
+pass
 
 # Merge all available year files into managed_care_comparison.csv (dashboard master)
 year_dfs = []
@@ -1035,16 +1035,16 @@ for yr in ["2025", "2026"]:
 if year_dfs:
     master = pd.concat(year_dfs, ignore_index=True)
     master.to_csv(OUTPUT_FILE, index=False)
-    print(f"  âœ… Saved managed_care_comparison.csv â†’ {OUTPUT_FILE}")
+    pass
     print(f"     Total: {master['mobile_number_hash'].nunique():,} unique users across all camp years")
 else:
     final_scores.to_csv(OUTPUT_FILE, index=False)
-    print(f"  âœ… Saved managed_care_comparison.csv â†’ {OUTPUT_FILE}")
+    pass
 
 pass  # print skipped
 
 
-# â”€â”€ CELL 16: User counts at each step (debug helper) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ?"??"? CELL 16: User counts at each step (debug helper) ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
 def count_users(df, name):
     print(f"  {name}: {df['mobile_number_hash'].nunique():,} unique users")
 

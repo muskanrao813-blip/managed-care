@@ -1,6 +1,6 @@
-﻿"""
+﻿?"""
 ============================================================
-MANAGED CARE 3.0 — SCRIPT 3b: Device & Lifestyle Eligibility (2026)
+MANAGED CARE 3.0 - SCRIPT 3b: Device & Lifestyle Eligibility (2026)
 ============================================================
 Purpose:
   - For each VYTAL-enrolled user (2026), score eligibility for:
@@ -15,7 +15,7 @@ Purpose:
                 then engagement_score DESC
   - Output: managed_care_device_eligibility_2026.csv
 
-Non-interactive — safe for daily pipeline.
+Non-interactive - safe for daily pipeline.
 Run after: Script 01, Script 02, Script 04, fetch_hra_wellness.py
 ============================================================
 """
@@ -29,7 +29,7 @@ from db_layer import save_dataframe
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
-# ── PATHS ─────────────────────────────────────────────────────────────────────
+# ?? PATHS ?????????????????????????????????????????????????????????????????????
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR   = next((os.path.join(SCRIPT_DIR, d) for d in ["Data","data","DATA"]
                    if os.path.isdir(os.path.join(SCRIPT_DIR, d))),
@@ -39,7 +39,7 @@ POLICY_CSV  = os.path.join(DATA_DIR, "managed_care_policy_data.csv")
 HRA_CSV     = os.path.join(DATA_DIR, "managed_care_hra_wellness.csv")
 OUTPUT_PATH = os.path.join(DATA_DIR, "managed_care_device_eligibility_2026.csv")
 
-# ── TRINO ─────────────────────────────────────────────────────────────────────
+# ?? TRINO ?????????????????????????????????????????????????????????????????????
 from config import TRINO_HOST, TRINO_USER, TRINO_PASSWORD
 _pw  = urllib.parse.quote_plus(TRINO_PASSWORD)
 _ENG = None
@@ -68,7 +68,7 @@ def q(sql, label='', retry=1):
 def sql_list(vals):
     return ', '.join(f"'{v}'" for v in vals)
 
-# ── CONSTANTS ─────────────────────────────────────────────────────────────────
+# ?? CONSTANTS ?????????????????????????????????????????????????????????????????
 COHORT_RANK    = {'Very High': 1, 'High': 2, 'Moderate': 3}
 DEVICE_SLOTS   = {'CGM': 100, 'Glucometer': 100, 'Weighing Machine': 100, 'BP Monitor': 100}
 LIFESTYLE_SLOTS = {'Metabolic Syndrome': 100, 'Stress Impact': 100, 'Alcohol Impact': 100}
@@ -84,7 +84,7 @@ CAMP_FROM   = '2026-04'       # biomarkers from 2026 camp reports
 
 # Confirmed available LOINC codes in BPC camp reports
 LOINC_HBAIC   = '4548-4'
-# BMI (39156-5) and BP (8480-6/8462-4) are vitals — NOT in lab parsed data
+# BMI (39156-5) and BP (8480-6/8462-4) are vitals - NOT in lab parsed data
 # Cholesterol/Dyslipidemia
 LOINC_CHOL    = '2093-3'   # Total Cholesterol
 LOINC_LDL     = '2089-1'   # LDL Cholesterol
@@ -127,18 +127,18 @@ SLEEP_LOW         = ['<6 hours','less than 6','fewer than 6','< 6','less than 6 
 
 BATCH_SIZE = 500
 
-# ── STEP 1: Load 2026 enrolled users ─────────────────────────────────────────
+# ?? STEP 1: Load 2026 enrolled users ?????????????????????????????????????????
 def load_enrolled():
     print("[1] Loading 2026 enrolled VYTAL users from policy CSV...")
     if not os.path.exists(POLICY_CSV):
-        print(f"  ERR: {POLICY_CSV} not found — run Script 04 first")
+        print(f"  ERR: {POLICY_CSV} not found - run Script 04 first")
         return pd.DataFrame()
     df = pd.read_csv(POLICY_CSV)
     df26 = df[
         df['policy_year_month'].astype(str).between(ENROLL_FROM, ENROLL_TO) &
         df['mc_product_code'].isin(VYTAL_CODES)
     ].copy()
-    # One row per user — keep highest-priority cohort if user appears in multiple
+    # One row per user - keep highest-priority cohort if user appears in multiple
     df26['cohort_rank'] = df26['cohort'].map(COHORT_RANK).fillna(9)
     df26 = df26.sort_values('cohort_rank').drop_duplicates('mobile_number_hash', keep='first')
     df26 = df26.rename(columns={'managed_care_program': 'programme'})[
@@ -148,7 +148,7 @@ def load_enrolled():
     print(f"  Cohort: {df26['cohort'].value_counts().to_dict()}")
     return df26
 
-# ── STEP 2: Fetch phr_ids from d_policy ──────────────────────────────────────
+# ?? STEP 2: Fetch phr_ids from d_policy ??????????????????????????????????????
 def fetch_phr_ids(hash_list):
     ids = sql_list(hash_list)
     df = q(f"""
@@ -160,13 +160,13 @@ def fetch_phr_ids(hash_list):
     """, 'phr_ids')
     return df.drop_duplicates('mobile_number_hash') if not df.empty else df
 
-# ── STEP 3: Fetch biomarkers (2026 camp BPC reports) ─────────────────────────
+# ?? STEP 3: Fetch biomarkers (2026 camp BPC reports) ?????????????????????????
 def fetch_biomarkers(hash_list):
     """
     Fetches all 5 clinical condition markers from camp lab reports:
     Diabetes (HbA1c), Cholesterol (Total/LDL/HDL/Trig), Liver (ALT/AST/GGT),
     Renal (Creatinine), Thyroid (TSH).
-    Note: BMI and BP are vitals — not available in lab parsed data.
+    Note: BMI and BP are vitals - not available in lab parsed data.
     """
     ids      = sql_list(hash_list)
     loincs   = sql_list(ALL_LOINCS)
@@ -214,9 +214,9 @@ def fetch_biomarkers(hash_list):
             wide[c] = np.nan
     return wide[empty_cols]
 
-# ── STEP 4: Fetch VYTAL appointments (2026 programme) ────────────────────────
+# ?? STEP 4: Fetch VYTAL appointments (2026 programme) ????????????????????????
 def fetch_appointments(hash_list):
-    # f_claim has no created_at column — VYTAL codes are 2026-only so no date filter needed
+    # f_claim has no created_at column - VYTAL codes are 2026-only so no date filter needed
     ids    = sql_list(hash_list)
     vcodes = sql_list(VYTAL_CODES)
     df = q(f"""
@@ -242,7 +242,7 @@ def fetch_appointments(hash_list):
     ).reset_index()
     return summary
 
-# ── STEP 5: Load & parse HRA wellness CSV ────────────────────────────────────
+# ?? STEP 5: Load & parse HRA wellness CSV ????????????????????????????????????
 _HRA_CACHE = None
 
 def load_hra():
@@ -292,22 +292,22 @@ def parse_hra(df_wide, phr_ids):
     return df.drop_duplicates('phr_id')[['phr_id','smoking_status','alcohol_frequency',
                                           'stress_level','sleep_hours','bmi_category','has_high_bp']]
 
-# ── STEP 6: Scoring & assignment ─────────────────────────────────────────────
+# ?? STEP 6: Scoring & assignment ?????????????????????????????????????????????
 def assign_device(row):
     """
-    CGM and Glucometer are glucose monitoring devices — ONLY for Diabetes programme users.
+    CGM and Glucometer are glucose monitoring devices - ONLY for Diabetes programme users.
     Non-Diabetes users get Weighing Machine or BP Monitor based on BMI/BP or programme.
 
     Diabetes users:
-      HbA1c > 8    → CGM  |  HbA1c 6.5–8 → Glucometer
-      No/low HbA1c → CGM (VH) or Glucometer (H/M) via programme fallback
+      HbA1c > 8    ? CGM  |  HbA1c 6.5-8 ? Glucometer
+      No/low HbA1c ? CGM (VH) or Glucometer (H/M) via programme fallback
 
     Non-Diabetes users:
-      BMI > 25 (from HRA) → Weighing Machine
-      BP > 140/90 (from HRA) → BP Monitor
+      BMI > 25 (from HRA) ? Weighing Machine
+      BP > 140/90 (from HRA) ? BP Monitor
       Programme fallback:
-        Dyslipidemia H/VH → BP Monitor  |  Dyslipidemia M → Weighing Machine
-        Thyroid / Liver / Kidney (any)  → Weighing Machine
+        Dyslipidemia H/VH ? BP Monitor  |  Dyslipidemia M ? Weighing Machine
+        Thyroid / Liver / Kidney (any)  ? Weighing Machine
     """
     hba1c     = row.get('hba1c')
     bmi       = row.get('bmi')
@@ -344,10 +344,10 @@ def assign_device(row):
 def count_morbidities(row):
     """
     Count confirmed risk conditions per orchestration doc:
-    Diabetes, Cholesterol, Renal, Liver, Thyroid — each = 1 morbidity.
+    Diabetes, Cholesterol, Renal, Liver, Thyroid - each = 1 morbidity.
     Uses lab biomarkers (abnormal thresholds) as primary source.
     Programme enrollment used as fallback when specific labs are missing.
-    BMI/BP not available from camp labs — skipped here; HRA BMI used if available.
+    BMI/BP not available from camp labs - skipped here; HRA BMI used if available.
     """
     conditions = set()
 
@@ -406,7 +406,7 @@ def assess_lifestyle(row):
         overweight = row['bmi'] > 25
     abnormal_hba = pd.notna(row.get('hba1c')) and row['hba1c'] >= 5.7
     # High BP: from HRA Q1007 (Yes/No) or lab SBP/DBP
-    # NOTE: 2026 HRA questionnaire does NOT include Q1007 — BP data unavailable from HRA
+    # NOTE: 2026 HRA questionnaire does NOT include Q1007 - BP data unavailable from HRA
     bp_from_hra = str(row.get('has_high_bp','')).strip().lower() == 'yes'
     bp_from_lab = (pd.notna(row.get('sbp')) and row['sbp'] > 140) or \
                   (pd.notna(row.get('dbp')) and row['dbp'] > 90)
@@ -419,7 +419,7 @@ def assess_lifestyle(row):
     stress_high  = any(s.lower() in stress_val for s in STRESS_HIGH)
 
     # Metabolic Syndrome criteria:
-    # - If BP data available: require all 3 (BMI overweight + HbA1c ≥5.7 + High BP)
+    # - If BP data available: require all 3 (BMI overweight + HbA1c ?5.7 + High BP)
     # - If BP not available (2026 HRA has no Q1007): require 2 of 2 (BMI + HbA1c)
     if bp_available:
         metabolic = overweight and abnormal_hba and high_bp
@@ -438,34 +438,34 @@ def assess_lifestyle(row):
 
 def calc_score(row):
     """
-    Scoring per orchestration doc (0–100 total):
-      Clinical Risk  (30%): morbidity count → raw 0–100, ×0.30 = 0–30 pts
-      Engagement     (25%): consultations from claims (0–25 raw), ×0.25/25×100 = 0–25 pts
+    Scoring per orchestration doc (0-100 total):
+      Clinical Risk  (30%): morbidity count ? raw 0-100, ?0.30 = 0-30 pts
+      Engagement     (25%): consultations from claims (0-25 raw), ?0.25/25?100 = 0-25 pts
                             App opens not available (0), consultations as recommended = 15 pts raw
-      Adherence      (25%): claim service types used as proxy for logs (0–25 raw), ×0.25 = 0–25 pts
-      Lifestyle      (20%): HRA risk factors (0–20 raw), ×0.20/20×100 = 0–20 pts
+      Adherence      (25%): claim service types used as proxy for logs (0-25 raw), ?0.25 = 0-25 pts
+      Lifestyle      (20%): HRA risk factors (0-20 raw), ?0.20/20?100 = 0-20 pts
     """
-    # 1. Clinical Risk — morbidity count → normalize to 0-100
+    # 1. Clinical Risk - morbidity count ? normalize to 0-100
     morbidities = count_morbidities(row)
-    if   morbidities >= 4: clinical_raw = 100       # more than 3 → 30 pts contribution
-    elif morbidities == 3: clinical_raw = 83.3       # triple       → 25 pts
-    elif morbidities == 2: clinical_raw = 66.7       # dual         → 20 pts
-    elif morbidities == 1: clinical_raw = 50.0       # single       → 15 pts
+    if   morbidities >= 4: clinical_raw = 100       # more than 3 ? 30 pts contribution
+    elif morbidities == 3: clinical_raw = 83.3       # triple       ? 25 pts
+    elif morbidities == 2: clinical_raw = 66.7       # dual         ? 20 pts
+    elif morbidities == 1: clinical_raw = 50.0       # single       ? 15 pts
     else:
         # fallback: use cohort when biomarkers not available
         cohort_map = {'Very High': 83.3, 'High': 66.7, 'Moderate': 50.0}
         clinical_raw = cohort_map.get(str(row.get('cohort','')), 50.0)
 
-    # 2. Engagement — appointment claims (proxy for consultations completed)
-    # Raw: app_opens (0–10, not available=0) + consultations (0–15)
-    # "As recommended" = ≥1 completed claim → 15 pts raw
+    # 2. Engagement - appointment claims (proxy for consultations completed)
+    # Raw: app_opens (0-10, not available=0) + consultations (0-15)
+    # "As recommended" = ?1 completed claim ? 15 pts raw
     appt_comp  = float(row.get('appt_completed', 0) or 0)
     appt_booked = float(row.get('appt_booked', 0) or 0)
     consult_raw = 15 if appt_comp >= 1 else (7 if appt_booked >= 1 else 0)
     engagement_raw = consult_raw   # app opens not available (0)
     engagement_normalized = (engagement_raw / 25) * 100   # normalize to 0-100
 
-    # 3. Adherence Intent — service types used as log proxy
+    # 3. Adherence Intent - service types used as log proxy
     # Nutritionist=diet(9), Health Monitoring=activity(8), Teleconsult=sleep(4), other=stress(4)
     appt_types = float(row.get('appt_types_used', 0) or 0)
     if   appt_types >= 4: adherence_raw = 25
@@ -475,7 +475,7 @@ def calc_score(row):
     else:                 adherence_raw = 0
     adherence_normalized = (adherence_raw / 25) * 100   # normalize to 0-100
 
-    # 4. Lifestyle Risk — HRA factors (already 0–20 scale)
+    # 4. Lifestyle Risk - HRA factors (already 0-20 scale)
     lifestyle_raw = 0
     if str(row.get('smoking_status','')).lower() in SMOKING_POSITIVE:
         lifestyle_raw += 10
@@ -500,7 +500,7 @@ def engagement_tier(score):
     if score >= 30: return 'Low'
     return 'Very Low'
 
-# ── STEP 7: Allocate slots (top 100 per device/assessment type) ───────────────
+# ?? STEP 7: Allocate slots (top 100 per device/assessment type) ???????????????
 def allocate_slots(df):
     """
     Priority: Very High cohort first, then High, then Moderate.
@@ -543,16 +543,16 @@ def allocate_slots(df):
 
     return df
 
-# ── MAIN ──────────────────────────────────────────────────────────────────────
+# ?? MAIN ??????????????????????????????????????????????????????????????????????
 def main():
     print("\n" + "="*60)
-    print("  MANAGED CARE 3.0 — Script 3b: Device Eligibility 2026")
+    print("  MANAGED CARE 3.0 - Script 3b: Device Eligibility 2026")
     print("="*60)
 
     # Step 1: Load enrolled users
     enrolled = load_enrolled()
     if enrolled.empty:
-        print("  No enrolled users found — aborting.")
+        print("  No enrolled users found - aborting.")
         return
 
     # Step 2: Load HRA once (reused across batches)
@@ -569,7 +569,7 @@ def main():
     for i in range(n_batches):
         batch = enrolled.iloc[i*BATCH_SIZE:(i+1)*BATCH_SIZE].copy()
         hashes = batch['mobile_number_hash'].dropna().tolist()
-        print(f"\n  Batch {i+1}/{n_batches} — {len(hashes)} users")
+        print(f"\n  Batch {i+1}/{n_batches} - {len(hashes)} users")
 
         # phr_ids
         df_phr = fetch_phr_ids(hashes)
@@ -605,7 +605,7 @@ def main():
             if c in batch.columns:
                 batch[c] = pd.to_numeric(batch[c], errors='coerce')
 
-        # Device & lifestyle — also tag whether Tier 1 (biomarker) or Tier 2 (programme) drove assignment
+        # Device & lifestyle - also tag whether Tier 1 (biomarker) or Tier 2 (programme) drove assignment
         def assign_device_tier(row):
             hba1c = row.get('hba1c')
             programme = str(row.get('programme', ''))
