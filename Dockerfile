@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir \
     requests
 
 # Copy code
-COPY "Manage care python" ./manage_care_python
+COPY Manage\ care\ python ./manage_care_python
 COPY care_ai_engine ./care_ai_engine
 COPY .env.template .
 
