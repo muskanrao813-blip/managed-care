@@ -98,6 +98,9 @@ def get_table_data(table_name):
     if df is None or df.empty:
         return jsonify({"data": [], "rows": 0, "message": "No data found"})
 
+    # Convert NaN to None for JSON serialization
+    df = df.where(pd.notna(df), None)
+
     # Convert to JSON-serializable format
     data = df.to_dict(orient="records")
     return jsonify({
