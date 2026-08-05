@@ -96,7 +96,7 @@ def init_schema():
                 if statement.strip():
                     conn.execute(text(statement))
 
-        print("✓ Schema created successfully")
+        print("[OK] Schema created successfully")
 
         # Verify tables
         with engine.connect() as conn:
@@ -104,27 +104,27 @@ def init_schema():
                 "SELECT table_name FROM information_schema.tables WHERE table_schema='managed_care'"
             ))
             tables = result.fetchall()
-            print(f"✓ Tables created: {len(tables)}")
+            print(f"[OK] Tables created: {len(tables)}")
             for table in tables:
                 print(f"  - managed_care.{table[0]}")
 
         return True
     except Exception as e:
-        print(f"✗ Error: {e}")
+        print(f"[ERROR] {e}")
         return False
 
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("  MANAGED CARE — Initialize Neon PostgreSQL Schema")
+    print("  MANAGED CARE - Initialize Neon PostgreSQL Schema")
     print("="*60)
     print(f"\nDatabase: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'Neon'}")
     print("\n")
 
     if init_schema():
         print("\n" + "="*60)
-        print("  ✓ Ready to use! Update db_config.py and run scripts.")
+        print("  [OK] Ready to use! Scripts can now push data.")
         print("="*60 + "\n")
     else:
         print("\n" + "="*60)
-        print("  ✗ Schema creation failed. Check database connection.")
+        print("  [ERROR] Schema creation failed. Check database connection.")
         print("="*60 + "\n")
