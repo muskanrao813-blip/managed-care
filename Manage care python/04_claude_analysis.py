@@ -26,6 +26,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 import urllib
 from datetime import datetime
 from sqlalchemy import create_engine, text
+from db_layer import save_dataframe
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 from config import TRINO_HOST, TRINO_USER, TRINO_PASSWORD

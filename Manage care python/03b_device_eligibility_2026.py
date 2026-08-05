@@ -24,6 +24,7 @@ import sys, os, math, urllib
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine, text
+from db_layer import save_dataframe
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
@@ -650,6 +651,7 @@ def main():
     df_out = df_all[[c for c in final_cols if c in df_all.columns]].copy()
     df_out['run_date'] = pd.Timestamp.today().strftime('%Y-%m-%d')
     df_out.to_csv(OUTPUT_PATH, index=False)
+    save_dataframe(df_out, "device_eligibility", if_exists="replace")
 
     # Summary
     total = len(df_out)
