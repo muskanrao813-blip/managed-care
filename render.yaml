@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: managed-care-skill
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TRINO_HOST
+        sync: false
+      - key: TRINO_PORT
+        sync: false
+      - key: TRINO_USERNAME
+        sync: false
+      - key: TRINO_PASSWORD
+        sync: false
+      - key: TRINO_CATALOG
+        sync: false
+      - key: TRINO_SCHEMA
+        sync: false
+      - key: DATABASE_URL
+        sync: false
