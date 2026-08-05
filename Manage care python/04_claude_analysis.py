@@ -1,14 +1,14 @@
-﻿?"""
+"""
 ============================================================
-MANAGED CARE 3.0 - SCRIPT 4: Claude AI Analysis
+MANAGED CARE 3.0  SCRIPT 4: Claude AI Analysis
 ============================================================
-Reads CSVs + queries d_policy ? computes KPIs ? generates
-insights ? saves data/claude_insights.json
+Reads CSVs + queries d_policy  computes KPIs  generates
+insights  saves data/claude_insights.json
 
 AI provider (tries in order, uses first that works):
-  1. Groq    - pip install groq  + set GROQ_API_KEY
-  2. Gemini  - pip install google-generativeai + set GEMINI_API_KEY
-  3. Rule-based - always works, no API key needed
+  1. Groq     pip install groq  + set GROQ_API_KEY
+  2. Gemini   pip install google-generativeai + set GEMINI_API_KEY
+  3. Rule-based  always works, no API key needed
 
 Run: python 04_claude_analysis.py
 ============================================================
@@ -26,9 +26,8 @@ if hasattr(sys.stdout, 'reconfigure'):
 import urllib
 from datetime import datetime
 from sqlalchemy import create_engine, text
-from db_layer import save_dataframe
 
-# ?? CONFIG ????????????????????????????????????????????????????????????????????
+#  CONFIG 
 from config import TRINO_HOST, TRINO_USER, TRINO_PASSWORD
 TRINO_CONFIG = {
     "user":     TRINO_USER,
@@ -50,43 +49,43 @@ if DATA_DIR is None:
 
 print(f"Data folder: {DATA_DIR}")
 
-# ?? SELECTED CAMP YEAR - single control knob ?????????????????????????????????
-# "2025" ? fiscal year Apr 2025 - Mar 2026  |  f_claim: BFLPL*  |  d_policy: PURELIFE
-# "2026" ? fiscal year Apr 2026 - present   |  f_claim: BPC*    |  d_policy: VYTAL
+#  SELECTED CAMP YEAR  single control knob 
+# "2025"  fiscal year Apr 2025  Mar 2026  |  f_claim: BFLPL*  |  d_policy: PURELIFE
+# "2026"  fiscal year Apr 2026  present   |  f_claim: BPC*    |  d_policy: VYTAL
 SELECTED_CAMP_YEAR = "2026"
 
-# ?? CAMP PRODUCT CODES (f_claim) - by fiscal year ?????????????????????????????
+#  CAMP PRODUCT CODES (f_claim)  by fiscal year 
 CAMP_CODES_BY_YEAR = {
     "2024": ["BFLPL01","BFLPL02","BFLPL03","BFLPLH01","BFLPLH02","BFLPLH03","BFLPL04"],  # Feb-Jul 2024
-    "2025": ["BPC01","BPC02","BPC03","BFLPURE01","BFLPURE02"],                            # Apr 2025 - Mar 2026
+    "2025": ["BPC01","BPC02","BPC03","BFLPURE01","BFLPURE02"],                            # Apr 2025  Mar 2026
     "2026": ["BPC01","BPC02","BPC03"],                                                    # Apr 2026 onwards
 }
 
-# ?? FISCAL YEAR DATE RANGES - April to March ??????????????????????????????????
+#  FISCAL YEAR DATE RANGES  April to March 
 CAMP_DATE_RANGES = {
     "2024": {"from": "2024-02", "to": "2024-07"},
     "2025": {"from": "2025-04", "to": "2026-03"},
     "2026": {"from": "2026-04", "to": None},      # None = no upper limit
 }
 
-# Derived constants - change SELECTED_CAMP_YEAR above, not these
+# Derived constants  change SELECTED_CAMP_YEAR above, not these
 _yr_range           = CAMP_DATE_RANGES[SELECTED_CAMP_YEAR]
 DATE_FROM           = _yr_range["from"]
 DATE_TO             = _yr_range["to"] or "2099-12"
 CAMP_CODES_CURRENT  = CAMP_CODES_BY_YEAR[SELECTED_CAMP_YEAR]
 CAMP_CODES_PREVIOUS = CAMP_CODES_BY_YEAR["2025"] if SELECTED_CAMP_YEAR == "2026" else []
 
-# ?? ENROLLMENT DATE RANGES (d_policy) - by fiscal year ???????????????????????
+#  ENROLLMENT DATE RANGES (d_policy)  by fiscal year 
 # Distinct from camp dates: enrollment window is when policies were created
 ENROLLMENT_DATE_RANGES = {
-    "2025": {"from": "2025-06", "to": "2026-05"},   # PURELIFE: Jun 2025 - May 2026 (programme assigned Jun 2025)
-    "2026": {"from": "2026-06", "to": "2027-05"},   # VYTAL:    Jun 2026 - May 2027
+    "2025": {"from": "2025-06", "to": "2026-05"},   # PURELIFE: Jun 2025  May 2026 (programme assigned Jun 2025)
+    "2026": {"from": "2026-06", "to": "2027-05"},   # VYTAL:    Jun 2026  May 2027
 }
 
 # Enrollment year follows the selected camp year automatically
 ENROLLED_YEAR = SELECTED_CAMP_YEAR
 
-# ?? POLICY CODES (d_policy) - Total Enrolled ??????????????????????????????????
+#  POLICY CODES (d_policy)  Total Enrolled 
 YEAR_CODES = {
     "2025": ["PURELIFE1","PURELIFE2","PURELIFE3","PURELIFE4","PURELIFE5"],
     "2026": ["VYTAL0126","VYTAL0226","VYTAL0326","VYTAL0426","VYTAL0526",
@@ -99,11 +98,11 @@ PRODUCT_PROGRAM = {
     "PURELIFE1":"Diabetes Management",    "PURELIFE2":"Dyslipidemia Management",
     "PURELIFE3":"Thyroid Care",           "PURELIFE4":"Liver Care",
     "PURELIFE5":"Kidney Care",
-    # VYTAL (2026 policies) - codes 01-05 per programme
+    # VYTAL (2026 policies)  codes 0105 per programme
     "VYTAL0126":"Diabetes Management",    "VYTAL0226":"Dyslipidemia Management",
     "VYTAL0326":"Liver Care",             "VYTAL0426":"Kidney Care",
     "VYTAL0526":"Thyroid Care",
-    # VYTAL (2026 policies) - codes 06-10 per programme
+    # VYTAL (2026 policies)  codes 0610 per programme
     "VYTAL0626":"Diabetes Management",    "VYTAL0726":"Dyslipidemia Management",
     "VYTAL0826":"Liver Care",             "VYTAL0926":"Kidney Care",
     "VYTAL01026":"Thyroid Care",
@@ -131,7 +130,7 @@ PROGRAM_IMPACT_MAP = {
     "Kidney Care":            ["Kidney dysfunction"],
 }
 
-# Reverse map: impact ? programme name (for grouping)
+# Reverse map: impact  programme name (for grouping)
 IMPACT_PROGRAM_MAP = {
     "Diabetes":"Diabetes Management",
     "Diabetes mellitus":"Diabetes Management",
@@ -145,17 +144,17 @@ IMPACT_PROGRAM_MAP = {
 DEVICE_2025_FILE = os.path.join(SCRIPT_DIR, "2025_device_recipients.xlsx")
 
 
-# ?? TRINO ?????????????????????????????????????????????????????????????????????
+#  TRINO 
 def run_trino_query(query, retry=1):
     try:
         pw  = urllib.parse.quote_plus(str(TRINO_CONFIG["password"]))
         env = TRINO_CONFIG["env"]
         url = (
-            f"trino://{TRINO_CONFIG['user']}:{pw}@trino-prod.healthrx.co.in:443/system?http_scheme=https"
+            f"trino://{TRINO_CONFIG['user']}:{pw}@trino-prod.healthrx.co.in:443/systemxhttp_scheme=https"
             if env == "Prod"
-            else f"trino://{TRINO_CONFIG['user']}:{pw}@trino-dev.healthrx.co.in:443/system?http_scheme=https"
+            else f"trino://{TRINO_CONFIG['user']}:{pw}@trino-dev.healthrx.co.in:443/systemxhttp_scheme=https"
         )
-        engine = create_engine(url)
+        engine = create_engine(url, connect_args={"verify": False})
         with engine.connect() as conn:
             result = conn.execute(text(query))
             df = pd.DataFrame(result.fetchall(), columns=result.keys())
@@ -167,9 +166,11 @@ def run_trino_query(query, retry=1):
             return run_trino_query(query, retry - 1)
         return None
 
+
+# 
 # TOTAL CAMP REPORTS COUNT  (f_claim + customers join)
 # Returns {"total_reports": N, "total_users": N}
-
+# 
 def fetch_camp_reports_count(date_from, date_to, camp_codes):
     codes_sql = ", ".join(f"'{c}'" for c in camp_codes)
     date_filter = ""
@@ -199,31 +200,35 @@ def fetch_camp_reports_count(date_from, date_to, camp_codes):
     return {"total_reports": total_reports, "total_users": total_users, "source": "f_claim"}
 
 
-# ?? CSV LOADER ????????????????????????????????????????????????????????????????
+#  CSV LOADER 
 def load_csv(filename):
     path = os.path.join(DATA_DIR, filename)
     if not os.path.exists(path):
-        pass
+        print(f"    Not found: {filename}")
         return pd.DataFrame()
     df = pd.read_csv(path, low_memory=False)
-    pass
+    print(f"   {filename}: {len(df):,} rows, {df['mobile_number_hash'].nunique():,} unique users")
     return df
 
-# KPI 1: TOTAL CAMP
 
+# 
+# KPI 1: TOTAL CAMP
+# 
 def compute_total_camp(impact_scores):
     return int(impact_scores["mobile_number_hash"].nunique()) if not impact_scores.empty else 0
 
-# KPI 2 + 7: FETCH POLICY DATA (d_policy fresh query)
 
+# 
+# KPI 2 + 7: FETCH POLICY DATA (d_policy fresh query)
+# 
 def fetch_policy_data(year, codes):
     """
     Fetch enrolled users from d_policy.
-    SELECT * is blocked - only specific columns.
+    SELECT * is blocked  only specific columns.
     Cohort__c: auto-discovered if exists, else fallback to normalized scores.
     """
     codes_sql = ", ".join(f"'{c}'" for c in codes)
-    pass
+    print(f"\n  Querying d_policy for {year} ({', '.join(codes)})")
 
     # lob__c holds Moderate/High/Very High risk tier for VYTAL users
     cohort_col = "lob__c" if year == "2026" else None
@@ -250,21 +255,23 @@ def fetch_policy_data(year, codes):
     """
     df = run_trino_query(q)
     if df is None or df.empty:
-        pass
+        print("    No policy data returned")
         return pd.DataFrame()
 
     df["managed_care_program"] = df["mc_product_code"].map(PRODUCT_PROGRAM).fillna("Unknown")
     if "policy_cohort" not in df.columns:
         df["policy_cohort"] = None
-    pass
+    print(f"   {df['mobile_number_hash'].nunique():,} enrolled users")
     return df
 
-# KPI 7b: COHORT SPLIT
 
+# 
+# KPI 7b: COHORT SPLIT
+# 
 def compute_cohort_split(policy_df, impact_scores=None):
     """
     Step 1: Use policy_cohort from d_policy (Cohort__c) if available.
-    Step 2: Fallback - derive from normalized_score in impact_scores.
+    Step 2: Fallback  derive from normalized_score in impact_scores.
             Lower score = higher risk (more disease burden).
     """
     # Step 1: d_policy cohort column
@@ -281,11 +288,11 @@ def compute_cohort_split(policy_df, impact_scores=None):
                 "source":    "d_policy Cohort__c"
             }
             if sum(v for k,v in result.items() if k != "source") > 0:
-                pass
+                print(f"   Cohort from d_policy: {result}")
                 return result
 
-    # Step 2: Fallback - normalized_score from impact_scores
-    pass
+    # Step 2: Fallback  normalized_score from impact_scores
+    print("    Cohort column empty  deriving from normalized_score (lower = higher risk)")
     if impact_scores is None or impact_scores.empty:
         return {"Very High":0,"High":0,"Moderate":0,"Low":0,"source":"unavailable"}
 
@@ -310,7 +317,7 @@ def compute_cohort_split(policy_df, impact_scores=None):
     # Take max score per user across all impacts
     user_scores = df_s.groupby("mobile_number_hash")[score_col].max()
 
-    # Lower score = higher risk - quartile thresholds
+    # Lower score = higher risk  quartile thresholds
     p25 = user_scores.quantile(0.25)
     p50 = user_scores.quantile(0.50)
     p75 = user_scores.quantile(0.75)
@@ -329,11 +336,13 @@ def compute_cohort_split(policy_df, impact_scores=None):
         "Low":       int(counts.get("Low",        0)),
         "source":    f"normalized_score quartiles ({score_col})"
     }
-    pass
+    print(f"   Cohort from normalized scores: {result}")
     return result
 
-# KPI 3 + 8: IMPROVEMENT PIVOT
 
+# 
+# KPI 3 + 8: IMPROVEMENT PIVOT
+# 
 def compute_improvement_pivot(comp, year_codes):
     """
     Pivot table matching Excel output:
@@ -342,7 +351,7 @@ def compute_improvement_pivot(comp, year_codes):
       Cols    = improvement_flag counts + %
 
     Key rule: Programme user counted only on the impact
-    matching their programme (PURELIFE1 ? Diabetes rows only).
+    matching their programme (PURELIFE1  Diabetes rows only).
 
     Auto-detects which year codes are actually in the CSV
     (handles mismatch between selected year and CSV content).
@@ -360,16 +369,16 @@ def compute_improvement_pivot(comp, year_codes):
     codes_in_csv     = all_codes_in_csv & all_known_codes
 
     if not codes_in_csv:
-        pass
+        print("    No managed care product codes found in comparison CSV")
         print(f"     Unique mc_product_code values: {sorted(all_codes_in_csv)[:10]}")
         return {"total_retested":comp["mobile_number_hash"].nunique(),"mc_users":0,"non_mc_users":comp["mobile_number_hash"].nunique(),"by_programme":{},"overall_mc_improved_pct":0,"overall_non_mc_improved_pct":0}
 
     # Use codes actually found in CSV (not the requested year codes)
     effective_codes = list(codes_in_csv)
     if set(effective_codes) != set(year_codes):
-        pass
-        pass
-        pass
+        print(f"    Requested year codes: {year_codes}")
+        print(f"    Codes found in CSV:   {effective_codes}")
+        print(f"    Using codes found in CSV for pivot calculation")
     year_codes = effective_codes
 
     total_retested = comp["mobile_number_hash"].nunique()
@@ -451,8 +460,10 @@ def compute_improvement_pivot(comp, year_codes):
     print(f"  Overall MC improved: {pivot['overall_mc_improved_pct']}% vs non-MC: {pivot['overall_non_mc_improved_pct']}%")
     return pivot
 
-# KPI 4: ZERO APPOINTMENT USERS
 
+# 
+# KPI 4: ZERO APPOINTMENT USERS
+# 
 def compute_zero_appt(comp, policy_df, year):
     if comp.empty:
         return {"zero_appt":0,"enrolled":0,"pct":0}
@@ -465,7 +476,7 @@ def compute_zero_appt(comp, policy_df, year):
         comp2["mc_product_code"] = comp2["mc_product_code"].fillna("None").astype(str)
         codes_in_csv = set(comp2["mc_product_code"].unique()) & all_known
         enrolled = set(comp2[comp2["mc_product_code"].isin(codes_in_csv)]["mobile_number_hash"].dropna())
-        pass
+        print(f"    policy_df empty  using {len(enrolled):,} MC users from CSV as enrolled")
     else:
         enrolled = set(policy_df["mobile_number_hash"].dropna())
     clin_col = "clinic_appts_ty" if year == "2026" else "clinic_appts_ly"
@@ -479,7 +490,7 @@ def compute_zero_appt(comp, policy_df, year):
     # Users with at least one appointment in comparison CSV
     has_appt = set(ec[((clin > 0) | (lab > 0))]["mobile_number_hash"].dropna())
     # All enrolled minus those with appts = zero-appt users
-    # (includes enrolled users not in comparison at all - no retest = no appt record)
+    # (includes enrolled users not in comparison at all  no retest = no appt record)
     enr_n  = len(enrolled)
     zero_n = enr_n - len(has_appt)
 
@@ -489,8 +500,10 @@ def compute_zero_appt(comp, policy_df, year):
         "pct":       round(zero_n/enr_n*100, 2) if enr_n > 0 else 0
     }
 
-# KPI 5: DEVICE IMPROVEMENT
 
+# 
+# KPI 5: DEVICE IMPROVEMENT
+# 
 def compute_device_improvement(comp, device, policy_df, year_codes, year):
     result = {
         "device_users_total":0,"device_improved":0,"device_improved_pct":0,
@@ -509,7 +522,7 @@ def compute_device_improvement(comp, device, policy_df, year_codes, year):
         result["data_source"] = "managed_care_device_eligibility.csv"
     else:
         if not os.path.exists(DEVICE_2025_FILE):
-            result["data_source"] = "2025_device_recipients.xlsx - upload required"
+            result["data_source"] = "2025_device_recipients.xlsx  upload required"
             return result
         df_d = pd.read_excel(DEVICE_2025_FILE)
         with_dev    = set(df_d["mobile_number_hash"].dropna())
@@ -547,8 +560,10 @@ def compute_device_improvement(comp, device, policy_df, year_codes, year):
     })
     return result
 
-# KPI 6: APPOINTMENTS + ENGAGEMENT
 
+# 
+# KPI 6: APPOINTMENTS + ENGAGEMENT
+# 
 def compute_appt_stats(comp, policy_df, year):
     if comp.empty or policy_df.empty:
         return {"total_booked":0,"completed":0,"completion_pct":0,"lab_tests":0,"clinic_appts":0}
@@ -574,8 +589,10 @@ def compute_engagement(device, policy_df):
     return {k: {"n":int(counts.get(k,0)), "pct":round(counts.get(k,0)/total*100,2) if total else 0}
             for k in ["High","Moderate","Low","Very Low"]}
 
-# SAVE POLICY CSV - all years, for dashboard date filtering
 
+# 
+# SAVE POLICY CSV  all years, for dashboard date filtering
+# 
 def save_policy_csv_for_dashboard():
     """
     Fetch ALL managed care policies (both years) excluding test users
@@ -599,7 +616,7 @@ def save_policy_csv_for_dashboard():
       AND (is_test_policy__c = FALSE OR is_test_policy__c IS NULL)
       AND substring(cast(createddate AS VARCHAR), 1, 7) >= '2025-06'
     """
-    pass
+    print("  Querying all policy data for dashboard CSV")
     df = run_trino_query(q)
     if df is None or df.empty:
         print("  WARNING: No policy data returned for dashboard CSV")
@@ -607,11 +624,13 @@ def save_policy_csv_for_dashboard():
     df["managed_care_program"] = df["mc_product_code"].map(PRODUCT_PROGRAM).fillna("Unknown")
     path = os.path.join(DATA_DIR, "managed_care_policy_data.csv")
     df.to_csv(path, index=False)
-    print(f"  Saved managed_care_policy_data.csv - {df['mobile_number_hash'].nunique():,} unique enrolled users")
+    print(f"  Saved managed_care_policy_data.csv  {df['mobile_number_hash'].nunique():,} unique enrolled users")
     return df
 
-# SAVE CAMP MONTHLY CSV - for dashboard date filtering
 
+# 
+# SAVE CAMP MONTHLY CSV  for dashboard date filtering
+# 
 def save_camp_monthly_csv():
     """
     Fetch monthly camp report counts for 2025 and 2026 camp years.
@@ -641,7 +660,7 @@ def save_camp_monthly_csv():
         GROUP BY 1
         ORDER BY 1
         """
-        pass
+        print(f"  Querying monthly camp counts for {camp_year}")
         df = run_trino_query(q)
         if df is not None and not df.empty:
             results.append(df)
@@ -651,19 +670,21 @@ def save_camp_monthly_csv():
         combined = pd.concat(results, ignore_index=True)
         path = os.path.join(DATA_DIR, "managed_care_camp_monthly.csv")
         combined.to_csv(path, index=False)
-        print(f"  Saved managed_care_camp_monthly.csv - {len(combined)} month rows")
+        print(f"  Saved managed_care_camp_monthly.csv  {len(combined)} month rows")
         return combined
     return pd.DataFrame()
 
-# APPOINTMENTS UTILIZATION CSV - for dashboard
 
+# 
+# APPOINTMENTS UTILIZATION CSV  for dashboard
+# 
 def fetch_appointments_utilization():
     """
     Fetch claim records from f_claim for enrolled PURELIFE/VYTAL users.
     Source of truth: d_policy (masterphrid = phr_id in f_claim).
-    Avoids customers table - counts all claims for policy holders regardless
+    Avoids customers table  counts all claims for policy holders regardless
     of whether they have a lab order in customers.
-    Enrollment window: 2025 = Jun 2025-May 2026 | 2026 = Jun 2026-May 2027
+    Enrollment window: 2025 = Jun 2025May 2026 | 2026 = Jun 2026May 2027
     """
     APPT_ENROLL = {
         "2025": {"from": "2025-06", "to": "2026-05"},
@@ -677,10 +698,10 @@ def fetch_appointments_utilization():
         cs = ", ".join(f"'{c}'" for c in pol_codes)
         print(f"\n  [Appointments {year}] Enroll window: {ef} to {et}")
 
-        # f_claim filtered by product_code - all claims for PURELIFE/VYTAL holders.
+        # f_claim filtered by product_code  all claims for PURELIFE/VYTAL holders.
         # LEFT JOIN customers only to get mobile_number_hash (identity, not a filter).
         # appointment_date is the actual appointment date for correct month bucketing.
-        # COUNT(DISTINCT claim_id) - unique appointments, no fan-out duplication.
+        # COUNT(DISTINCT claim_id)  unique appointments, no fan-out duplication.
         # GROUP BY phr_id (not mobile_hash) so all claims are counted even those
         # without a customers record.
         df_claims = run_trino_query(f"""
@@ -705,7 +726,7 @@ def fetch_appointments_utilization():
             GROUP BY fc.phr_id, 3, 4, 5, 6
         """)
 
-        # Enrolled count from d_policy - used only for zero-appt denominator
+        # Enrolled count from d_policy  used only for zero-appt denominator
         df_enr = run_trino_query(f"""
             SELECT COUNT(DISTINCT personmobilephone_hash) AS enrolled
             FROM deltalake.dl_standard_customermart.d_policy
@@ -727,7 +748,7 @@ def fetch_appointments_utilization():
         df_claims["claim_count"] = pd.to_numeric(df_claims["claim_count"], errors="coerce").fillna(0).astype(int)
 
         nc_total  = int(df_claims[~df_claims["claim_status"].isin(["Cancelled"])]["claim_count"].sum())
-        # Count distinct phr_ids (not mobile hashes) - correct unique user count
+        # Count distinct phr_ids (not mobile hashes)  correct unique user count
         # mobile_number_hash can be NULL when phr_id has no customers record
         booked    = df_claims[df_claims["claim_status"].isin(["Authorized","Redeemed","Paid"])]["phr_id"].nunique()
         redeemed  = int(df_claims[df_claims["claim_status"] == "Redeemed"]["claim_count"].sum())
@@ -739,27 +760,29 @@ def fetch_appointments_utilization():
                                    "benefit_name","claim_status","claim_month","claim_count","cohort"]])
 
     if not results:
-        print("  No appointment data - CSV not saved")
+        print("  No appointment data  CSV not saved")
         return pd.DataFrame()
 
     combined = pd.concat(results, ignore_index=True)
     path = os.path.join(DATA_DIR, "managed_care_appt_utilization.csv")
     combined.to_csv(path, index=False)
-    print(f"\n  Saved managed_care_appt_utilization.csv - {len(combined):,} rows | {combined['mobile_number_hash'].nunique():,} unique users")
+    print(f"\n  Saved managed_care_appt_utilization.csv  {len(combined):,} rows | {combined['mobile_number_hash'].nunique():,} unique users")
     return combined
 
-# BUILD SUMMARY
 
+# 
+# BUILD SUMMARY
+# 
 def build_summary(year):
     # year here = ENROLLED_YEAR (d_policy year, e.g. "2025" for PURELIFE)
     codes = YEAR_CODES.get(year, YEAR_CODES["2025"])
 
-    pass
+    print("\n[1] Loading CSVs")
     impact_scores = load_csv("managed_care_impact_scores.csv")
     comp          = load_csv("managed_care_comparison.csv")
     device        = load_csv("managed_care_device_eligibility.csv")
 
-    pass
+    print("\n[2] Fetching Total Camp Reports from f_claim")
     # count(distinct order_id) = unique lab reports issued (authoritative source)
     camp_data  = fetch_camp_reports_count(DATE_FROM, DATE_TO, CAMP_CODES_CURRENT)
     camp_total = camp_data["total_reports"]
@@ -769,11 +792,11 @@ def build_summary(year):
         camp_total = camp_users
         camp_data["source"] = "impact_scores_fallback"
 
-    pass
+    print(f"\n[3] Querying d_policy for Total Enrolled (year={year}, {', '.join(codes)})")
     # Pass the ENROLLED_YEAR so d_policy is filtered by the correct policy year
     policy_df = fetch_policy_data(year, codes)
 
-    pass
+    print("\n[4] Computing KPIs")
     enrolled_policy_total = int(policy_df["mobile_number_hash"].nunique()) if not policy_df.empty else 0
 
     # Enrolled = policy holders who ALSO attended this camp cycle (impact_scores is the camp universe)
@@ -798,7 +821,7 @@ def build_summary(year):
     # No fallback: if d_policy returns 0 for this year's codes, show 0.
     # Avoids cross-contaminating 2026 display with 2025 PURELIFE numbers.
     if enrolled == 0:
-        pass
+        print(f"    No enrolled users found in d_policy for {year} codes  displaying 0")
 
     def _load_hra_stats():
         try:
@@ -819,7 +842,7 @@ def build_summary(year):
     appt_stats   = compute_appt_stats(comp, policy_df, year)
     engagement   = compute_engagement(device, policy_df)
 
-    pass
+    print(f"\n   METRICS SUMMARY ")
     print(f"  Camp reports     : {camp_total:,}  (unique reports)")
     print(f"  Camp users       : {camp_users:,}  (unique individuals screened)")
     print(f"  Enrolled         : {enrolled:,}  (d_policy, {'VYTAL' if year=='2026' else 'PURELIFE'} codes)")
@@ -834,11 +857,11 @@ def build_summary(year):
         "date_from": DATE_FROM,
         "date_to":   DATE_TO,
         "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        # Total Camp Reports - from f_claim count(distinct order_id)
+        # Total Camp Reports  from f_claim count(distinct order_id)
         "camp_total":   camp_total,   # unique lab reports issued
         "camp_users":   camp_users,   # unique individuals screened (unique mobile hashes)
         "camp_source":  camp_data.get("source", "f_claim"),
-        # Total Enrolled - from d_policy with PURELIFE/VYTAL codes
+        # Total Enrolled  from d_policy with PURELIFE/VYTAL codes
         "enrolled": enrolled,
         "prog_dist": prog_dist,
         "cohort_split": cohort_split,
@@ -850,8 +873,10 @@ def build_summary(year):
         "hra_stats": _load_hra_stats(),
     }
 
-# RULE-BASED INSIGHTS (no API needed)
 
+# 
+# RULE-BASED INSIGHTS (no API needed)
+# 
 def generate_rule_based_insights(s):
     piv        = s.get("improvement_pivot", {})
     mc_pct     = piv.get("overall_mc_improved_pct", 0)
@@ -876,18 +901,18 @@ def generate_rule_based_insights(s):
     year       = s.get("year", "2026")
 
     progs      = piv.get("by_programme", {})
-    best_prog  = max(progs, key=lambda p: progs[p].get("mc_improved_pct", 0)) if progs else "-"
-    worst_prog = min(progs, key=lambda p: progs[p].get("mc_improved_pct", 0)) if progs else "-"
+    best_prog  = max(progs, key=lambda p: progs[p].get("mc_improved_pct", 0)) if progs else ""
+    worst_prog = min(progs, key=lambda p: progs[p].get("mc_improved_pct", 0)) if progs else ""
     high_worsened_progs = sorted(
         [(k, v.get("mc_worsened_pct", 0)) for k, v in progs.items()],
         key=lambda x: x[1], reverse=True
     )
-    best_pct  = progs[best_prog].get("mc_improved_pct", 0) if best_prog != "-" else 0
-    worst_pct = progs[worst_prog].get("mc_improved_pct", 0) if worst_prog != "-" else 0
+    best_pct  = progs[best_prog].get("mc_improved_pct", 0) if best_prog != "" else 0
+    worst_pct = progs[worst_prog].get("mc_improved_pct", 0) if worst_prog != "" else 0
 
-    # ?? PM Daily Action Recommendations ?????????????????????????
+    #  PM Daily Action Recommendations 
     # These are operational actions a Product Manager can take TODAY
-    # based on current programme state - not historical comparisons.
+    # based on current programme state  not historical comparisons.
     recos = []
 
     # Derived programme breakdown for context
@@ -898,13 +923,13 @@ def generate_rule_based_insights(s):
     high_risk_n  = vh + high    # Very High + High combined
     dev_alloc    = (s.get("device_impr", {}).get("device_users_total", 0) or 0)
 
-    # 1. First Appointment Drive - {zero_n} users with no appointment
+    # 1. First Appointment Drive  {zero_n} users with no appointment
     if zero_n > 0:
         largest_prog = max(prog_dist, key=lambda k: prog_dist[k]) if prog_dist else "Dyslipidemia Management"
         largest_n    = prog_dist.get(largest_prog, 0)
         recos.append({
             "priority": 1,
-            "title": f"Drive first appointment for {zero_n:,} enrolled users - 0 booked so far",
+            "title": f"Drive first appointment for {zero_n:,} enrolled users  0 booked so far",
             "action": (
                 f"Send programme-specific booking links to all {enrolled:,} VYTAL users. "
                 f"Start with {largest_prog} ({largest_n:,} users). Very High ({vh:,}) and High ({high:,}) users "
@@ -915,7 +940,7 @@ def generate_rule_based_insights(s):
             "timeline": "This week"
         })
 
-    # 2. Very High cohort - care manager assignment list
+    # 2. Very High cohort  care manager assignment list
     if vh > 0:
         recos.append({
             "priority": 2,
@@ -930,11 +955,11 @@ def generate_rule_based_insights(s):
             "timeline": "Today"
         })
 
-    # 3. HRA Drive - low completion rate
+    # 3. HRA Drive  low completion rate
     if enrolled > 0 and hra_pct < 30:
         recos.append({
             "priority": 3,
-            "title": f"Push HRA completion - only {hra_done} of {enrolled:,} done ({hra_pct:.1f}%)",
+            "title": f"Push HRA completion  only {hra_done} of {enrolled:,} done ({hra_pct:.1f}%)",
             "action": (
                 f"Trigger in-app push + WhatsApp to all {enrolled - hra_done:,} users who haven't completed HRA. "
                 f"HRA completion unlocks lifestyle assessment slots (currently 0 of 300 allocated)."
@@ -946,14 +971,14 @@ def generate_rule_based_insights(s):
     else:
         recos.append({
             "priority": 3,
-            "title": f"Maintain HRA completion above 30% - currently at {hra_pct:.1f}%",
+            "title": f"Maintain HRA completion above 30%  currently at {hra_pct:.1f}%",
             "action": f"Weekly nudges for users who haven't completed HRA. Re-target low-completion programmes.",
             "expected_impact": "Maintain HRA completion above 30% across all programmes",
             "owner": "Product Manager",
             "timeline": "Weekly"
         })
 
-    # 4. Device eligibility - trigger allocation (not yet delivered for 2026)
+    # 4. Device eligibility  trigger allocation (not yet delivered for 2026)
     recos.append({
         "priority": 4,
         "title": "Review device eligibility list and initiate 2026 device allocation",
@@ -983,27 +1008,27 @@ def generate_rule_based_insights(s):
 
     return {
         "overview":{
-            "headline":f"Managed Care {year}: Programme users improve at {mc_pct:.1f}% vs {non_pct:.1f}% non-programme - {advantage}? advantage. {enrolled:,} of {camp:,} camp users enrolled ({coverage}% coverage).",
-            "critical_flag":f"{zero_n:,} enrolled users ({zero_pct}%) have zero appointments - immediate outreach needed." if zero_pct>0 else "Appointment coverage is strong.",
+            "headline":f"Managed Care {year}: Programme users improve at {mc_pct:.1f}% vs {non_pct:.1f}% non-programme  {advantage} advantage. {enrolled:,} of {camp:,} camp users enrolled ({coverage}% coverage).",
+            "critical_flag":f"{zero_n:,} enrolled users ({zero_pct}%) have zero appointments  immediate outreach needed." if zero_pct>0 else "Appointment coverage is strong.",
             "positive_flag":f"{best_prog} leads all programmes with {best_pct:.1f}% improvement rate."
         },
         "programme_outcomes":{
-            "narrative":f"Programme users improve at {mc_pct:.1f}% overall vs {non_pct:.1f}% for non-programme users - a {advantage}? advantage confirming managed care efficacy. {best_prog} leads at {best_pct:.1f}% while {worst_prog} at {worst_pct:.1f}% needs attention.",
-            "best_programme":best_prog,"best_programme_reason":f"{best_pct:.1f}% improvement - highest across all programmes.",
-            "worst_programme":worst_prog,"worst_programme_reason":f"{worst_pct:.1f}% improvement - needs protocol review and increased touchpoints.",
-            "advantage_narrative":f"Programme users are {advantage}? more likely to improve than non-programme users on the same health impact."
+            "narrative":f"Programme users improve at {mc_pct:.1f}% overall vs {non_pct:.1f}% for non-programme users  a {advantage} advantage confirming managed care efficacy. {best_prog} leads at {best_pct:.1f}% while {worst_prog} at {worst_pct:.1f}% needs attention.",
+            "best_programme":best_prog,"best_programme_reason":f"{best_pct:.1f}% improvement  highest across all programmes.",
+            "worst_programme":worst_prog,"worst_programme_reason":f"{worst_pct:.1f}% improvement  needs protocol review and increased touchpoints.",
+            "advantage_narrative":f"Programme users are {advantage} more likely to improve than non-programme users on the same health impact."
         },
         "cohort_analysis":{
             "narrative":f"{vh:,} Very High cohort users require immediate clinical intervention. These users carry the highest disease burden and risk deterioration without active managed care.",
             "very_high_action":f"Assign dedicated care managers to all {vh:,} Very High users and schedule fortnightly check-ins within 7 days.",
-            "coverage_insight":f"{coverage}% of camp attendees enrolled - {100-coverage:.1f}% remain unaddressed and represent a significant opportunity."
+            "coverage_insight":f"{coverage}% of camp attendees enrolled  {100-coverage:.1f}% remain unaddressed and represent a significant opportunity."
         },
         "devices":{
-            "narrative":f"Device users with managed care improve at {dev_pct:.1f}% vs {nodev_pct:.1f}% for non-device MC users - a {round(dev_pct-nodev_pct,1)} percentage point gap confirming device efficacy.",
+            "narrative":f"Device users with managed care improve at {dev_pct:.1f}% vs {nodev_pct:.1f}% for non-device MC users  a {round(dev_pct-nodev_pct,1)} percentage point gap confirming device efficacy.",
             "recommendation":"Implement 30-day device onboarding protocol with check-ins at day 7 and day 21 to ensure activation and consistent usage."
         },
         "appointments":{
-            "narrative":f"Appointment completion stands at {zero.get('pct',0):.1f}% among enrolled users. {zero_pct:.0f}% of enrolled users have had no appointments - the largest single gap in programme engagement.",
+            "narrative":f"Appointment completion stands at {zero.get('pct',0):.1f}% among enrolled users. {zero_pct:.0f}% of enrolled users have had no appointments  the largest single gap in programme engagement.",
             "zero_appt_action":f"Send personalised outreach to {zero_n:,} zero-appointment users within 2 weeks, segmented by programme type with direct specialist booking links."
         },
         "engagement":{
@@ -1013,12 +1038,14 @@ def generate_rule_based_insights(s):
         "recommendations": recos[:5]
     }
 
-# AI CALL (multi-provider with rule-based fallback)
 
+# 
+# AI CALL (multi-provider with rule-based fallback)
+# 
 def call_ai(summary):
     # Build prompt
     piv  = summary.get("improvement_pivot", {})
-    prg  = "\n".join([f"  {n}: {d['mc_total']} users, {d['mc_improved_pct']}% improved vs {d['np_improved_pct']}% non-MC ({d.get('advantage_x','-')}? adv)"
+    prg  = "\n".join([f"  {n}: {d['mc_total']} users, {d['mc_improved_pct']}% improved vs {d['np_improved_pct']}% non-MC ({d.get('advantage_x','')} adv)"
                       for n,d in piv.get("by_programme",{}).items()])
     coh  = summary.get("cohort_split", {})
     ct   = max(sum(v for k,v in coh.items() if k != "source"), 1)
@@ -1049,12 +1076,12 @@ Return ONLY valid JSON (no markdown):
 {{"overview":{{"headline":"...","critical_flag":"...","positive_flag":"..."}},"programme_outcomes":{{"narrative":"...","best_programme":"...","best_programme_reason":"...","worst_programme":"...","worst_programme_reason":"...","advantage_narrative":"..."}},"cohort_analysis":{{"narrative":"...","very_high_action":"...","coverage_insight":"..."}},"devices":{{"narrative":"...","recommendation":"..."}},"appointments":{{"narrative":"...","zero_appt_action":"..."}},"engagement":{{"narrative":"...","low_engagement_action":"..."}},"recommendations":[{{"priority":1,"title":"...","action":"...","expected_impact":"...","owner":"...","timeline":"..."}}]}}
 Produce exactly 5 recommendations. Base everything only on the numbers above."""
 
-    # Try Anthropic Claude Haiku (primary - for context extraction)
+    # Try Anthropic Claude Haiku (primary  for context extraction)
     anthropic_key = os.environ.get("ANTHROPIC_API_KEY", "")
     if anthropic_key:
         try:
             import anthropic as _anth
-            pass
+            print("  Using Claude Haiku (Anthropic)")
             client = _anth.Anthropic(api_key=anthropic_key)
             msg = client.messages.create(
                 model="claude-haiku-4-5-20251001",
@@ -1075,7 +1102,7 @@ Produce exactly 5 recommendations. Base everything only on the numbers above."""
     if groq_key:
         try:
             from groq import Groq
-            pass
+            print("  Using Groq")
             c = Groq(api_key=groq_key)
             r = c.chat.completions.create(model="llama-3.3-70b-versatile",max_tokens=2000,
                 messages=[{"role":"user","content":prompt}])
@@ -1091,7 +1118,7 @@ Produce exactly 5 recommendations. Base everything only on the numbers above."""
         try:
             import google.generativeai as genai
             genai.configure(api_key=gemini_key)
-            pass
+            print("  Using Gemini")
             m = genai.GenerativeModel("gemini-1.5-flash")
             r = m.generate_content(prompt)
             raw = r.text.strip()
@@ -1104,11 +1131,13 @@ Produce exactly 5 recommendations. Base everything only on the numbers above."""
     print("  Using rule-based insights (no API key set)")
     return generate_rule_based_insights(summary)
 
-# MAIN
 
+# 
+# MAIN
+# 
 def main():
     print("\n" + "="*60)
-    print(f"  MANAGED CARE 3.0 - Script 4: Analysis")
+    print(f"  MANAGED CARE 3.0  Script 4: Analysis")
     print(f"  Camp year    : {SELECTED_CAMP_YEAR}  ({DATE_FROM} to {_yr_range['to'] or 'present'})")
     print(f"  Camp codes   : {', '.join(CAMP_CODES_CURRENT)}")
     print(f"  Policy codes : {', '.join(YEAR_CODES[ENROLLED_YEAR])}")
@@ -1117,7 +1146,7 @@ def main():
     # Pass ENROLLED_YEAR so d_policy is queried with the correct year + codes
     summary  = build_summary(ENROLLED_YEAR)
 
-    pass
+    print("\n[5] Generating insights")
     insights = call_ai(summary)
 
     output = {
@@ -1135,12 +1164,12 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False, default=int)
 
-    pass
+    print(f"\n Saved  {out_path}")
 
-    pass
+    print("\n[6] Saving policy, camp monthly & appointment utilization CSVs")
     policy_df = save_policy_csv_for_dashboard()
     save_camp_monthly_csv()
-    pass
+    print("\n[7] Fetching appointment utilization from f_claim")
     appt_df = fetch_appointments_utilization()
 
     # Recalculate zero_appt using f_claim appointment data (not comparison CSV) for the enrolled year
@@ -1162,16 +1191,17 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False, default=int)
 
-    pass
+    print("\n[8] Fetching 2026 lifestyle assessment benefit assignments")
     fetch_benefit_assignments_2026()
 
     print("\n  Top recommendations:")
     for r in insights.get("recommendations", [])[:3]:
         print(f"    {r.get('priority')}. {r.get('title')} [{r.get('owner')}]")
-    pass
+    print("\n Done. Reload dashboard to see updated data.")
 
-# BENEFIT ASSIGNMENTS 2026 - lifestyle assessments assigned
-
+# 
+# BENEFIT ASSIGNMENTS 2026  lifestyle assessments assigned
+# 
 def fetch_benefit_assignments_2026():
     """
     Fetch assigned lifestyle assessment benefits from f_customerpolicybenefit
@@ -1180,7 +1210,7 @@ def fetch_benefit_assignments_2026():
     Benefit codes confirmed:
       BH-AAB = Alcohol Assessment Benefit
       BH-SAB = Stress Assessment Benefit
-      (Device benefit codes pending - will be added when available)
+      (Device benefit codes pending  will be added when available)
     """
     codes_sql = ", ".join(f"'{c}'" for c in YEAR_CODES["2026"])
     # Include all known benefit codes. Add device codes here when available.
@@ -1218,7 +1248,7 @@ def fetch_benefit_assignments_2026():
 
     path = os.path.join(DATA_DIR, "managed_care_benefit_assignments_2026.csv")
     df.to_csv(path, index=False)
-    print(f"  Saved managed_care_benefit_assignments_2026.csv - {len(df):,} rows | "
+    print(f"  Saved managed_care_benefit_assignments_2026.csv  {len(df):,} rows | "
           f"{df['mobile_number_hash'].nunique():,} unique users")
     print(f"  Breakdown:")
     for code, grp in df.groupby("benefit_code"):

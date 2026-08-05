@@ -1,15 +1,14 @@
-﻿?# Imports
+# Imports
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 import sqlparse
 import urllib
-from db_layer import save_dataframe
 
 
-# ?"??"? CAMP YEAR CONFIG ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
-# "2025" ??' fiscal year Apr 2025??"Mar 2026  |  product codes: BFLPL*
-# "2026" ??' fiscal year Apr 2026??"present   |  product codes: BPC*
+#  CAMP YEAR CONFIG 
+# "2025"  fiscal year Apr 2025Mar 2026  |  product codes: BFLPL*
+# "2026"  fiscal year Apr 2026present   |  product codes: BPC*
 SELECTED_CAMP_YEAR = "2026"
 
 CAMP_CONFIG = {
@@ -34,7 +33,7 @@ _cfg        = CAMP_CONFIG[SELECTED_CAMP_YEAR]
 _codes_sql  = _cfg["codes_sql"]
 _date_from  = _cfg["date_from"]
 _date_to    = _cfg["date_to"]
-# Build date filter SQL ??" upper bound only added when present (2025 fiscal year)
+# Build date filter SQL  upper bound only added when present (2025 fiscal year)
 _date_lower = f"substring(cast(d.\"created_at\" as VARCHAR),1,7) >= '{_date_from}'"
 _date_upper = (f"and substring(cast(d.\"created_at\" as VARCHAR),1,7) <= '{_date_to}'"
                if _date_to else "")
@@ -69,12 +68,12 @@ def trino_query(query: str, retry: int = 0):
         trinoPassUpdated = urllib.parse.quote_plus(str(trinoPass))
 
         connection_url = (
-            f"trino://{trinoUser}:{trinoPassUpdated}@trino-prod.healthrx.co.in:443/system?http_scheme=https"
+            f"trino://{trinoUser}:{trinoPassUpdated}@trino-prod.healthrx.co.in:443/systemxhttp_scheme=https"
             if env == 'Prod'
-            else f"trino://{trinoUser}:{trinoPassUpdated}@trino-dev.healthrx.co.in:443/system?http_scheme=https"
+            else f"trino://{trinoUser}:{trinoPassUpdated}@trino-dev.healthrx.co.in:443/systemxhttp_scheme=https"
         )
 
-        engine = create_engine(connection_url)
+        engine = create_engine(connection_url, connect_args={"verify": False})
 
         with engine.begin() as con:
             df = pd.read_sql(text(query), con)
@@ -95,9 +94,9 @@ def trino_query(query: str, retry: int = 0):
             return None, str(e)
 
 
-# Camp Data Query ??" fiscal year driven by SELECTED_CAMP_YEAR
+# Camp Data Query  fiscal year driven by SELECTED_CAMP_YEAR
 
-pass
+print(f"\n[Camp Year: {SELECTED_CAMP_YEAR}] Codes: {_codes_sql} | Period: {_date_from} to {_date_to or 'present'}")
 
 df, err = trino_query(query=f"""
 
@@ -182,7 +181,10 @@ where rnk = 1
 
 """)
 
+
+# 
 # Section 2 : Loading Lookups
+# 
 
 lkp_r = pd.read_excel(
     "d:\\OneDrive - Bajaj Finserv Health Limited\\Documents\\manage care\\manage care python\\Final_BFL_Lookup_THR 5.xlsx",
@@ -284,7 +286,10 @@ lkp_h.rename(columns=rename_columns, inplace=True)
 lkp_a.rename(columns=rename_columns, inplace=True)
 lkp_j.rename(columns=rename_columns, inplace=True)
 
+
+# 
 # Section 3 : Running Lookups to Map Outcome
+# 
 
 df_r = df[
     ~df['provider'].isin([
@@ -405,7 +410,10 @@ df_filtered_latest = (
     )
 )
 
+
+# 
 # Section 4 : Outcome Score Calculation
+# 
 
 def calculate_updated_outcome_value(row):
 
@@ -456,7 +464,10 @@ df_filtered2 = df_filtered_latest[
     df_filtered_latest['Outcome_COS'] > 0
 ].copy()
 
+
+# 
 # Section 5 : Grouped Scores on Impact Level
+# 
 
 import numpy as np
 
@@ -479,17 +490,20 @@ top_impact_per_user = (
            .drop_duplicates('mobile_number_hash', keep='first')
 )
 
+
+# 
 # OUTPUT
 # output_dir points to ./data/ next to this script
 # so the dashboard can read the CSVs automatically.
+# 
 
 import os
 
 output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 os.makedirs(output_dir, exist_ok=True)
 
-# ?"??"? Output 1: RAW DATA ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
-# df_filtered_latest = one row per user ?- loinc_id (test)
+#  Output 1: RAW DATA 
+# df_filtered_latest = one row per user  loinc_id (test)
 # Columns: mobile_number_hash, order_id, product_code, phr_id, created_at, MT,
 #          loinc_id, test_name, value, units, provider, gender, rnk,
 #          impact, lkp_test_name, cos, operator, lower_bound, upper_bound,
@@ -499,12 +513,14 @@ df_filtered_latest.to_csv(
     os.path.join(output_dir, "managed_care_raw_data.csv"),
     index=False
 )
+print(f" Saved managed_care_raw_data.csv  {len(df_filtered_latest):,} rows "
+      f"({df_filtered_latest['mobile_number_hash'].nunique():,} users  tests)")
 
-# ---- Output 2: GROUPED IMPACT SCORES ----
+#  Output 2: GROUPED IMPACT SCORES 
 # Save year-specific file + merge all years into master
 impact_year_file = os.path.join(output_dir, f"managed_care_impact_scores_{SELECTED_CAMP_YEAR}.csv")
 grouped.to_csv(impact_year_file, index=False)
-pass
+print(f" Saved managed_care_impact_scores_{SELECTED_CAMP_YEAR}.csv  {len(grouped):,} rows")
 
 _impact_dfs = []
 for _yr in ["2025", "2026"]:
@@ -516,15 +532,13 @@ if _impact_dfs:
     pd.concat(_impact_dfs, ignore_index=True).to_csv(
         os.path.join(output_dir, "managed_care_impact_scores.csv"), index=False
     )
-    pass
+    print(f" Saved managed_care_impact_scores.csv (master  all camp years)")
 
-# ?"??"? Output 3: PROGRAM ALLOCATION ?"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"??"?
+#  Output 3: PROGRAM ALLOCATION 
 # Save year-specific file + merge all years into master
-alloc_year_file = os.path.join(output_dir, 'managed_care_program_allocation_' + SELECTED_CAMP_YEAR + '.csv')
+alloc_year_file = os.path.join(output_dir, f"managed_care_program_allocation_{SELECTED_CAMP_YEAR}.csv")
 top_impact_per_user.to_csv(alloc_year_file, index=False)
-save_dataframe(top_impact_per_user, 'programme_allocation', if_exists='replace')
-pass
-pass
+print(f" Saved managed_care_program_allocation_{SELECTED_CAMP_YEAR}.csv  {len(top_impact_per_user):,} users")
 
 _alloc_dfs = []
 for _yr in ["2025", "2026"]:
@@ -535,7 +549,7 @@ if _alloc_dfs:
     pd.concat(_alloc_dfs, ignore_index=True).to_csv(
         os.path.join(output_dir, "managed_care_program_allocation.csv"), index=False
     )
-    pass
+    print(f" Saved managed_care_program_allocation.csv (master  all camp years  {sum(len(d) for d in _alloc_dfs):,} users)")
 
 
 
