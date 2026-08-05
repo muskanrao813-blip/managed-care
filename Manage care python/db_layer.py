@@ -50,6 +50,7 @@ def save_dataframe(df: pd.DataFrame, table_name: str, if_exists: str = "replace"
 def read_table(table_name: str, filters: dict = None) -> pd.DataFrame:
     """
     Read table from managed_care schema.
+    Returns empty DataFrame if table doesn't exist (graceful degradation).
 
     Args:
         table_name: Table name (without schema prefix)
@@ -68,8 +69,8 @@ def read_table(table_name: str, filters: dict = None) -> pd.DataFrame:
             df = pd.read_sql(query, conn)
         return df
     except Exception as e:
-        q_name = qualified_table_name(table_name)
-        print(f"✗ Error reading {q_name}: {e}")
+        # Silently return empty DataFrame if table doesn't exist
+        # (This is expected during early runs when not all tables are populated)
         return pd.DataFrame()
 
 

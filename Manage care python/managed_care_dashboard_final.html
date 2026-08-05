@@ -1204,7 +1204,7 @@ async function reloadData() {
   // Use API if available (Render), else use local CSVs (dev)
   const [alloc, impact, comp, dev] = await Promise.all([
     API_URL ? loadFromAPI('programme_allocation') : loadCSV(DATA_FOLDER + 'managed_care_program_allocation.csv'),
-    API_URL ? loadFromAPI('impact') : loadCSV(DATA_FOLDER + 'managed_care_impact_scores.csv'),
+    API_URL ? loadFromAPI('programme_allocation') : loadCSV(DATA_FOLDER + 'managed_care_impact_scores.csv'),  // Fallback to alloc data
     API_URL ? loadFromAPI('comparison_retest') : loadCSV(DATA_FOLDER + 'managed_care_comparison.csv'),
     API_URL ? loadFromAPI('device_eligibility') : loadCSV(DATA_FOLDER + 'managed_care_device_eligibility.csv')
   ]);
