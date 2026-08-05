@@ -14,24 +14,28 @@ from datetime import datetime
 os.environ["DATABASE_URL"] = "postgresql://neondb_owner:npg_RnjMpJ4DsKY7@ep-icy-tree-af8719ti.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require"
 
 scripts = [
-    "01_raw_data_program_allocation.py",
-    "02_comparison_retest_analysis.py",
-    "03b_device_eligibility_2026.py",
-    "04_claude_analysis.py"
+    ("01_raw_data_program_allocation.py", "Program allocation, normalized scores", 300),
+    ("02_comparison_retest_analysis.py", "Retest analysis, improvement flags", 600),
+    ("03b_device_eligibility_2026.py", "Device eligibility scoring", 600),
+    ("04_claude_analysis.py", "Analysis and insights", 600),
+    ("fetch_hra_wellness.py", "HRA wellness data (OAuth2)", 600),
+    ("05_combined_engagement_effect.py", "Combined engagement analysis", 600),
+    ("fetch_voicebot_appt_source.py", "Voicebot appointment classification", 600),
+    ("process_device_delivered_2025.py", "Device delivery impact analysis", 600),
 ]
 
-print(f"[{datetime.now()}] Starting Managed Care pipeline...")
-print(f"[{datetime.now()}] Database: Neon PostgreSQL (managed_care schema)\n")
+print(f"[{datetime.now()}] Starting COMPLETE Managed Care pipeline...")
+print(f"[{datetime.now()}] Database: Neon PostgreSQL (managed_care schema)")
+print(f"[{datetime.now()}] Running {len(scripts)} scripts for complete data update\n")
 
 failed = False
-for i, script in enumerate(scripts, 1):
-    print(f"[{datetime.now()}] Running Script {i}: {script}")
-    # Longer timeout for scripts 2 & 3 (Trino queries can be slow)
-    timeout = 600 if i > 1 else 300
+for i, (script, description, timeout) in enumerate(scripts, 1):
+    print(f"[{datetime.now()}] [{i}/{len(scripts)}] {script}")
+    print(f"           {description}")
 
     # Explicitly pass environment so DATABASE_URL is available
     env = os.environ.copy()
-    result = subprocess.run([sys.executable, script], capture_output=True, text=True, timeout=timeout, env=env)
+    result = subprocess.run([sys.executable, script], capture_output=True, text=True, timeout=timeout, env=env, cwd=os.getcwd())
 
     if result.returncode != 0:
         print(f"[{datetime.now()}] ERROR in Script {i}")
@@ -46,11 +50,12 @@ for i, script in enumerate(scripts, 1):
                 print(f"  {line}")
 
 if not failed:
-    print(f"\n[{datetime.now()}] SUCCESS - All scripts completed")
-    print(f"[{datetime.now()}] Data pushed to Neon PostgreSQL")
-    print(f"[{datetime.now()}] Dashboard will update within 10 seconds")
-    print(f"[{datetime.now()}] Visit: https://managed-care-dashboard.onrender.com/")
+    print(f"\n[{datetime.now()}] ✓ SUCCESS - All {len(scripts)} scripts completed")
+    print(f"[{datetime.now()}] ✓ Complete data updated in Neon PostgreSQL")
+    print(f"[{datetime.now()}] ✓ Ready for populate_complete_data.py")
+    print(f"[{datetime.now()}] Dashboard: https://managed-care-dashboard.onrender.com/")
     sys.exit(0)
 else:
-    print(f"\n[{datetime.now()}] FAILED - Check error above")
+    print(f"\n[{datetime.now()}] ✗ FAILED at script {i} - Check error above")
+    print(f"[{datetime.now()}] Partial data may be in Neon")
     sys.exit(1)
