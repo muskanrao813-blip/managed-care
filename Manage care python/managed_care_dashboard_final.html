@@ -1209,8 +1209,8 @@ async function reloadData() {
     API_URL ? loadFromAPI('device_eligibility') : loadCSV(DATA_FOLDER + 'managed_care_device_eligibility.csv')
   ]);
 
-  // Load all optional tables from API if available
-  const [policy, campMon, apptUtil, devDel, devImp, benAssign, engEffect, vytalAppt, apptSrc] = await Promise.all([
+  // Load ALL tables from API if available
+  const [policy, campMon, apptUtil, devDel, devImp, benAssign, engEffect, vytalAppt, apptSrc, dev26, hraStats, engAct, engDaily] = await Promise.all([
     API_URL ? loadFromAPI('policy_data') : { ok: false },
     API_URL ? loadFromAPI('camp_monthly') : { ok: false },
     API_URL ? loadFromAPI('appointment_utilization') : { ok: false },
@@ -1219,14 +1219,14 @@ async function reloadData() {
     API_URL ? loadFromAPI('benefit_assignments') : { ok: false },
     API_URL ? loadFromAPI('engagement_effect') : { ok: false },
     API_URL ? loadFromAPI('vytal_appointments') : { ok: false },
-    API_URL ? loadFromAPI('appointment_source') : { ok: false }
+    API_URL ? loadFromAPI('appointment_source') : { ok: false },
+    API_URL ? loadFromAPI('device_eligibility') : { ok: false },
+    API_URL ? loadFromAPI('hra_stats') : { ok: false },
+    API_URL ? loadFromAPI('engagement_activities') : { ok: false },
+    API_URL ? loadFromAPI('engagement_daily') : { ok: false }
   ]);
   const ins = null;
-  const dev26 = { ok: false, data: [] };
-  const hraStats = { ok: false, data: [] };
   const actLogs = { ok: false, data: [] };
-  const engAct = { ok: false, data: [] };
-  const engDaily = { ok: false, data: [] };
   const benDeep = null;
   const vbFunnel = null;
 
