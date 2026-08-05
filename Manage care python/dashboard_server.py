@@ -28,6 +28,15 @@ CORS(app)
 PORT = int(os.getenv("PORT", 8001))
 DASHBOARD_FILE = "managed_care_dashboard_final.html"
 
+def convert_nan_to_none(obj):
+    if isinstance(obj, dict):
+        return {k: convert_nan_to_none(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_nan_to_none(v) for v in obj]
+    elif isinstance(obj, float) and pd.isna(obj):
+        return None
+    return obj
+
 
 @app.route("/")
 def dashboard():
@@ -98,11 +107,11 @@ def get_table_data(table_name):
     if df is None or df.empty:
         return jsonify({"data": [], "rows": 0, "message": "No data found"})
 
-    # Convert NaN to None for JSON serialization
-    df = df.where(pd.notna(df), None)
-
     # Convert to JSON-serializable format
     data = df.to_dict(orient="records")
+    # Convert NaN to None in all records
+    data = [convert_nan_to_none(record) for record in data]
+
     return jsonify({
         "data": data,
         "rows": len(data),
@@ -143,10 +152,13 @@ def get_table_summary(table_name):
 
     # Add numeric column stats
     for col in df.select_dtypes(include=['number']).columns:
+        mean_val = float(df[col].mean()) if pd.notna(df[col].mean()) else None
+        min_val = float(df[col].min()) if pd.notna(df[col].min()) else None
+        max_val = float(df[col].max()) if pd.notna(df[col].max()) else None
         summary["numeric_stats"][col] = {
-            "mean": float(df[col].mean()),
-            "min": float(df[col].min()),
-            "max": float(df[col].max()),
+            "mean": mean_val,
+            "min": min_val,
+            "max": max_val,
         }
 
     return jsonify(summary)
