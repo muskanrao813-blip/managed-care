@@ -1,12 +1,14 @@
 services:
   - type: web
-    name: managed-care-skill
+    name: managed-care-dashboard
     runtime: docker
     plan: free
     healthCheckPath: /
+    healthCheckProtocol: HTTP
+    ports:
+      - port: 8001
+        protocol: HTTP
     envVars:
-      - key: ANTHROPIC_API_KEY
-        sync: false
       - key: TRINO_HOST
         sync: false
       - key: TRINO_PORT
@@ -18,6 +20,4 @@ services:
       - key: TRINO_CATALOG
         sync: false
       - key: TRINO_SCHEMA
-        sync: false
-      - key: DATABASE_URL
         sync: false
