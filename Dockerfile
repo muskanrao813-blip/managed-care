@@ -21,8 +21,8 @@ RUN pip install --no-cache-dir \
     httpx \
     requests
 
-# Copy code
-COPY Manage\ care\ python ./manage_care_python
+# Copy code (handle directory with spaces)
+COPY ["Manage care python", "./manage_care_python"]
 COPY care_ai_engine ./care_ai_engine
 COPY .env.template .
 
