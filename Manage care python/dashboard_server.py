@@ -42,20 +42,27 @@ def load_csv_data(table_name):
     """Try to load data from CSV files as fallback"""
     csv_mappings = {
         "programme_allocation": "managed_care_program_allocation.csv",
-        "comparison_retest": "managed_care_comparison.csv",
-        "device_eligibility": "managed_care_device_eligibility_2026.csv",
+        "comparison_retest": ["managed_care_comparison.csv", "managed_care_comparison_2026.csv"],
+        "device_eligibility": ["managed_care_device_eligibility_2026.csv", "managed_care_device_eligibility_lifestyle.csv"],
     }
 
-    csv_file = csv_mappings.get(table_name)
-    if not csv_file:
+    csv_files = csv_mappings.get(table_name)
+    if not csv_files:
         return None
 
-    csv_path = Path(__file__).parent / "Data" / csv_file
-    if csv_path.exists():
-        try:
-            return pd.read_csv(csv_path, low_memory=False)
-        except:
-            return None
+    # Handle both single file and list of alternatives
+    if isinstance(csv_files, str):
+        csv_files = [csv_files]
+
+    for csv_file in csv_files:
+        csv_path = Path(__file__).parent / "Data" / csv_file
+        if csv_path.exists():
+            try:
+                df = pd.read_csv(csv_path, low_memory=False)
+                if not df.empty:
+                    return df
+            except:
+                continue
     return None
 
 
