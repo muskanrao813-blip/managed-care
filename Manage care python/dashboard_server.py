@@ -174,6 +174,24 @@ def health_check():
     })
 
 
+@app.route("/api/insights")
+def get_insights():
+    """Serve Claude insights JSON for recommendations section"""
+    import json
+    insights_path = Path(__file__).parent / "Data" / "claude_insights.json"
+    if not insights_path.exists():
+        insights_path = Path(__file__).parent / "data" / "claude_insights.json"
+
+    if insights_path.exists():
+        try:
+            with open(insights_path, 'r') as f:
+                data = json.load(f)
+            return jsonify(data)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "insights file not found"}), 404
+
+
 @app.route("/api/csv/<filename>")
 def get_csv_fallback(filename):
     """

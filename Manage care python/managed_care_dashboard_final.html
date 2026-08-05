@@ -1225,7 +1225,18 @@ async function reloadData() {
     API_URL ? loadFromAPI('engagement_activities') : { ok: false },
     API_URL ? loadFromAPI('engagement_daily') : { ok: false }
   ]);
-  const ins = null;
+  // Load insights from API
+  let ins = null;
+  if (API_URL) {
+    try {
+      const insResponse = await fetch(API_URL.replace('/data', '') + '/insights');
+      if (insResponse.ok) {
+        ins = await insResponse.json();
+      }
+    } catch (e) {
+      console.log('Insights load failed:', e);
+    }
+  }
   const actLogs = { ok: false, data: [] };
   const benDeep = null;
   const vbFunnel = null;
