@@ -184,7 +184,7 @@ def get_csv_fallback(filename):
 
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("  MANAGED CARE 3.0 — Dashboard Server (PostgreSQL)")
+    print("  MANAGED CARE 3.0 — Dashboard Server (PostgreSQL + NaN Fix)")
     print("="*60)
     print(f"\n  📊 Dashboard: http://localhost:{PORT}")
     print(f"  🔌 API Docs: http://localhost:{PORT}/api/status")
