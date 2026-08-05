@@ -1,26 +1,29 @@
-# PostgreSQL Setup for Managed Care Dashboard
+# PostgreSQL & Dashboard Setup (Render)
 
 ## Overview
 
-Your dashboard now reads from **PostgreSQL** instead of CSVs:
-- ✅ Daily scripts push data automatically
-- ✅ Dashboard always shows fresh data
-- ✅ No manual CSV management
-- ✅ Persistent storage on Render
+**Backend & Frontend on Render**:
+- ✅ PostgreSQL database (receives data from your local scripts)
+- ✅ Flask dashboard server (reads from DB, serves UI)
+- ✅ Public URL (anyone can access live dashboard)
+- ✅ Data always fresh (scripts push updates daily)
 
 ## Architecture
 
 ```
-Your Machine (Task Scheduler)
-  → Scripts 01-04 run daily
-  → Push data to PostgreSQL on Render
+Your Machine (Local - Task Scheduler)
+  → Scripts 01-04 run with your auth
+  → Process data
+  → Push to Render PostgreSQL
            ↓
-Render PostgreSQL (central database)
+Render PostgreSQL (stores pushed data)
            ↓
-Render Dashboard Server (Flask)
+Render Flask Dashboard (reads & serves UI)
            ↓
-Browser (live dashboard with fresh data)
+Browser: https://managed-care-dashboard-xxxx.onrender.com
 ```
+
+**For local setup**: See `LOCAL_SETUP.md`
 
 ## Step 1: Create PostgreSQL on Render (2 min)
 
@@ -32,18 +35,22 @@ Browser (live dashboard with fresh data)
 2. Name: `managed-care-db`
 3. Database: `managed_care`
 4. Region: Singapore
-5. Pricing: **Free** (optional, limited storage)
+5. Pricing: **Free** 
 6. Click **Create Database**
 
 ### 1.3 Get Connection String
 Once created:
-1. Dashboard shows: **Internal Database URL** and **External Database URL**
-2. Copy the **External Database URL** (format: `postgresql://user:pass@host:5432/db`)
+1. Dashboard shows connection URLs
+2. Copy the **External Database URL**
 
 Example:
 ```
 postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care
 ```
+
+**Save this URL** - you'll need it for:
+- Local scripts (db_config.py)
+- Render dashboard (environment variable)
 
 ## Step 2: Deploy Dashboard to Render (5 min)
 
@@ -54,122 +61,36 @@ postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care
 4. Runtime: **Docker**
 5. Click **Create Web Service**
 
-### 2.2 Add Database URL to Environment
+### 2.2 Set Database URL
 1. Service Dashboard → **Environment**
 2. Add variable:
    ```
-   DATABASE_URL = postgresql://user:pass@host:5432/managed_care
+   DATABASE_URL = postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care
    ```
-   (Paste the External Database URL from Step 1.3)
-
+   (Use the URL from Step 1.3)
 3. Click **Save** → Render redeploys (~3 min)
-
-**Note**: Trino OAuth is handled by your scripts—no additional Trino credentials needed here.
 
 ### 2.3 Get Public Dashboard URL
 Once deployed:
-- Service shows: `https://managed-care-dashboard-xxxx.onrender.com`
-- This is your public dashboard URL
+- Render shows: `https://managed-care-dashboard-xxxx.onrender.com`
+- **This is your public dashboard**
+- Share this URL with stakeholders
 
-## Step 3: Update Local Scripts to Use PostgreSQL (10 min)
+## Step 3: Setup Local Scripts
 
-### 3.1 Copy Database Config
-```bash
-cp db_config.example.py db_config.py
-```
+See `LOCAL_SETUP.md` for:
+- Configuring `db_config.py` with PostgreSQL URL
+- Updating scripts 01-04 to push data
+- Setting up Task Scheduler
 
-### 3.2 Set Database URL
-Edit `db_config.py`:
-```python
-DATABASE_URL = "postgresql://user:pass@host:5432/managed_care"
-# (Same as the one you set in Render)
-```
+## Verification
 
-Or use environment variable:
-```bash
-export DATABASE_URL="postgresql://user:pass@host:5432/managed_care"
-```
+### Test Data Push
+1. Run scripts locally (see `LOCAL_SETUP.md`)
+2. Scripts output: `✓ Saved X rows to table`
+3. Dashboard auto-refreshes within 10 seconds
 
-### 3.3 Update Script 01 (Example)
-In `01_raw_data_program_allocation.py`, replace:
-```python
-# OLD: df.to_csv("Data/program_allocation.csv", index=False)
-
-# NEW:
-from db_layer import save_dataframe
-save_dataframe(df, "programme_allocation")
-```
-
-Do the same for scripts 02, 03, 04 (replace `to_csv()` with `save_dataframe()`).
-
-### 3.4 Test Locally
-```bash
-python 01_raw_data_program_allocation.py
-# Should show: "✓ Saved X rows to programme_allocation"
-```
-
-## Step 4: Schedule Daily Runs (5 min)
-
-Your scripts now write to Render PostgreSQL instead of local CSVs.
-
-**Task Scheduler** (Windows):
-1. Open Task Scheduler
-2. Create task: `ManagedCareDaily` 
-3. Trigger: Daily at 6 AM
-4. Action: `python C:\path\to\01_raw_data_program_allocation.py` (and 02, 03, 04)
-5. Set environment: `DATABASE_URL=postgresql://...`
-
-**Cron** (Linux/Mac):
-```bash
-# Run scripts daily at 6 AM
-0 6 * * * cd /path && python 01_raw_data_program_allocation.py && python 02_comparison_retest_analysis.py && python 03b_device_eligibility_2026.py && python 04_claude_analysis.py
-```
-
-## Step 5: Verify Live Dashboard
-
-### 5.1 Access Dashboard
-- URL: `https://managed-care-dashboard-xxxx.onrender.com`
-- Should load instantly (no "Loading CSV data" message)
-- Click "↻ Reload Data" to refresh from latest database
-
-### 5.2 Check Data Flow
-1. Run scripts locally (manually for testing)
-2. Dashboard updates within 10 seconds
-3. Repeat daily automatically via Task Scheduler
-
-## Troubleshooting
-
-### Dashboard shows "Error connecting"
-- Check PostgreSQL connection string in Render environment
-- Verify DATABASE_URL format: `postgresql://user:pass@host:5432/db`
-- Test connection locally: `psql <DATABASE_URL>`
-
-### Scripts fail with "database not found"
-- Verify DATABASE_URL environment variable is set
-- Check PostgreSQL is online: `pg_isready -h host`
-- Check network access (Render PostgreSQL must be accessible from your machine)
-
-### Data not updating
-- Check Task Scheduler is running scripts
-- Verify scripts output: "✓ Saved X rows to table"
-- Check Render logs for Flask errors
-
-### Dashboard still shows old data
-- Click "↻ Reload Data" to refresh browser cache
-- Verify scripts ran: Check Render PostgreSQL `updated_at` timestamp
-
-## Going Further
-
-**Backup Data**:
-```bash
-# Backup from Render PostgreSQL
-pg_dump <DATABASE_URL> > backup.sql
-
-# Restore
-psql <DATABASE_URL> < backup.sql
-```
-
-**Monitor Database**:
+### Monitor Data
 ```bash
 # Connect to Render PostgreSQL
 psql <DATABASE_URL>
@@ -181,7 +102,27 @@ psql <DATABASE_URL>
 SELECT COUNT(*) FROM programme_allocation;
 ```
 
-**Upgrade Storage** (if needed):
-- Render Free: 100MB
-- Render Starter: 1GB+ ($7/month)
+## Troubleshooting
+
+**Dashboard shows "Error connecting"**
+- Verify DATABASE_URL in Render environment is correct
+- Check Render PostgreSQL is running
+- Test locally: `psql $DATABASE_URL`
+
+**Data not appearing**
+- Check local scripts ran (look for "✓ Saved" output)
+- Verify DATABASE_URL is same in local `db_config.py` and Render environment
+- Check Render Flask logs for errors
+
+**PostgreSQL storage full**
+- Render Free: 100MB limit
+- Upgrade to Starter: 1GB+ ($7/month)
+
+## Next Steps
+
+1. ✅ Create PostgreSQL on Render (this page, Step 1)
+2. ✅ Deploy dashboard to Render (this page, Step 2)
+3. → Setup local scripts (see `LOCAL_SETUP.md`)
+4. → Schedule daily Task Scheduler job
+5. → Share public dashboard URL
 
