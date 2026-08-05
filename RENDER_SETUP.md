@@ -23,16 +23,13 @@ Go to [render.com](https://render.com), sign up, and connect GitHub.
 7. Branch: `main`
 8. Click **Deploy** (Render auto-detects Dockerfile)
 
-### 3. Set Trino Environment Variables
-In Render dashboard → Environment → Add Variables:
+### 3. Set Database URL (Optional)
+If using PostgreSQL backend instead of CSVs:
 ```
-TRINO_HOST=your-trino-cluster-host
-TRINO_PORT=443
-TRINO_USERNAME=your-trino-username
-TRINO_PASSWORD=your-trino-password
-TRINO_CATALOG=iceberg
-TRINO_SCHEMA=managed_care
+DATABASE_URL=postgresql://user:pass@host:5432/managed_care
 ```
+
+**Trino OAuth**: Your scripts handle Trino authentication—no additional setup needed.
 
 ### 4. Wait for Deployment
 - Build time: ~3-5 minutes

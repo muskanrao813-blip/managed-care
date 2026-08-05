@@ -62,17 +62,9 @@ postgresql://myuser:mypass@oregon-postgres.render.com:5432/managed_care
    ```
    (Paste the External Database URL from Step 1.3)
 
-3. Add Trino credentials:
-   ```
-   TRINO_HOST=your-trino-host
-   TRINO_PORT=443
-   TRINO_USERNAME=your-username
-   TRINO_PASSWORD=your-password
-   TRINO_CATALOG=iceberg
-   TRINO_SCHEMA=managed_care
-   ```
+3. Click **Save** → Render redeploys (~3 min)
 
-4. Click **Save** → Render redeploys (~3 min)
+**Note**: Trino OAuth is handled by your scripts—no additional Trino credentials needed here.
 
 ### 2.3 Get Public Dashboard URL
 Once deployed:
