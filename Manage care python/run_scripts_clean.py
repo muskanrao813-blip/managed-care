@@ -28,7 +28,10 @@ for i, script in enumerate(scripts, 1):
     print(f"[{datetime.now()}] Running Script {i}: {script}")
     # Longer timeout for scripts 2 & 3 (Trino queries can be slow)
     timeout = 600 if i > 1 else 300
-    result = subprocess.run([sys.executable, script], capture_output=True, text=True, timeout=timeout)
+
+    # Explicitly pass environment so DATABASE_URL is available
+    env = os.environ.copy()
+    result = subprocess.run([sys.executable, script], capture_output=True, text=True, timeout=timeout, env=env)
 
     if result.returncode != 0:
         print(f"[{datetime.now()}] ERROR in Script {i}")
