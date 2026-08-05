@@ -38,6 +38,15 @@ def dashboard():
     return "Dashboard HTML not found", 404
 
 
+@app.route("/test")
+def test_api():
+    """Serve API test page"""
+    html_path = Path(__file__).parent / "test_dashboard_api.html"
+    if html_path.exists():
+        return send_file(html_path)
+    return "Test file not found", 404
+
+
 def load_csv_data(table_name):
     """Try to load data from CSV files as fallback"""
     csv_mappings = {
