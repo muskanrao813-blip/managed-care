@@ -1030,17 +1030,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
 // ══════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════
-// Auto-detect data folder — tries Data/, data/, DATA/
-async function detectDataFolder() {
-  for (const folder of ['./Data/', './data/', './DATA/']) {
-    try {
-      const r = await fetch(folder + 'managed_care_comparison.csv');
-      if (r.ok) { console.log('Data folder found:', folder); return folder; }
-    } catch(e) {}
+// Use Flask API for data (Render) or local CSVs (dev)
+const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? null  // Use CSV files locally
+  : '/api/data';  // Use Flask API on Render
+
+async function loadFromAPI(table) {
+  if (!API_URL) return { ok: false };
+  try {
+    const r = await fetch(`${API_URL}/${table}`);
+    if (!r.ok) return { ok: false };
+    const json = await r.json();
+    return { ok: true, data: json.data || [] };
+  } catch(e) {
+    console.warn(`API load failed for ${table}:`, e);
+    return { ok: false };
   }
-  console.warn('No data folder found — using demo data');
-  return null;
 }
+
 let DATA_FOLDER = './Data/';
 
 const CSV_PATHS = {
@@ -1192,35 +1199,34 @@ function loadDemo() {
 
 async function reloadData() {
   document.getElementById('loadingOverlay').style.display = 'flex';
-  document.getElementById('loadingText').textContent = 'Loading CSV data…';
+  document.getElementById('loadingText').textContent = 'Loading data…';
 
-  // Auto-detect correct data folder
-  const detected = await detectDataFolder();
-  if (detected) DATA_FOLDER = detected;
-
-  const [alloc, impact, comp, dev, ins, policy, campMon, apptUtil, devDel, devImp, dev26, benAssign, engEffect, hraStats, actLogs, engAct, engDaily, benDeep, vytalAppt, apptSrc, vbFunnel] = await Promise.all([
-    loadCSV(DATA_FOLDER + 'managed_care_program_allocation.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_impact_scores.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_comparison.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_device_eligibility.csv'),
-    loadJSON(DATA_FOLDER + 'claude_insights.json'),
-    loadCSV(DATA_FOLDER + 'managed_care_policy_data.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_camp_monthly.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_appt_utilization.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_device_delivered_2025.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_device_impact_2025.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_device_eligibility_2026.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_benefit_assignments_2026.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_engagement_effect.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_hra_stats.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_activity_logs.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_engagement_activities.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_engagement_daily.csv'),
-    loadJSON(DATA_FOLDER + 'managed_care_benefit_deep.json'),
-    loadCSV(DATA_FOLDER + 'vytal_appt_flat.csv'),
-    loadCSV(DATA_FOLDER + 'managed_care_appt_source.csv'),
-    loadJSON(DATA_FOLDER + 'managed_care_voicebot_funnel.json')
+  // Use API if available (Render), else use local CSVs (dev)
+  const [alloc, impact, comp, dev] = await Promise.all([
+    API_URL ? loadFromAPI('programme_allocation') : loadCSV(DATA_FOLDER + 'managed_care_program_allocation.csv'),
+    API_URL ? loadFromAPI('impact') : loadCSV(DATA_FOLDER + 'managed_care_impact_scores.csv'),
+    API_URL ? loadFromAPI('comparison_retest') : loadCSV(DATA_FOLDER + 'managed_care_comparison.csv'),
+    API_URL ? loadFromAPI('device_eligibility') : loadCSV(DATA_FOLDER + 'managed_care_device_eligibility.csv')
   ]);
+
+  // Fallback for optional data (not critical)
+  const ins = null;
+  const policy = { ok: false, data: [] };
+  const campMon = { ok: false, data: [] };
+  const apptUtil = { ok: false, data: [] };
+  const devDel = { ok: false, data: [] };
+  const devImp = { ok: false, data: [] };
+  const dev26 = { ok: false, data: [] };
+  const benAssign = { ok: false, data: [] };
+  const engEffect = { ok: false, data: [] };
+  const hraStats = { ok: false, data: [] };
+  const actLogs = { ok: false, data: [] };
+  const engAct = { ok: false, data: [] };
+  const engDaily = { ok: false, data: [] };
+  const benDeep = null;
+  const vytalAppt = { ok: false, data: [] };
+  const apptSrc = { ok: false, data: [] };
+  const vbFunnel = null;
 
   const anyOk = alloc.ok || comp.ok || dev.ok || impact.ok || policy.ok || campMon.ok;
   if (anyOk) {
