@@ -178,17 +178,22 @@ def health_check():
 def get_insights():
     """Serve Claude insights JSON for recommendations section"""
     import json
-    insights_path = Path(__file__).parent / "Data" / "claude_insights.json"
-    if not insights_path.exists():
-        insights_path = Path(__file__).parent / "data" / "claude_insights.json"
+    # Try multiple locations
+    paths = [
+        Path(__file__).parent / "claude_insights.json",
+        Path(__file__).parent / "Data" / "claude_insights.json",
+        Path(__file__).parent / "data" / "claude_insights.json",
+    ]
 
-    if insights_path.exists():
-        try:
-            with open(insights_path, 'r') as f:
-                data = json.load(f)
-            return jsonify(data)
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+    for insights_path in paths:
+        if insights_path.exists():
+            try:
+                with open(insights_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                return jsonify(data)
+            except Exception as e:
+                continue
+
     return jsonify({"error": "insights file not found"}), 404
 
 
