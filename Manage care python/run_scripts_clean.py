@@ -50,12 +50,12 @@ for i, (script, description, timeout) in enumerate(scripts, 1):
                 print(f"  {line}")
 
 if not failed:
-    print(f"\n[{datetime.now()}] ✓ SUCCESS - All {len(scripts)} scripts completed")
-    print(f"[{datetime.now()}] ✓ Complete data updated in Neon PostgreSQL")
-    print(f"[{datetime.now()}] ✓ Ready for populate_complete_data.py")
+    print(f"\n[{datetime.now()}] [OK] SUCCESS - All {len(scripts)} scripts completed")
+    print(f"[{datetime.now()}] [OK] Complete data updated in Neon PostgreSQL")
+    print(f"[{datetime.now()}] [OK] Ready for populate_complete_data.py")
     print(f"[{datetime.now()}] Dashboard: https://managed-care-dashboard.onrender.com/")
     sys.exit(0)
 else:
-    print(f"\n[{datetime.now()}] ✗ FAILED at script {i} - Check error above")
-    print(f"[{datetime.now()}] Partial data may be in Neon")
+    print(f"\n[{datetime.now()}] [FAIL] FAILED at script {i} - Check error above")
+    print(f"[{datetime.now()}] [FAIL] Partial data may be in Neon")
     sys.exit(1)
