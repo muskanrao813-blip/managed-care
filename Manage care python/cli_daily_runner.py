@@ -82,7 +82,8 @@ def main():
         print(f"\n[FAIL] Script failed, stopping pipeline")
         sys.exit(1)
 
-    phase1_duration = (datetime.now() - start_time).total_seconds()
+    phase1_time = datetime.now()
+    phase1_duration = (phase1_time - start_time).total_seconds()
     print(f"\n[OK] Phase 1 complete: {phase1_duration:.0f}s ({phase1_duration/60:.1f} min)")
 
     # ===============================================
@@ -98,7 +99,8 @@ def main():
         print("[FAIL] Could not upload to Neon")
         sys.exit(1)
 
-    phase2_duration = (datetime.now() - start_time - phase1_duration).total_seconds()
+    phase2_time = datetime.now()
+    phase2_duration = (phase2_time - phase1_time).total_seconds()
     print(f"\n[OK] Phase 2 complete: {phase2_duration:.0f}s ({phase2_duration/60:.1f} min)")
 
     # ===============================================
