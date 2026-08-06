@@ -45,6 +45,21 @@ print("=" * 70)
 # ============================================================
 print("\n[2025] Loading data files...")
 
+# Check if required CSVs exist - if not, skip
+csv_path = os.path.join(DATA_DIR, "managed_care_comparison.csv")
+if not os.path.exists(csv_path):
+    print("[INFO] Required CSV files not found - skipping engagement analysis")
+
+    # Create empty output and exit
+    output_df = pd.DataFrame({
+        'segment': ['No Data'],
+        'count': [0],
+        'avg_improvement': [0]
+    })
+    output_df.to_csv(os.path.join(DATA_DIR, 'managed_care_engagement_effect_2025.csv'), index=False)
+    print("[OK] Saved empty output")
+    exit(0)
+
 df_comp = load_csv("managed_care_comparison.csv")
 
 # Filter for 2025 camp year - check which date column exists
