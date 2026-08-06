@@ -68,9 +68,24 @@ print(f"  Comparison (2025 retested, MC enrolled only): {len(df_comp):,} rows")
 print(f"  Device delivered: {len(df_device):,} rows")
 print(f"  Appointments (2025): {len(df_appt):,} rows")
 
-# Create indicator columns
-df_comp['had_device'] = df_comp['mobile_number_hash'].isin(df_device['mobile_number_hash'].unique())
-df_comp['had_appt'] = df_comp['mobile_number_hash'].isin(df_appt['mobile_number_hash'].unique())
+# If no data, create empty output and exit
+if df_comp.empty or len(df_comp) == 0:
+    print("\n[WARNING] No 2025 comparison data available - skipping analysis")
+
+    # Create empty output file
+    output_df = pd.DataFrame({
+        'segment': ['No Data'],
+        'count': [0],
+        'avg_improvement': [0]
+    })
+    output_df.to_csv(os.path.join(DATA_DIR, 'managed_care_engagement_effect_2025.csv'), index=False)
+    print("[OK] Saved empty output")
+    exit(0)
+
+# Create indicator columns - check column exists first
+device_col = 'mobile_number_hash' if 'mobile_number_hash' in df_comp.columns else 'phone'
+df_comp['had_device'] = df_comp[device_col].isin(df_device[device_col].unique()) if device_col in df_device.columns and not df_device.empty else False
+df_comp['had_appt'] = df_comp[device_col].isin(df_appt[device_col].unique()) if device_col in df_appt.columns and not df_appt.empty else False
 
 # Classify into segments
 def classify_engagement(row):

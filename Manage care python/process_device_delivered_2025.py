@@ -23,6 +23,19 @@ eng = create_engine(f'trino://{TRINO_USER}:{pw}@{TRINO_HOST}:443/system?http_sch
 
 # ── Step 1: Read Excel ────────────────────────────────────────────────────────
 print("[1] Reading Device delivered 2025.xlsx...")
+
+if not os.path.exists(DEVICE_FILE):
+    print(f"[WARNING] File not found: {DEVICE_FILE}")
+    print("[OK] Creating empty output files...")
+
+    # Create empty CSVs
+    empty_df = pd.DataFrame()
+    empty_df.to_csv(os.path.join(DATA_DIR, "managed_care_device_delivered_2025.csv"), index=False)
+    empty_df.to_csv(os.path.join(DATA_DIR, "managed_care_device_impact_2025.csv"), index=False)
+
+    print("[OK] Skipped - no device delivery data available")
+    exit(0)
+
 wb = openpyxl.load_workbook(DEVICE_FILE, read_only=True, data_only=True)
 
 # Sheet1: name, email, id, phone, number, product_name, phr_id
