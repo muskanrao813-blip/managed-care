@@ -34,6 +34,11 @@ def save_dataframe(df: pd.DataFrame, table_name: str, if_exists: str = "replace"
         if_exists: 'fail', 'replace', 'append'
     """
     try:
+        # Fix: Convert phone columns to string (prevents "bigint out of range" error)
+        for col in df.columns:
+            if 'phone' in col.lower():
+                df[col] = df[col].astype(str)
+
         q_name = qualified_table_name(table_name)
         print(f"[DB] Connecting to {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'unknown'}...")
         print(f"[DB] Saving {len(df)} rows to {q_name}...")
