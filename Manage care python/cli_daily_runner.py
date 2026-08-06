@@ -4,7 +4,7 @@ Claude CLI wrapper for daily Managed Care pipeline
 Run via: claude --tool python -c "exec(open('cli_daily_runner.py').read())"
 
 Or setup alias in ~/.bashrc or PowerShell:
-  alias claude-mc-daily="python C:\path\to\cli_daily_runner.py"
+  alias claude-mc-daily="python C:\\path\\to\\cli_daily_runner.py"
 """
 
 import os
@@ -50,7 +50,7 @@ def main():
         if not run_cmd("python generate_recommendations_claude.py", "Step 3b: Generate Claude recommendations"):
             print("⚠ Warning: Claude recommendations failed, continuing...")
     else:
-        print("ⓘ Skipping Claude recommendations (ANTHROPIC_API_KEY not set)")
+        print("[INFO] Skipping Claude recommendations (ANTHROPIC_API_KEY not set)")
 
     # Step 4: Git commit
     print(f"\n{'='*70}")
