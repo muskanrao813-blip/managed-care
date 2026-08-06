@@ -43,12 +43,22 @@ print("=" * 70)
 print("\n[2025] Loading data files...")
 
 df_comp = load_csv("managed_care_comparison.csv")
-# Filter for 2025 camp year using latest_camp_date
-df_comp = df_comp[df_comp['latest_camp_date'].astype(str).str.startswith('2025')].copy()
+
+# Filter for 2025 camp year - check which date column exists
+if 'latest_camp_date' in df_comp.columns:
+    df_comp = df_comp[df_comp['latest_camp_date'].astype(str).str.startswith('2025')].copy()
+elif 'camp_date' in df_comp.columns:
+    df_comp = df_comp[df_comp['camp_date'].astype(str).str.startswith('2025')].copy()
+elif 'year' in df_comp.columns:
+    df_comp = df_comp[df_comp['year'] == 2025].copy()
+
 # Remove rows with empty improvement_flag (no retested data)
-df_comp = df_comp[df_comp['improvement_flag'].notna() & (df_comp['improvement_flag'] != '')].copy()
+if 'improvement_flag' in df_comp.columns:
+    df_comp = df_comp[df_comp['improvement_flag'].notna() & (df_comp['improvement_flag'] != '')].copy()
+
 # Filter to ONLY managed care enrolled users
-df_comp = df_comp[df_comp['managed_care_flag'] == 'Y'].copy()
+if 'managed_care_flag' in df_comp.columns:
+    df_comp = df_comp[df_comp['managed_care_flag'] == 'Y'].copy()
 
 df_device = load_csv("managed_care_device_delivered_2025.csv")
 df_appt = load_csv("managed_care_appt_utilization.csv")
