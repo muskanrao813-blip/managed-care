@@ -14,14 +14,14 @@ from datetime import datetime
 os.environ["DATABASE_URL"] = "postgresql://neondb_owner:npg_RnjMpJ4DsKY7@ep-icy-tree-af8719ti.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require"
 
 scripts = [
-    ("01_raw_data_program_allocation.py", "Program allocation, normalized scores", 300),
-    ("02_comparison_retest_analysis.py", "Retest analysis, improvement flags", 600),
-    ("03b_device_eligibility_2026.py", "Device eligibility scoring", 600),
-    ("04_claude_analysis.py", "Analysis and insights", 600),
-    ("fetch_hra_wellness.py", "HRA wellness data (OAuth2)", 600),
-    ("05_combined_engagement_effect.py", "Combined engagement analysis", 600),
-    ("fetch_voicebot_appt_source.py", "Voicebot appointment classification", 600),
-    ("process_device_delivered_2025.py", "Device delivery impact analysis", 600),
+    ("01_raw_data_program_allocation.py", "Program allocation, normalized scores", 600),
+    ("02_comparison_retest_analysis.py", "Retest analysis, improvement flags", 900),
+    ("03b_device_eligibility_2026.py", "Device eligibility scoring", 1200),
+    ("04_claude_analysis.py", "Analysis and insights", 900),
+    ("fetch_hra_wellness.py", "HRA wellness data (OAuth2)", 900),
+    ("05_combined_engagement_effect.py", "Combined engagement analysis", 900),
+    ("fetch_voicebot_appt_source.py", "Voicebot appointment classification", 900),
+    ("process_device_delivered_2025.py", "Device delivery impact analysis", 900),
 ]
 
 print(f"[{datetime.now()}] Starting COMPLETE Managed Care pipeline...")
