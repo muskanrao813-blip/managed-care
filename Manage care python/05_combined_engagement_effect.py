@@ -20,7 +20,7 @@ pw = urllib.parse.quote_plus(TRINO_PASSWORD)
 eng = create_engine(f'trino://{TRINO_USER}:{pw}@{TRINO_HOST}:443/system?http_scheme=https')
 
 def load_csv(filename):
-    """Load CSV from Data folder, case-insensitive."""
+    """Load CSV from Data folder, case-insensitive. Handle empty files."""
     path = None
     if os.path.exists(os.path.join(DATA_DIR, filename)):
         path = os.path.join(DATA_DIR, filename)
@@ -30,7 +30,10 @@ def load_csv(filename):
                 path = os.path.join(DATA_DIR, f)
                 break
     if path:
-        return pd.read_csv(path)
+        try:
+            return pd.read_csv(path)
+        except pd.errors.EmptyDataError:
+            return pd.DataFrame()
     return pd.DataFrame()
 
 print("=" * 70)
