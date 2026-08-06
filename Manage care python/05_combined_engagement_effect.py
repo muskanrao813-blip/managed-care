@@ -2,10 +2,10 @@
 Combined Engagement Effect Analysis
 Segments 2025 retested users by device + appointment + managed care combinations
 Shows improvement breakdown for each segment
+Reads from Neon PostgreSQL (not local CSVs)
 """
 import sys
 import os
-import urllib
 import pandas as pd
 from sqlalchemy import create_engine, text
 
@@ -15,76 +15,62 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(SCRIPT_DIR, "Data")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-from config import TRINO_HOST, TRINO_USER, TRINO_PASSWORD
-pw = urllib.parse.quote_plus(TRINO_PASSWORD)
-eng = create_engine(f'trino://{TRINO_USER}:{pw}@{TRINO_HOST}:443/system?http_scheme=https')
-
-def load_csv(filename):
-    """Load CSV from Data folder, case-insensitive. Handle empty files."""
-    path = None
-    if os.path.exists(os.path.join(DATA_DIR, filename)):
-        path = os.path.join(DATA_DIR, filename)
-    else:
-        for f in os.listdir(DATA_DIR):
-            if f.lower() == filename.lower():
-                path = os.path.join(DATA_DIR, f)
-                break
-    if path:
-        try:
-            return pd.read_csv(path)
-        except pd.errors.EmptyDataError:
-            return pd.DataFrame()
-    return pd.DataFrame()
+# Neon PostgreSQL connection
+DATABASE_URL = os.getenv("DATABASE_URL",
+    "postgresql://neondb_owner:npg_RnjMpJ4DsKY7@ep-icy-tree-af8719ti.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require"
+)
+neon_engine = create_engine(DATABASE_URL)
 
 print("=" * 70)
 print("  COMBINED ENGAGEMENT EFFECT - 2025 & 2026")
 print("=" * 70)
 
 # ============================================================
-# YEAR 2025
+# YEAR 2025 - Read from Neon
 # ============================================================
-print("\n[2025] Loading data files...")
+print("\n[2025] Loading data from Neon PostgreSQL...")
 
-# Check if required CSVs exist - if not, skip
-csv_path = os.path.join(DATA_DIR, "managed_care_comparison.csv")
-if not os.path.exists(csv_path):
-    print("[INFO] Required CSV files not found - skipping engagement analysis")
+try:
+    # Read from Neon tables
+    with neon_engine.connect() as conn:
+        df_comp = pd.read_sql_table("comparison_retest", conn, schema="managed_care")
+        df_device = pd.read_sql_table("device_delivered", conn, schema="managed_care")
+        df_appt = pd.read_sql_table("appointment_utilization", conn, schema="managed_care")
 
-    # Create empty output and exit
+    # Filter for 2025 camp year
+    if 'latest_camp_date' in df_comp.columns:
+        df_comp = df_comp[df_comp['latest_camp_date'].astype(str).str.contains('2025', na=False)].copy()
+    elif 'year' in df_comp.columns:
+        df_comp = df_comp[df_comp['year'] == 2025].copy()
+
+    # Remove rows with empty improvement_flag
+    if 'improvement_flag' in df_comp.columns:
+        df_comp = df_comp[df_comp['improvement_flag'].notna() & (df_comp['improvement_flag'] != '')].copy()
+
+    # Filter MC enrolled users
+    if 'managed_care_flag' in df_comp.columns:
+        df_comp = df_comp[df_comp['managed_care_flag'] == 'Y'].copy()
+
+    # Filter appointments for 2025
+    if 'year' in df_appt.columns:
+        df_appt = df_appt[df_appt['year'] == 2025].copy()
+
+    print(f"  Comparison (2025 retested, MC enrolled only): {len(df_comp):,} rows")
+    print(f"  Device delivered: {len(df_device):,} rows")
+    print(f"  Appointments (2025): {len(df_appt):,} rows")
+
+except Exception as e:
+    print(f"[ERROR] Failed to read from Neon: {e}")
+    print("[OK] Saving empty output and exiting")
+
+    # Create empty output
     output_df = pd.DataFrame({
         'segment': ['No Data'],
         'count': [0],
         'avg_improvement': [0]
     })
     output_df.to_csv(os.path.join(DATA_DIR, 'managed_care_engagement_effect_2025.csv'), index=False)
-    print("[OK] Saved empty output")
     exit(0)
-
-df_comp = load_csv("managed_care_comparison.csv")
-
-# Filter for 2025 camp year - check which date column exists
-if 'latest_camp_date' in df_comp.columns:
-    df_comp = df_comp[df_comp['latest_camp_date'].astype(str).str.startswith('2025')].copy()
-elif 'camp_date' in df_comp.columns:
-    df_comp = df_comp[df_comp['camp_date'].astype(str).str.startswith('2025')].copy()
-elif 'year' in df_comp.columns:
-    df_comp = df_comp[df_comp['year'] == 2025].copy()
-
-# Remove rows with empty improvement_flag (no retested data)
-if 'improvement_flag' in df_comp.columns:
-    df_comp = df_comp[df_comp['improvement_flag'].notna() & (df_comp['improvement_flag'] != '')].copy()
-
-# Filter to ONLY managed care enrolled users
-if 'managed_care_flag' in df_comp.columns:
-    df_comp = df_comp[df_comp['managed_care_flag'] == 'Y'].copy()
-
-df_device = load_csv("managed_care_device_delivered_2025.csv")
-df_appt = load_csv("managed_care_appt_utilization.csv")
-df_appt = df_appt[df_appt['year'] == 2025] if not df_appt.empty else df_appt
-
-print(f"  Comparison (2025 retested, MC enrolled only): {len(df_comp):,} rows")
-print(f"  Device delivered: {len(df_device):,} rows")
-print(f"  Appointments (2025): {len(df_appt):,} rows")
 
 # If no data, create empty output and exit
 if df_comp.empty or len(df_comp) == 0:
