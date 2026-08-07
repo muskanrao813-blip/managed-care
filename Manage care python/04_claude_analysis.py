@@ -26,6 +26,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 import urllib
 from datetime import datetime
 from sqlalchemy import create_engine, text
+from db_layer import save_dataframe
 
 #  CONFIG 
 from config import TRINO_HOST, TRINO_USER, TRINO_PASSWORD
@@ -624,6 +625,7 @@ def save_policy_csv_for_dashboard():
     df["managed_care_program"] = df["mc_product_code"].map(PRODUCT_PROGRAM).fillna("Unknown")
     path = os.path.join(DATA_DIR, "managed_care_policy_data.csv")
     df.to_csv(path, index=False)
+    save_dataframe(df, "policy_data", if_exists="replace")
     print(f"  Saved managed_care_policy_data.csv  {df['mobile_number_hash'].nunique():,} unique enrolled users")
     return df
 
@@ -670,6 +672,7 @@ def save_camp_monthly_csv():
         combined = pd.concat(results, ignore_index=True)
         path = os.path.join(DATA_DIR, "managed_care_camp_monthly.csv")
         combined.to_csv(path, index=False)
+        save_dataframe(combined, "camp_monthly", if_exists="replace")
         print(f"  Saved managed_care_camp_monthly.csv  {len(combined)} month rows")
         return combined
     return pd.DataFrame()
@@ -766,6 +769,7 @@ def fetch_appointments_utilization():
     combined = pd.concat(results, ignore_index=True)
     path = os.path.join(DATA_DIR, "managed_care_appt_utilization.csv")
     combined.to_csv(path, index=False)
+    save_dataframe(combined, "appt_utilization", if_exists="replace")
     print(f"\n  Saved managed_care_appt_utilization.csv  {len(combined):,} rows | {combined['mobile_number_hash'].nunique():,} unique users")
     return combined
 

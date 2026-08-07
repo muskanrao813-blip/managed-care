@@ -8,6 +8,7 @@ import sys
 import os
 import pandas as pd
 from sqlalchemy import create_engine, text
+from db_layer import save_dataframe
 
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -70,6 +71,7 @@ except Exception as e:
         'avg_improvement': [0]
     })
     output_df.to_csv(os.path.join(DATA_DIR, 'managed_care_engagement_effect_2025.csv'), index=False)
+    save_dataframe(output_df, "engagement_effect_2025", if_exists="replace")
     exit(0)
 
 # If no data, create empty output and exit
@@ -168,5 +170,6 @@ df_result = pd.concat([df_result_2025, df_result_2026], ignore_index=True)
 
 output_path = os.path.join(DATA_DIR, "managed_care_engagement_effect.csv")
 df_result.to_csv(output_path, index=False)
+save_dataframe(df_result, "engagement_effect", if_exists="replace")
 print(f"\n✓ Saved {output_path} — {len(df_result):,} rows")
 print("\nDone.")
