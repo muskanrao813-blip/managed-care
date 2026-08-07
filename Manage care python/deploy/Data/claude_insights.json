@@ -1,0 +1,141 @@
+{
+  "meta": {
+    "generated_at": "2026-08-07 14:41",
+    "enrolled_year": "2026",
+    "camp_date_from": "2026-04",
+    "camp_date_to": "2099-12"
+  },
+  "metrics": {
+    "year": "2026",
+    "date_from": "2026-04",
+    "date_to": "2099-12",
+    "generated_at": "2026-08-07 14:41",
+    "camp_total": 16817,
+    "camp_users": 16817,
+    "camp_source": "f_claim",
+    "enrolled": 7458,
+    "prog_dist": {
+      "Diabetes Management": 206,
+      "Dyslipidemia Management": 5284,
+      "Kidney Care": 197,
+      "Liver Care": 1655,
+      "Thyroid Care": 117
+    },
+    "cohort_split": {
+      "Very High": 4054,
+      "High": 5204,
+      "Moderate": 924,
+      "Low": 0,
+      "source": "d_policy Cohort__c"
+    },
+    "improvement_pivot": {},
+    "zero_appt": {
+      "zero_appt": 8796,
+      "pct": 86.39
+    },
+    "device_impr": {
+      "device_users_total": 0,
+      "device_improved": 0,
+      "device_improved_pct": 0,
+      "no_device_total": 0,
+      "no_device_improved": 0,
+      "no_device_improved_pct": 0,
+      "data_source": "Not available"
+    },
+    "appt_stats": {
+      "total_booked": 0,
+      "completed": 0,
+      "completion_pct": 0,
+      "lab_tests": 0,
+      "clinic_appts": 0
+    },
+    "engagement": {
+      "High": {
+        "n": 0,
+        "pct": 0
+      },
+      "Moderate": {
+        "n": 0,
+        "pct": 0
+      },
+      "Low": {
+        "n": 0,
+        "pct": 0
+      },
+      "Very Low": {
+        "n": 0,
+        "pct": 0
+      }
+    },
+    "hra_stats": {
+      "completed": 60,
+      "total_completed": 504
+    }
+  },
+  "insights": {
+    "overview": {
+      "headline": "Managed Care 2026: Programme users improve at 0.0% vs 0.0% non-programme  0 advantage. 7,458 of 16,817 camp users enrolled (44.3% coverage).",
+      "critical_flag": "Appointment coverage is strong.",
+      "positive_flag": " leads all programmes with 0.0% improvement rate."
+    },
+    "programme_outcomes": {
+      "narrative": "Programme users improve at 0.0% overall vs 0.0% for non-programme users  a 0 advantage confirming managed care efficacy.  leads at 0.0% while  at 0.0% needs attention.",
+      "best_programme": "",
+      "best_programme_reason": "0.0% improvement  highest across all programmes.",
+      "worst_programme": "",
+      "worst_programme_reason": "0.0% improvement  needs protocol review and increased touchpoints.",
+      "advantage_narrative": "Programme users are 0 more likely to improve than non-programme users on the same health impact."
+    },
+    "cohort_analysis": {
+      "narrative": "4,054 Very High cohort users require immediate clinical intervention. These users carry the highest disease burden and risk deterioration without active managed care.",
+      "very_high_action": "Assign dedicated care managers to all 4,054 Very High users and schedule fortnightly check-ins within 7 days.",
+      "coverage_insight": "44.3% of camp attendees enrolled  55.7% remain unaddressed and represent a significant opportunity."
+    },
+    "devices": {
+      "narrative": "Device users with managed care improve at 0.0% vs 0.0% for non-device MC users  a 0 percentage point gap confirming device efficacy.",
+      "recommendation": "Implement 30-day device onboarding protocol with check-ins at day 7 and day 21 to ensure activation and consistent usage."
+    },
+    "appointments": {
+      "narrative": "Appointment completion stands at 0.0% among enrolled users. 0% of enrolled users have had no appointments  the largest single gap in programme engagement.",
+      "zero_appt_action": "Send personalised outreach to 0 zero-appointment users within 2 weeks, segmented by programme type with direct specialist booking links."
+    },
+    "engagement": {
+      "narrative": "High and Moderate engagement users consistently outperform Low tier on improvement rates, confirming engagement as a leading indicator of clinical outcomes.",
+      "low_engagement_action": "Trigger automated WhatsApp reminders with booking links and personalised progress reports for Low and Very Low engagement users to re-activate them."
+    },
+    "recommendations": [
+      {
+        "priority": 2,
+        "title": "Share 4,054 Very High cohort list with care managers for immediate assignment",
+        "action": "Export cohort list from the Cohort tab. 4,054 Very High + 5,204 High risk users (124% of enrolled) need active management. Target: bi-weekly teleconsult for Very High, monthly app check-in for High.",
+        "expected_impact": "100% of 4,054 Very High users assigned to a care manager within 2 weeks",
+        "owner": "Product Manager",
+        "timeline": "Today"
+      },
+      {
+        "priority": 3,
+        "title": "Push HRA completion  only 60 of 7,458 done (0.8%)",
+        "action": "Trigger in-app push + WhatsApp to all 7,398 users who haven't completed HRA. HRA completion unlocks lifestyle assessment slots (currently 0 of 300 allocated).",
+        "expected_impact": "Increase HRA completion to 25% within 30 days; unlock lifestyle assessment allocation",
+        "owner": "Product Manager",
+        "timeline": "This week"
+      },
+      {
+        "priority": 4,
+        "title": "Review device eligibility list and initiate 2026 device allocation",
+        "action": "Device eligibility scoring is complete (Devices tab). 100 slots each for CGM, Glucometer, BP Monitor, Weighing Machine are scored and ranked. Share the final allocation list with the fulfilment team to begin delivery.",
+        "expected_impact": "All 400 devices dispatched within 2 weeks; Day-7 activation check-in scheduled",
+        "owner": "Product Manager",
+        "timeline": "This week"
+      },
+      {
+        "priority": 5,
+        "title": "Run weekly programme health check across 5 programmes",
+        "action": "Review 4 metrics every Monday: first appointment rate, HRA completion %, device activation rate, and Very High cohort assignment status. Escalate to Programme Head if any metric declines 2 weeks in a row.",
+        "expected_impact": "Early drop-off signals caught before next camp cycle",
+        "owner": "Product Manager",
+        "timeline": "Every Monday"
+      }
+    ]
+  }
+}

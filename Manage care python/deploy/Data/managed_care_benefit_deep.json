@@ -1,0 +1,1964 @@
+{
+  "generated_at": "2026-08-07 14:56",
+  "today": "2026-08-07",
+  "by_year": {
+    "2025": {
+      "year_label": "2025 \u2013 PURELIFE (Apr 2025 \u2013 Mar 2026)",
+      "enrolled_users": 10309,
+      "users_with_claims": 4283,
+      "users_with_appts": 3391,
+      "never_booked": 6918,
+      "claims_summary": {
+        "Nutritionist Consultation Benefit": {
+          "total_users": 3643,
+          "total_claims": 4284,
+          "repeat_users": 600,
+          "users_1x": 3043,
+          "users_2x": 564,
+          "users_3x": 32,
+          "users_4x": 3,
+          "users_5x": 1,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "5",
+          "monthly_trend": []
+        },
+        "Teleconsultation": {
+          "total_users": 340,
+          "total_claims": 376,
+          "repeat_users": 30,
+          "users_1x": 310,
+          "users_2x": 25,
+          "users_3x": 4,
+          "users_4x": 1,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "4",
+          "monthly_trend": []
+        },
+        "Health Monitoring": {
+          "total_users": 565,
+          "total_claims": 795,
+          "repeat_users": 146,
+          "users_1x": 419,
+          "users_2x": 101,
+          "users_3x": 23,
+          "users_4x": 14,
+          "users_5x": 6,
+          "users_5x_plus": 2,
+          "first_booking": "1",
+          "last_booking": "13",
+          "monthly_trend": []
+        },
+        "Lab Discounts": {
+          "total_users": 13,
+          "total_claims": 17,
+          "repeat_users": 3,
+          "users_1x": 10,
+          "users_2x": 2,
+          "users_3x": 1,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "3",
+          "monthly_trend": []
+        },
+        "Consultation Discount": {
+          "total_users": 2,
+          "total_claims": 3,
+          "repeat_users": 1,
+          "users_1x": 1,
+          "users_2x": 1,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "2",
+          "monthly_trend": []
+        },
+        "Wellness Inclinic Consultation Benefit": {
+          "total_users": 1,
+          "total_claims": 1,
+          "repeat_users": 0,
+          "users_1x": 1,
+          "users_2x": 0,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "1",
+          "monthly_trend": []
+        }
+      },
+      "appt_flat_summary": {
+        "Wellness Program Benefits": {
+          "total_appts": 3462,
+          "unique_users": 3277,
+          "completed_COM": 3519,
+          "booked": 0,
+          "rescheduled_RES": 0,
+          "cancelled_CAN": 239,
+          "speciality_dist": {
+            "Dietitian/Nutritionist": 3506,
+            "General Physician": 13
+          },
+          "date_range": {
+            "min": "2025-04-01",
+            "max": "2026-03-31"
+          },
+          "is_followup_count": 59
+        },
+        "Teleconsultation": {
+          "total_appts": 369,
+          "unique_users": 324,
+          "completed_COM": 262,
+          "booked": 0,
+          "rescheduled_RES": 0,
+          "cancelled_CAN": 129,
+          "speciality_dist": {
+            "General Physician": 229,
+            "Dietitian/Nutritionist": 7,
+            "Paediatrician": 5,
+            "Dermatologist": 4,
+            "Gynaecologist and Obstetrician": 4,
+            "Gastroenterologist": 3,
+            "Cardiologist": 3,
+            "Diabetologist": 1,
+            "Sexologist": 1,
+            "ENT": 1
+          },
+          "date_range": {
+            "min": "2025-04-01",
+            "max": "2026-03-23"
+          },
+          "is_followup_count": 0
+        },
+        "Consultation Discount": {
+          "total_appts": 6,
+          "unique_users": 3,
+          "completed_COM": 3,
+          "booked": 0,
+          "rescheduled_RES": 0,
+          "cancelled_CAN": 3,
+          "speciality_dist": {
+            "Dentist": 2,
+            "Orthopaedic": 1
+          },
+          "date_range": {
+            "min": "2025-09-13",
+            "max": "2026-03-10"
+          },
+          "is_followup_count": 0
+        },
+        "__totals__": {
+          "total_unique_appts": 3837,
+          "total_unique_users": 3391,
+          "completed_COM": 3784,
+          "booked": 0,
+          "rescheduled_RES": 0,
+          "cancelled_CAN": 371,
+          "never_booked": 6918
+        }
+      },
+      "daily_trend_flat": [
+        {
+          "date": "2025-04-01",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-04-02",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-04-03",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-04-05",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-04-08",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-04-09",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-04-11",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-04-12",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-04-14",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-04-15",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-04-16",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-04-17",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-04-18",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-04-19",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-04-21",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-04-22",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-04-23",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-04-24",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-04-25",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-04-27",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-04-28",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-04-29",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-04-30",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-05-01",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-05-02",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-05-03",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-05-05",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-05-06",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-05-07",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-05-08",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-05-09",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-05-10",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-05-12",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-05-13",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-05-14",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-05-15",
+          "unique_users": 8
+        },
+        {
+          "date": "2025-05-16",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-05-17",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-05-19",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-05-20",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-05-21",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-05-22",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-05-23",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-05-24",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-05-26",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-05-27",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-05-28",
+          "unique_users": 8
+        },
+        {
+          "date": "2025-05-29",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-05-30",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-05-31",
+          "unique_users": 8
+        },
+        {
+          "date": "2025-06-02",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-06-03",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-06-04",
+          "unique_users": 8
+        },
+        {
+          "date": "2025-06-05",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-06-06",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-06-07",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-06-08",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-06-09",
+          "unique_users": 15
+        },
+        {
+          "date": "2025-06-10",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-06-11",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-06-12",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-06-13",
+          "unique_users": 8
+        },
+        {
+          "date": "2025-06-14",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-06-16",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-06-17",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-06-19",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-06-20",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-06-21",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-06-23",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-06-24",
+          "unique_users": 15
+        },
+        {
+          "date": "2025-06-25",
+          "unique_users": 13
+        },
+        {
+          "date": "2025-06-26",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-06-27",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-06-30",
+          "unique_users": 24
+        },
+        {
+          "date": "2025-07-01",
+          "unique_users": 25
+        },
+        {
+          "date": "2025-07-02",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-07-03",
+          "unique_users": 24
+        },
+        {
+          "date": "2025-07-04",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-07-05",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-07-07",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-07-08",
+          "unique_users": 33
+        },
+        {
+          "date": "2025-07-09",
+          "unique_users": 16
+        },
+        {
+          "date": "2025-07-10",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-07-11",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-07-12",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-07-14",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-07-15",
+          "unique_users": 23
+        },
+        {
+          "date": "2025-07-16",
+          "unique_users": 21
+        },
+        {
+          "date": "2025-07-17",
+          "unique_users": 28
+        },
+        {
+          "date": "2025-07-18",
+          "unique_users": 26
+        },
+        {
+          "date": "2025-07-19",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-07-21",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-07-22",
+          "unique_users": 28
+        },
+        {
+          "date": "2025-07-23",
+          "unique_users": 24
+        },
+        {
+          "date": "2025-07-24",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-07-25",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-07-26",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-07-28",
+          "unique_users": 23
+        },
+        {
+          "date": "2025-07-29",
+          "unique_users": 21
+        },
+        {
+          "date": "2025-07-30",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-07-31",
+          "unique_users": 26
+        },
+        {
+          "date": "2025-08-01",
+          "unique_users": 16
+        },
+        {
+          "date": "2025-08-02",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-08-04",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-08-07",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-08-08",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-08-11",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-08-12",
+          "unique_users": 16
+        },
+        {
+          "date": "2025-08-13",
+          "unique_users": 13
+        },
+        {
+          "date": "2025-08-14",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-08-16",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-08-18",
+          "unique_users": 24
+        },
+        {
+          "date": "2025-08-19",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-08-20",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-08-21",
+          "unique_users": 21
+        },
+        {
+          "date": "2025-08-22",
+          "unique_users": 28
+        },
+        {
+          "date": "2025-08-23",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-08-25",
+          "unique_users": 25
+        },
+        {
+          "date": "2025-08-26",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-08-28",
+          "unique_users": 4
+        },
+        {
+          "date": "2025-08-29",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-09-01",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-09-02",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-09-03",
+          "unique_users": 21
+        },
+        {
+          "date": "2025-09-04",
+          "unique_users": 13
+        },
+        {
+          "date": "2025-09-05",
+          "unique_users": 15
+        },
+        {
+          "date": "2025-09-08",
+          "unique_users": 15
+        },
+        {
+          "date": "2025-09-09",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-09-10",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-09-11",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-09-12",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-09-13",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-09-14",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-09-15",
+          "unique_users": 8
+        },
+        {
+          "date": "2025-09-16",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-09-17",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-09-18",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-09-19",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-09-20",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-09-23",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-09-24",
+          "unique_users": 13
+        },
+        {
+          "date": "2025-09-25",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-09-26",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-09-27",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-09-28",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-09-29",
+          "unique_users": 13
+        },
+        {
+          "date": "2025-09-30",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-10-01",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-10-02",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-10-03",
+          "unique_users": 21
+        },
+        {
+          "date": "2025-10-04",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-10-06",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-10-07",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-10-08",
+          "unique_users": 16
+        },
+        {
+          "date": "2025-10-09",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-10-10",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-10-11",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-10-12",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-10-13",
+          "unique_users": 24
+        },
+        {
+          "date": "2025-10-14",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-10-15",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-10-16",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-10-17",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-10-18",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-10-20",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-10-21",
+          "unique_users": 1
+        },
+        {
+          "date": "2025-10-22",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-10-23",
+          "unique_users": 30
+        },
+        {
+          "date": "2025-10-24",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-10-27",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-10-28",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-10-29",
+          "unique_users": 16
+        },
+        {
+          "date": "2025-10-30",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-10-31",
+          "unique_users": 13
+        },
+        {
+          "date": "2025-11-01",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-11-03",
+          "unique_users": 8
+        },
+        {
+          "date": "2025-11-04",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-11-05",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-11-06",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-11-07",
+          "unique_users": 12
+        },
+        {
+          "date": "2025-11-10",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-11-11",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-11-12",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-11-13",
+          "unique_users": 15
+        },
+        {
+          "date": "2025-11-14",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-11-15",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-11-17",
+          "unique_users": 11
+        },
+        {
+          "date": "2025-11-18",
+          "unique_users": 15
+        },
+        {
+          "date": "2025-11-19",
+          "unique_users": 17
+        },
+        {
+          "date": "2025-11-20",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-11-21",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-11-22",
+          "unique_users": 5
+        },
+        {
+          "date": "2025-11-23",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-11-24",
+          "unique_users": 24
+        },
+        {
+          "date": "2025-11-25",
+          "unique_users": 21
+        },
+        {
+          "date": "2025-11-26",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-11-27",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-11-28",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-11-29",
+          "unique_users": 6
+        },
+        {
+          "date": "2025-12-01",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-12-02",
+          "unique_users": 16
+        },
+        {
+          "date": "2025-12-03",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-12-04",
+          "unique_users": 16
+        },
+        {
+          "date": "2025-12-05",
+          "unique_users": 7
+        },
+        {
+          "date": "2025-12-06",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-12-08",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-12-09",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-12-10",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-12-11",
+          "unique_users": 19
+        },
+        {
+          "date": "2025-12-12",
+          "unique_users": 18
+        },
+        {
+          "date": "2025-12-13",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-12-15",
+          "unique_users": 25
+        },
+        {
+          "date": "2025-12-16",
+          "unique_users": 20
+        },
+        {
+          "date": "2025-12-17",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-12-18",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-12-19",
+          "unique_users": 15
+        },
+        {
+          "date": "2025-12-20",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-12-22",
+          "unique_users": 10
+        },
+        {
+          "date": "2025-12-23",
+          "unique_users": 14
+        },
+        {
+          "date": "2025-12-24",
+          "unique_users": 3
+        },
+        {
+          "date": "2025-12-26",
+          "unique_users": 2
+        },
+        {
+          "date": "2025-12-27",
+          "unique_users": 9
+        },
+        {
+          "date": "2025-12-29",
+          "unique_users": 22
+        },
+        {
+          "date": "2025-12-30",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-01-01",
+          "unique_users": 5
+        },
+        {
+          "date": "2026-01-02",
+          "unique_users": 18
+        },
+        {
+          "date": "2026-01-03",
+          "unique_users": 12
+        },
+        {
+          "date": "2026-01-05",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-01-06",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-01-07",
+          "unique_users": 7
+        },
+        {
+          "date": "2026-01-08",
+          "unique_users": 27
+        },
+        {
+          "date": "2026-01-09",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-01-10",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-01-12",
+          "unique_users": 7
+        },
+        {
+          "date": "2026-01-13",
+          "unique_users": 16
+        },
+        {
+          "date": "2026-01-14",
+          "unique_users": 21
+        },
+        {
+          "date": "2026-01-15",
+          "unique_users": 12
+        },
+        {
+          "date": "2026-01-16",
+          "unique_users": 9
+        },
+        {
+          "date": "2026-01-17",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-01-18",
+          "unique_users": 1
+        },
+        {
+          "date": "2026-01-19",
+          "unique_users": 16
+        },
+        {
+          "date": "2026-01-20",
+          "unique_users": 23
+        },
+        {
+          "date": "2026-01-21",
+          "unique_users": 15
+        },
+        {
+          "date": "2026-01-22",
+          "unique_users": 15
+        },
+        {
+          "date": "2026-01-23",
+          "unique_users": 18
+        },
+        {
+          "date": "2026-01-24",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-01-27",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-01-28",
+          "unique_users": 20
+        },
+        {
+          "date": "2026-01-29",
+          "unique_users": 14
+        },
+        {
+          "date": "2026-01-30",
+          "unique_users": 8
+        },
+        {
+          "date": "2026-01-31",
+          "unique_users": 5
+        },
+        {
+          "date": "2026-02-01",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-02-02",
+          "unique_users": 19
+        },
+        {
+          "date": "2026-02-03",
+          "unique_users": 21
+        },
+        {
+          "date": "2026-02-04",
+          "unique_users": 16
+        },
+        {
+          "date": "2026-02-05",
+          "unique_users": 31
+        },
+        {
+          "date": "2026-02-06",
+          "unique_users": 11
+        },
+        {
+          "date": "2026-02-07",
+          "unique_users": 7
+        },
+        {
+          "date": "2026-02-08",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-02-09",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-02-10",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-02-11",
+          "unique_users": 12
+        },
+        {
+          "date": "2026-02-12",
+          "unique_users": 12
+        },
+        {
+          "date": "2026-02-13",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-02-14",
+          "unique_users": 5
+        },
+        {
+          "date": "2026-02-16",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-02-17",
+          "unique_users": 15
+        },
+        {
+          "date": "2026-02-18",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-02-19",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-02-20",
+          "unique_users": 7
+        },
+        {
+          "date": "2026-02-23",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-02-24",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-02-25",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-02-26",
+          "unique_users": 5
+        },
+        {
+          "date": "2026-02-27",
+          "unique_users": 2
+        },
+        {
+          "date": "2026-02-28",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-03-02",
+          "unique_users": 9
+        },
+        {
+          "date": "2026-03-03",
+          "unique_users": 3
+        },
+        {
+          "date": "2026-03-04",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-03-05",
+          "unique_users": 11
+        },
+        {
+          "date": "2026-03-06",
+          "unique_users": 7
+        },
+        {
+          "date": "2026-03-07",
+          "unique_users": 3
+        },
+        {
+          "date": "2026-03-08",
+          "unique_users": 1
+        },
+        {
+          "date": "2026-03-09",
+          "unique_users": 7
+        },
+        {
+          "date": "2026-03-10",
+          "unique_users": 9
+        },
+        {
+          "date": "2026-03-11",
+          "unique_users": 23
+        },
+        {
+          "date": "2026-03-12",
+          "unique_users": 16
+        },
+        {
+          "date": "2026-03-13",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-03-14",
+          "unique_users": 3
+        },
+        {
+          "date": "2026-03-16",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-03-17",
+          "unique_users": 16
+        },
+        {
+          "date": "2026-03-18",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-03-19",
+          "unique_users": 8
+        },
+        {
+          "date": "2026-03-20",
+          "unique_users": 9
+        },
+        {
+          "date": "2026-03-21",
+          "unique_users": 3
+        },
+        {
+          "date": "2026-03-22",
+          "unique_users": 1
+        },
+        {
+          "date": "2026-03-23",
+          "unique_users": 9
+        },
+        {
+          "date": "2026-03-24",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-03-25",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-03-27",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-03-28",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-03-30",
+          "unique_users": 9
+        },
+        {
+          "date": "2026-03-31",
+          "unique_users": 6
+        }
+      ],
+      "followup_pending": {
+        "doctor": {
+          "unique_users": 224,
+          "total_appts": 255,
+          "completed_appts": 255,
+          "last_appt_range": {
+            "min": "2025-04-01",
+            "max": "2026-03-23"
+          },
+          "followup_thresholds": {
+            "Very High": 30,
+            "High": 60,
+            "Moderate": 90
+          },
+          "very_high": {
+            "threshold_days": 30,
+            "cohort_label": "Very High",
+            "total_with_appt": 224,
+            "pending_followup": 224,
+            "pending_pct": 100.0,
+            "within_window": 0,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "high": {
+            "threshold_days": 60,
+            "cohort_label": "High",
+            "total_with_appt": 224,
+            "pending_followup": 224,
+            "pending_pct": 100.0,
+            "within_window": 0,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "moderate": {
+            "threshold_days": 90,
+            "cohort_label": "Moderate",
+            "total_with_appt": 224,
+            "pending_followup": 224,
+            "pending_pct": 100.0,
+            "within_window": 0,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          }
+        },
+        "diet": {
+          "unique_users": 3102,
+          "total_appts": 3526,
+          "completed_appts": 3526,
+          "last_appt_range": {
+            "min": "2025-04-03",
+            "max": "2026-03-31"
+          },
+          "followup_thresholds": {
+            "Very High": 30,
+            "High": 60,
+            "Moderate": 90
+          },
+          "very_high": {
+            "threshold_days": 30,
+            "cohort_label": "Very High",
+            "total_with_appt": 3102,
+            "pending_followup": 3102,
+            "pending_pct": 100.0,
+            "within_window": 0,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "high": {
+            "threshold_days": 60,
+            "cohort_label": "High",
+            "total_with_appt": 3102,
+            "pending_followup": 3102,
+            "pending_pct": 100.0,
+            "within_window": 0,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "moderate": {
+            "threshold_days": 90,
+            "cohort_label": "Moderate",
+            "total_with_appt": 3102,
+            "pending_followup": 3102,
+            "pending_pct": 100.0,
+            "within_window": 0,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          }
+        },
+        "lab": {
+          "no_data": true,
+          "note": "No claim_date column in lab claims"
+        }
+      }
+    },
+    "2026": {
+      "year_label": "2026 \u2013 VYTAL (Apr 2026 \u2013 Mar 2027)",
+      "enrolled_users": 10182,
+      "users_with_claims": 1452,
+      "users_with_appts": 1436,
+      "never_booked": 8746,
+      "claims_summary": {
+        "Nutritionist Consultation Benefit": {
+          "total_users": 1111,
+          "total_claims": 1191,
+          "repeat_users": 79,
+          "users_1x": 1032,
+          "users_2x": 78,
+          "users_3x": 1,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "3",
+          "monthly_trend": []
+        },
+        "Teleconsultation": {
+          "total_users": 227,
+          "total_claims": 242,
+          "repeat_users": 15,
+          "users_1x": 212,
+          "users_2x": 15,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "2",
+          "monthly_trend": []
+        },
+        "Health Monitoring": {
+          "total_users": 12,
+          "total_claims": 15,
+          "repeat_users": 3,
+          "users_1x": 9,
+          "users_2x": 3,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "2",
+          "monthly_trend": []
+        },
+        "Wellness Inclinic Consultation Benefit": {
+          "total_users": 3,
+          "total_claims": 4,
+          "repeat_users": 1,
+          "users_1x": 2,
+          "users_2x": 1,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "2",
+          "monthly_trend": []
+        },
+        "Lab Discounts": {
+          "total_users": 2,
+          "total_claims": 2,
+          "repeat_users": 0,
+          "users_1x": 2,
+          "users_2x": 0,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "1",
+          "monthly_trend": []
+        },
+        "Lab Package 2": {
+          "total_users": 1,
+          "total_claims": 1,
+          "repeat_users": 0,
+          "users_1x": 1,
+          "users_2x": 0,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "1",
+          "monthly_trend": []
+        },
+        "Consultation Discount": {
+          "total_users": 1,
+          "total_claims": 1,
+          "repeat_users": 0,
+          "users_1x": 1,
+          "users_2x": 0,
+          "users_3x": 0,
+          "users_4x": 0,
+          "users_5x": 0,
+          "users_5x_plus": 0,
+          "first_booking": "1",
+          "last_booking": "1",
+          "monthly_trend": []
+        }
+      },
+      "appt_flat_summary": {
+        "Teleconsultation": {
+          "total_appts": 347,
+          "unique_users": 326,
+          "completed_COM": 151,
+          "booked": 81,
+          "rescheduled_RES": 6,
+          "cancelled_CAN": 109,
+          "speciality_dist": {
+            "Dietitian/Nutritionist": 173,
+            "General Physician": 65
+          },
+          "date_range": {
+            "min": "2026-06-15",
+            "max": "2026-09-05"
+          },
+          "is_followup_count": 3
+        },
+        "Wellness Program Benefits": {
+          "total_appts": 1217,
+          "unique_users": 1135,
+          "completed_COM": 1174,
+          "booked": 16,
+          "rescheduled_RES": 0,
+          "cancelled_CAN": 27,
+          "speciality_dist": {
+            "Dietitian/Nutritionist": 1190
+          },
+          "date_range": {
+            "min": "2026-06-11",
+            "max": "2026-08-12"
+          },
+          "is_followup_count": 78
+        },
+        "Consultation Discount": {
+          "total_appts": 2,
+          "unique_users": 1,
+          "completed_COM": 1,
+          "booked": 0,
+          "rescheduled_RES": 0,
+          "cancelled_CAN": 1,
+          "speciality_dist": {
+            "Dermatologist": 1
+          },
+          "date_range": {
+            "min": "2026-07-27",
+            "max": "2026-07-27"
+          },
+          "is_followup_count": 0
+        },
+        "__totals__": {
+          "total_unique_appts": 1566,
+          "total_unique_users": 1436,
+          "completed_COM": 1326,
+          "booked": 97,
+          "rescheduled_RES": 6,
+          "cancelled_CAN": 137,
+          "never_booked": 8746
+        }
+      },
+      "daily_trend_flat": [
+        {
+          "date": "2026-06-11",
+          "unique_users": 21
+        },
+        {
+          "date": "2026-06-12",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-06-15",
+          "unique_users": 24
+        },
+        {
+          "date": "2026-06-16",
+          "unique_users": 27
+        },
+        {
+          "date": "2026-06-17",
+          "unique_users": 8
+        },
+        {
+          "date": "2026-06-18",
+          "unique_users": 17
+        },
+        {
+          "date": "2026-06-19",
+          "unique_users": 36
+        },
+        {
+          "date": "2026-06-20",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-06-22",
+          "unique_users": 35
+        },
+        {
+          "date": "2026-06-23",
+          "unique_users": 25
+        },
+        {
+          "date": "2026-06-24",
+          "unique_users": 28
+        },
+        {
+          "date": "2026-06-25",
+          "unique_users": 29
+        },
+        {
+          "date": "2026-06-26",
+          "unique_users": 24
+        },
+        {
+          "date": "2026-06-27",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-06-29",
+          "unique_users": 25
+        },
+        {
+          "date": "2026-06-30",
+          "unique_users": 38
+        },
+        {
+          "date": "2026-07-01",
+          "unique_users": 31
+        },
+        {
+          "date": "2026-07-02",
+          "unique_users": 42
+        },
+        {
+          "date": "2026-07-03",
+          "unique_users": 27
+        },
+        {
+          "date": "2026-07-04",
+          "unique_users": 24
+        },
+        {
+          "date": "2026-07-06",
+          "unique_users": 32
+        },
+        {
+          "date": "2026-07-07",
+          "unique_users": 31
+        },
+        {
+          "date": "2026-07-08",
+          "unique_users": 32
+        },
+        {
+          "date": "2026-07-09",
+          "unique_users": 44
+        },
+        {
+          "date": "2026-07-10",
+          "unique_users": 43
+        },
+        {
+          "date": "2026-07-11",
+          "unique_users": 1
+        },
+        {
+          "date": "2026-07-13",
+          "unique_users": 19
+        },
+        {
+          "date": "2026-07-14",
+          "unique_users": 26
+        },
+        {
+          "date": "2026-07-15",
+          "unique_users": 18
+        },
+        {
+          "date": "2026-07-16",
+          "unique_users": 37
+        },
+        {
+          "date": "2026-07-17",
+          "unique_users": 28
+        },
+        {
+          "date": "2026-07-18",
+          "unique_users": 18
+        },
+        {
+          "date": "2026-07-20",
+          "unique_users": 27
+        },
+        {
+          "date": "2026-07-21",
+          "unique_users": 43
+        },
+        {
+          "date": "2026-07-22",
+          "unique_users": 32
+        },
+        {
+          "date": "2026-07-23",
+          "unique_users": 37
+        },
+        {
+          "date": "2026-07-24",
+          "unique_users": 27
+        },
+        {
+          "date": "2026-07-25",
+          "unique_users": 12
+        },
+        {
+          "date": "2026-07-27",
+          "unique_users": 19
+        },
+        {
+          "date": "2026-07-28",
+          "unique_users": 16
+        },
+        {
+          "date": "2026-07-29",
+          "unique_users": 24
+        },
+        {
+          "date": "2026-07-30",
+          "unique_users": 37
+        },
+        {
+          "date": "2026-07-31",
+          "unique_users": 39
+        },
+        {
+          "date": "2026-08-01",
+          "unique_users": 27
+        },
+        {
+          "date": "2026-08-02",
+          "unique_users": 4
+        },
+        {
+          "date": "2026-08-03",
+          "unique_users": 47
+        },
+        {
+          "date": "2026-08-04",
+          "unique_users": 41
+        },
+        {
+          "date": "2026-08-05",
+          "unique_users": 43
+        },
+        {
+          "date": "2026-08-06",
+          "unique_users": 36
+        },
+        {
+          "date": "2026-08-07",
+          "unique_users": 33
+        },
+        {
+          "date": "2026-08-08",
+          "unique_users": 7
+        },
+        {
+          "date": "2026-08-09",
+          "unique_users": 6
+        },
+        {
+          "date": "2026-08-10",
+          "unique_users": 24
+        },
+        {
+          "date": "2026-08-11",
+          "unique_users": 10
+        },
+        {
+          "date": "2026-08-12",
+          "unique_users": 13
+        },
+        {
+          "date": "2026-08-14",
+          "unique_users": 1
+        },
+        {
+          "date": "2026-08-20",
+          "unique_users": 1
+        },
+        {
+          "date": "2026-08-21",
+          "unique_users": 1
+        },
+        {
+          "date": "2026-09-05",
+          "unique_users": 1
+        }
+      ],
+      "followup_pending": {
+        "doctor": {
+          "unique_users": 65,
+          "total_appts": 65,
+          "completed_appts": 58,
+          "last_appt_range": {
+            "min": "2026-06-15",
+            "max": "2026-09-05"
+          },
+          "followup_thresholds": {
+            "Very High": 30,
+            "High": 60,
+            "Moderate": 90
+          },
+          "very_high": {
+            "threshold_days": 30,
+            "cohort_label": "Very High",
+            "total_with_appt": 65,
+            "pending_followup": 22,
+            "pending_pct": 33.8,
+            "within_window": 43,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "high": {
+            "threshold_days": 60,
+            "cohort_label": "High",
+            "total_with_appt": 65,
+            "pending_followup": 0,
+            "pending_pct": 0.0,
+            "within_window": 65,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "moderate": {
+            "threshold_days": 90,
+            "cohort_label": "Moderate",
+            "total_with_appt": 65,
+            "pending_followup": 0,
+            "pending_pct": 0.0,
+            "within_window": 65,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          }
+        },
+        "diet": {
+          "unique_users": 1254,
+          "total_appts": 1363,
+          "completed_appts": 1267,
+          "last_appt_range": {
+            "min": "2026-06-11",
+            "max": "2026-08-12"
+          },
+          "followup_thresholds": {
+            "Very High": 30,
+            "High": 60,
+            "Moderate": 90
+          },
+          "very_high": {
+            "threshold_days": 30,
+            "cohort_label": "Very High",
+            "total_with_appt": 1254,
+            "pending_followup": 455,
+            "pending_pct": 36.3,
+            "within_window": 799,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "high": {
+            "threshold_days": 60,
+            "cohort_label": "High",
+            "total_with_appt": 1254,
+            "pending_followup": 0,
+            "pending_pct": 0.0,
+            "within_window": 1254,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          },
+          "moderate": {
+            "threshold_days": 90,
+            "cohort_label": "Moderate",
+            "total_with_appt": 1254,
+            "pending_followup": 0,
+            "pending_pct": 0.0,
+            "within_window": 1254,
+            "note": "All users shown (cohort scores pending for VYTAL)"
+          }
+        },
+        "lab": {
+          "no_data": true,
+          "note": "No claim_date column in lab claims"
+        }
+      }
+    }
+  }
+}
