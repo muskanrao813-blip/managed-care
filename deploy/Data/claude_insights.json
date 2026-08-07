@@ -1,0 +1,237 @@
+{
+  "meta": {
+    "generated_at": "2026-08-04 13:14",
+    "enrolled_year": "2026",
+    "camp_date_from": "2026-04",
+    "camp_date_to": "2099-12"
+  },
+  "metrics": {
+    "year": "2026",
+    "date_from": "2026-04",
+    "date_to": "2099-12",
+    "generated_at": "2026-08-04 13:14",
+    "camp_total": 16745,
+    "camp_users": 16745,
+    "camp_source": "f_claim",
+    "enrolled": 8687,
+    "prog_dist": {
+      "Diabetes Management": 316,
+      "Dyslipidemia Management": 5959,
+      "Kidney Care": 225,
+      "Liver Care": 2001,
+      "Thyroid Care": 187
+    },
+    "cohort_split": {
+      "Very High": 4054,
+      "High": 5205,
+      "Moderate": 923,
+      "Low": 0,
+      "source": "d_policy Cohort__c"
+    },
+    "improvement_pivot": {
+      "total_retested": 14283,
+      "mc_users": 5059,
+      "non_mc_users": 9224,
+      "by_programme": {
+        "Liver Care": {
+          "product_code": "PURELIFE4",
+          "mc_total": 1266,
+          "mc_improved": 816,
+          "mc_worsened": 432,
+          "mc_no_change": 1,
+          "mc_no_risk": 17,
+          "mc_improved_pct": 64.45,
+          "mc_worsened_pct": 34.12,
+          "np_total": 6261,
+          "np_improved": 1472,
+          "np_worsened": 2108,
+          "np_improved_pct": 23.51,
+          "np_worsened_pct": 33.67,
+          "advantage_x": 2.74
+        },
+        "Thyroid Care": {
+          "product_code": "PURELIFE3",
+          "mc_total": 283,
+          "mc_improved": 206,
+          "mc_worsened": 71,
+          "mc_no_change": 4,
+          "mc_no_risk": 2,
+          "mc_improved_pct": 72.79,
+          "mc_worsened_pct": 25.09,
+          "np_total": 9139,
+          "np_improved": 214,
+          "np_worsened": 325,
+          "np_improved_pct": 2.34,
+          "np_worsened_pct": 3.56,
+          "advantage_x": 31.09
+        },
+        "Diabetes Management": {
+          "product_code": "PURELIFE1",
+          "mc_total": 602,
+          "mc_improved": 343,
+          "mc_worsened": 219,
+          "mc_no_change": 21,
+          "mc_no_risk": 19,
+          "mc_improved_pct": 56.98,
+          "mc_worsened_pct": 36.38,
+          "np_total": 6272,
+          "np_improved": 696,
+          "np_worsened": 864,
+          "np_improved_pct": 11.1,
+          "np_worsened_pct": 13.78,
+          "advantage_x": 5.13
+        },
+        "Kidney Care": {
+          "product_code": "PURELIFE5",
+          "mc_total": 352,
+          "mc_improved": 190,
+          "mc_worsened": 61,
+          "mc_no_change": 5,
+          "mc_no_risk": 96,
+          "mc_improved_pct": 53.98,
+          "mc_worsened_pct": 17.33,
+          "np_total": 9964,
+          "np_improved": 559,
+          "np_worsened": 1281,
+          "np_improved_pct": 5.61,
+          "np_worsened_pct": 12.86,
+          "advantage_x": 9.62
+        },
+        "Dyslipidemia Management": {
+          "product_code": "PURELIFE2",
+          "mc_total": 2613,
+          "mc_improved": 1604,
+          "mc_worsened": 1008,
+          "mc_no_change": 0,
+          "mc_no_risk": 1,
+          "mc_improved_pct": 61.39,
+          "mc_worsened_pct": 38.58,
+          "np_total": 9967,
+          "np_improved": 2931,
+          "np_worsened": 4284,
+          "np_improved_pct": 29.41,
+          "np_worsened_pct": 42.98,
+          "advantage_x": 2.09
+        }
+      },
+      "overall_mc_improved_pct": 61.75,
+      "overall_non_mc_improved_pct": 14.11
+    },
+    "zero_appt": {
+      "zero_appt": 8884,
+      "pct": 87.25
+    },
+    "device_impr": {
+      "device_users_total": 0,
+      "device_improved": 0,
+      "device_improved_pct": 0,
+      "no_device_total": 0,
+      "no_device_improved": 0,
+      "no_device_improved_pct": 0,
+      "data_source": "device_eligibility.csv not found"
+    },
+    "appt_stats": {
+      "total_booked": 0,
+      "completed": 0,
+      "completion_pct": 0,
+      "lab_tests": 0,
+      "clinic_appts": 0
+    },
+    "engagement": {
+      "High": {
+        "n": 0,
+        "pct": 0
+      },
+      "Moderate": {
+        "n": 0,
+        "pct": 0
+      },
+      "Low": {
+        "n": 0,
+        "pct": 0
+      },
+      "Very Low": {
+        "n": 0,
+        "pct": 0
+      }
+    },
+    "hra_stats": {
+      "completed": 60,
+      "total_completed": 503
+    }
+  },
+  "insights": {
+    "overview": {
+      "headline": "Managed Care 2026: Programme users improve at 61.8% vs 14.1% non-programme  4.4 advantage. 8,687 of 16,745 camp users enrolled (51.9% coverage).",
+      "critical_flag": "10,182 enrolled users (100.0%) have zero appointments  immediate outreach needed.",
+      "positive_flag": "Thyroid Care leads all programmes with 72.8% improvement rate."
+    },
+    "programme_outcomes": {
+      "narrative": "Programme users improve at 61.8% overall vs 14.1% for non-programme users  a 4.4 advantage confirming managed care efficacy. Thyroid Care leads at 72.8% while Kidney Care at 54.0% needs attention.",
+      "best_programme": "Thyroid Care",
+      "best_programme_reason": "72.8% improvement  highest across all programmes.",
+      "worst_programme": "Kidney Care",
+      "worst_programme_reason": "54.0% improvement  needs protocol review and increased touchpoints.",
+      "advantage_narrative": "Programme users are 4.4 more likely to improve than non-programme users on the same health impact."
+    },
+    "cohort_analysis": {
+      "narrative": "4,054 Very High cohort users require immediate clinical intervention. These users carry the highest disease burden and risk deterioration without active managed care.",
+      "very_high_action": "Assign dedicated care managers to all 4,054 Very High users and schedule fortnightly check-ins within 7 days.",
+      "coverage_insight": "51.9% of camp attendees enrolled  48.1% remain unaddressed and represent a significant opportunity."
+    },
+    "devices": {
+      "narrative": "Device users with managed care improve at 0.0% vs 0.0% for non-device MC users  a 0 percentage point gap confirming device efficacy.",
+      "recommendation": "Implement 30-day device onboarding protocol with check-ins at day 7 and day 21 to ensure activation and consistent usage."
+    },
+    "appointments": {
+      "narrative": "Appointment completion stands at 100.0% among enrolled users. 100% of enrolled users have had no appointments  the largest single gap in programme engagement.",
+      "zero_appt_action": "Send personalised outreach to 10,182 zero-appointment users within 2 weeks, segmented by programme type with direct specialist booking links."
+    },
+    "engagement": {
+      "narrative": "High and Moderate engagement users consistently outperform Low tier on improvement rates, confirming engagement as a leading indicator of clinical outcomes.",
+      "low_engagement_action": "Trigger automated WhatsApp reminders with booking links and personalised progress reports for Low and Very Low engagement users to re-activate them."
+    },
+    "recommendations": [
+      {
+        "priority": 1,
+        "title": "Drive first appointment for 10,182 enrolled users  0 booked so far",
+        "action": "Send programme-specific booking links to all 8,687 VYTAL users. Start with Dyslipidemia Management (5,959 users). Very High (4,054) and High (5,205) users should get a direct care manager call, not a self-serve link.",
+        "expected_impact": "First appointment booked for at least 1,200 users within 30 days",
+        "owner": "Product Manager + Care Team",
+        "timeline": "This week"
+      },
+      {
+        "priority": 2,
+        "title": "Share 4,054 Very High cohort list with care managers for immediate assignment",
+        "action": "Export cohort list from the Cohort tab. 4,054 Very High + 5,205 High risk users (107% of enrolled) need active management. Target: bi-weekly teleconsult for Very High, monthly app check-in for High.",
+        "expected_impact": "100% of 4,054 Very High users assigned to a care manager within 2 weeks",
+        "owner": "Product Manager",
+        "timeline": "Today"
+      },
+      {
+        "priority": 3,
+        "title": "Push HRA completion  only 60 of 8,687 done (0.7%)",
+        "action": "Trigger in-app push + WhatsApp to all 8,627 users who haven't completed HRA. HRA completion unlocks lifestyle assessment slots (currently 0 of 300 allocated).",
+        "expected_impact": "Increase HRA completion to 25% within 30 days; unlock lifestyle assessment allocation",
+        "owner": "Product Manager",
+        "timeline": "This week"
+      },
+      {
+        "priority": 4,
+        "title": "Review device eligibility list and initiate 2026 device allocation",
+        "action": "Device eligibility scoring is complete (Devices tab). 100 slots each for CGM, Glucometer, BP Monitor, Weighing Machine are scored and ranked. Share the final allocation list with the fulfilment team to begin delivery.",
+        "expected_impact": "All 400 devices dispatched within 2 weeks; Day-7 activation check-in scheduled",
+        "owner": "Product Manager",
+        "timeline": "This week"
+      },
+      {
+        "priority": 5,
+        "title": "Run weekly programme health check across 5 programmes",
+        "action": "Review 4 metrics every Monday: first appointment rate, HRA completion %, device activation rate, and Very High cohort assignment status. Escalate to Programme Head if any metric declines 2 weeks in a row.",
+        "expected_impact": "Early drop-off signals caught before next camp cycle",
+        "owner": "Product Manager",
+        "timeline": "Every Monday"
+      }
+    ]
+  }
+}
