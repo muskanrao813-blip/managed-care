@@ -187,6 +187,10 @@ def get_insights():
         if appts is None or appts.empty or policy is None or policy.empty:
             return jsonify({"insights": {"recommendations": []}, "error": "No data available"}), 200
 
+        # Filter to VYTAL 2026 only (recommendations tab is for VYTAL 2026)
+        policy_vytal_2026 = policy[policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)]
+        enrolled_vytal_2026 = policy_vytal_2026['phr_id'].nunique()
+
         # Apply date filtering (match dashboard's default date range)
         # Dashboard default: 2026-06-01 to 2026-08-07
         date_from = "2026-06-01"
@@ -213,28 +217,19 @@ def get_insights():
         overall_completion_rate = (completed / total_appts * 100) if total_appts > 0 else 0
         cancellation_rate = (cancelled / total_appts * 100) if total_appts > 0 else 0
 
-        # Cohort distribution from policy_data (source of truth)
+        # Cohort distribution from VYTAL 2026 policy data
         cohort_counts = {}
-        if 'cohort' in policy.columns:
-            cohort_counts = policy['cohort'].value_counts().to_dict()
-
-        # Count missing cohorts (users without cohort classification)
-        total_policy = len(policy)
-        cohort_classified = sum(cohort_counts.values())
-        missing_count = total_policy - cohort_classified
-        if missing_count > 0:
-            cohort_counts['missing'] = missing_count
+        if 'cohort' in policy_vytal_2026.columns:
+            cohort_counts = policy_vytal_2026['cohort'].value_counts().to_dict()
 
         # Zero appointment calculation (based on filtered appointments)
         unique_appt_users = appts_filtered['phr_id'].nunique() if 'phr_id' in appts_filtered.columns else 0
-        zero_appt_users = total_policy - unique_appt_users
-        zero_appt_rate = (zero_appt_users / total_policy * 100) if total_policy > 0 else 0
+        zero_appt_users = enrolled_vytal_2026 - unique_appt_users
+        zero_appt_rate = (zero_appt_users / enrolled_vytal_2026 * 100) if enrolled_vytal_2026 > 0 else 0
 
-        # Cohort rates (calculate as % of CLASSIFIED users, not all users)
-        classified_users = total_policy - missing_count
+        # Cohort rates (all from VYTAL 2026 enrolled base)
         very_high_count = cohort_counts.get('Very High', 0)
-        very_high_rate = (very_high_count / classified_users * 100) if classified_users > 0 else 0
-        missing_rate = (missing_count / total_policy * 100) if total_policy > 0 else 0
+        very_high_rate = (very_high_count / enrolled_vytal_2026 * 100) if enrolled_vytal_2026 > 0 else 0
 
         # Map priority text to numbers for frontend display
         priority_map = {"critical": 1, "high": 2, "medium": 3, "low": 4}
@@ -311,8 +306,8 @@ def get_insights():
                     "pct": round(zero_appt_rate, 1)
                 },
                 "cohort_split": cohort_counts,
-                "enrolled": enrolled_users,
-                "camp_total": enrolled_users
+                "enrolled": enrolled_vytal_2026,
+                "camp_total": enrolled_vytal_2026
             },
             "meta": {
                 "generated_at": pd.Timestamp.now().strftime("%Y-%m-%d %H:%M")
