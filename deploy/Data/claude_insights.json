@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_at": "2026-08-04 13:14",
+    "generated_at": "2026-08-07 12:01",
     "enrolled_year": "2026",
     "camp_date_from": "2026-04",
     "camp_date_to": "2099-12"
@@ -9,9 +9,9 @@
     "year": "2026",
     "date_from": "2026-04",
     "date_to": "2099-12",
-    "generated_at": "2026-08-04 13:14",
-    "camp_total": 16745,
-    "camp_users": 16745,
+    "generated_at": "2026-08-07 12:01",
+    "camp_total": 16817,
+    "camp_users": 16817,
     "camp_source": "f_claim",
     "enrolled": 8687,
     "prog_dist": {
@@ -23,31 +23,31 @@
     },
     "cohort_split": {
       "Very High": 4054,
-      "High": 5205,
-      "Moderate": 923,
+      "High": 5204,
+      "Moderate": 924,
       "Low": 0,
       "source": "d_policy Cohort__c"
     },
     "improvement_pivot": {
-      "total_retested": 14283,
-      "mc_users": 5059,
-      "non_mc_users": 9224,
+      "total_retested": 14306,
+      "mc_users": 5064,
+      "non_mc_users": 9242,
       "by_programme": {
-        "Liver Care": {
-          "product_code": "PURELIFE4",
-          "mc_total": 1266,
-          "mc_improved": 816,
-          "mc_worsened": 432,
-          "mc_no_change": 1,
-          "mc_no_risk": 17,
-          "mc_improved_pct": 64.45,
-          "mc_worsened_pct": 34.12,
-          "np_total": 6261,
-          "np_improved": 1472,
-          "np_worsened": 2108,
-          "np_improved_pct": 23.51,
-          "np_worsened_pct": 33.67,
-          "advantage_x": 2.74
+        "Dyslipidemia Management": {
+          "product_code": "PURELIFE2",
+          "mc_total": 2614,
+          "mc_improved": 1605,
+          "mc_worsened": 1008,
+          "mc_no_change": 0,
+          "mc_no_risk": 1,
+          "mc_improved_pct": 61.4,
+          "mc_worsened_pct": 38.56,
+          "np_total": 9984,
+          "np_improved": 2937,
+          "np_worsened": 4294,
+          "np_improved_pct": 29.42,
+          "np_worsened_pct": 43.01,
+          "advantage_x": 2.09
         },
         "Thyroid Care": {
           "product_code": "PURELIFE3",
@@ -58,28 +58,12 @@
           "mc_no_risk": 2,
           "mc_improved_pct": 72.79,
           "mc_worsened_pct": 25.09,
-          "np_total": 9139,
-          "np_improved": 214,
-          "np_worsened": 325,
-          "np_improved_pct": 2.34,
+          "np_total": 9156,
+          "np_improved": 215,
+          "np_worsened": 326,
+          "np_improved_pct": 2.35,
           "np_worsened_pct": 3.56,
-          "advantage_x": 31.09
-        },
-        "Diabetes Management": {
-          "product_code": "PURELIFE1",
-          "mc_total": 602,
-          "mc_improved": 343,
-          "mc_worsened": 219,
-          "mc_no_change": 21,
-          "mc_no_risk": 19,
-          "mc_improved_pct": 56.98,
-          "mc_worsened_pct": 36.38,
-          "np_total": 6272,
-          "np_improved": 696,
-          "np_worsened": 864,
-          "np_improved_pct": 11.1,
-          "np_worsened_pct": 13.78,
-          "advantage_x": 5.13
+          "advantage_x": 31.0
         },
         "Kidney Care": {
           "product_code": "PURELIFE5",
@@ -90,36 +74,52 @@
           "mc_no_risk": 96,
           "mc_improved_pct": 53.98,
           "mc_worsened_pct": 17.33,
-          "np_total": 9964,
-          "np_improved": 559,
-          "np_worsened": 1281,
-          "np_improved_pct": 5.61,
-          "np_worsened_pct": 12.86,
-          "advantage_x": 9.62
+          "np_total": 9981,
+          "np_improved": 562,
+          "np_worsened": 1283,
+          "np_improved_pct": 5.63,
+          "np_worsened_pct": 12.85,
+          "advantage_x": 9.59
         },
-        "Dyslipidemia Management": {
-          "product_code": "PURELIFE2",
-          "mc_total": 2613,
-          "mc_improved": 1604,
-          "mc_worsened": 1008,
-          "mc_no_change": 0,
-          "mc_no_risk": 1,
-          "mc_improved_pct": 61.39,
-          "mc_worsened_pct": 38.58,
-          "np_total": 9967,
-          "np_improved": 2931,
-          "np_worsened": 4284,
-          "np_improved_pct": 29.41,
-          "np_worsened_pct": 42.98,
-          "advantage_x": 2.09
+        "Diabetes Management": {
+          "product_code": "PURELIFE1",
+          "mc_total": 602,
+          "mc_improved": 343,
+          "mc_worsened": 219,
+          "mc_no_change": 21,
+          "mc_no_risk": 19,
+          "mc_improved_pct": 56.98,
+          "mc_worsened_pct": 36.38,
+          "np_total": 6294,
+          "np_improved": 698,
+          "np_worsened": 865,
+          "np_improved_pct": 11.09,
+          "np_worsened_pct": 13.74,
+          "advantage_x": 5.14
+        },
+        "Liver Care": {
+          "product_code": "PURELIFE4",
+          "mc_total": 1270,
+          "mc_improved": 818,
+          "mc_worsened": 434,
+          "mc_no_change": 1,
+          "mc_no_risk": 17,
+          "mc_improved_pct": 64.41,
+          "mc_worsened_pct": 34.17,
+          "np_total": 6278,
+          "np_improved": 1477,
+          "np_worsened": 2113,
+          "np_improved_pct": 23.53,
+          "np_worsened_pct": 33.66,
+          "advantage_x": 2.74
         }
       },
       "overall_mc_improved_pct": 61.75,
-      "overall_non_mc_improved_pct": 14.11
+      "overall_non_mc_improved_pct": 14.12
     },
     "zero_appt": {
-      "zero_appt": 8884,
-      "pct": 87.25
+      "zero_appt": 8796,
+      "pct": 86.39
     },
     "device_impr": {
       "device_users_total": 0,
@@ -157,12 +157,12 @@
     },
     "hra_stats": {
       "completed": 60,
-      "total_completed": 503
+      "total_completed": 504
     }
   },
   "insights": {
     "overview": {
-      "headline": "Managed Care 2026: Programme users improve at 61.8% vs 14.1% non-programme  4.4 advantage. 8,687 of 16,745 camp users enrolled (51.9% coverage).",
+      "headline": "Managed Care 2026: Programme users improve at 61.8% vs 14.1% non-programme  4.4 advantage. 8,687 of 16,817 camp users enrolled (51.7% coverage).",
       "critical_flag": "10,182 enrolled users (100.0%) have zero appointments  immediate outreach needed.",
       "positive_flag": "Thyroid Care leads all programmes with 72.8% improvement rate."
     },
@@ -177,7 +177,7 @@
     "cohort_analysis": {
       "narrative": "4,054 Very High cohort users require immediate clinical intervention. These users carry the highest disease burden and risk deterioration without active managed care.",
       "very_high_action": "Assign dedicated care managers to all 4,054 Very High users and schedule fortnightly check-ins within 7 days.",
-      "coverage_insight": "51.9% of camp attendees enrolled  48.1% remain unaddressed and represent a significant opportunity."
+      "coverage_insight": "51.7% of camp attendees enrolled  48.3% remain unaddressed and represent a significant opportunity."
     },
     "devices": {
       "narrative": "Device users with managed care improve at 0.0% vs 0.0% for non-device MC users  a 0 percentage point gap confirming device efficacy.",
@@ -195,7 +195,7 @@
       {
         "priority": 1,
         "title": "Drive first appointment for 10,182 enrolled users  0 booked so far",
-        "action": "Send programme-specific booking links to all 8,687 VYTAL users. Start with Dyslipidemia Management (5,959 users). Very High (4,054) and High (5,205) users should get a direct care manager call, not a self-serve link.",
+        "action": "Send programme-specific booking links to all 8,687 VYTAL users. Start with Dyslipidemia Management (5,959 users). Very High (4,054) and High (5,204) users should get a direct care manager call, not a self-serve link.",
         "expected_impact": "First appointment booked for at least 1,200 users within 30 days",
         "owner": "Product Manager + Care Team",
         "timeline": "This week"
@@ -203,7 +203,7 @@
       {
         "priority": 2,
         "title": "Share 4,054 Very High cohort list with care managers for immediate assignment",
-        "action": "Export cohort list from the Cohort tab. 4,054 Very High + 5,205 High risk users (107% of enrolled) need active management. Target: bi-weekly teleconsult for Very High, monthly app check-in for High.",
+        "action": "Export cohort list from the Cohort tab. 4,054 Very High + 5,204 High risk users (107% of enrolled) need active management. Target: bi-weekly teleconsult for Very High, monthly app check-in for High.",
         "expected_impact": "100% of 4,054 Very High users assigned to a care manager within 2 weeks",
         "owner": "Product Manager",
         "timeline": "Today"
