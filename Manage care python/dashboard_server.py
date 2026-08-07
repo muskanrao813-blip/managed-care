@@ -182,43 +182,59 @@ def get_insights():
     try:
         # Load dashboard data
         appts = read_table("vytal_appt_flat") if read_table else None
-        cohorts = read_table("impact_scores") if read_table else None
         policy = read_table("policy_data") if read_table else None
 
-        if appts is None or appts.empty:
-            return jsonify({"insights": {"recommendations": []}, "error": "No appointment data available"}), 200
+        if appts is None or appts.empty or policy is None or policy.empty:
+            return jsonify({"insights": {"recommendations": []}, "error": "No data available"}), 200
 
-        # Calculate key metrics
-        total_appts = len(appts)
-        completed = len(appts[appts['status'] == 'COM']) if 'status' in appts.columns else 0
-        cancelled = len(appts[appts['status'] == 'CANCELLED']) if 'status' in appts.columns else 0
-        booked = len(appts[appts['status'] == 'BOOKED']) if 'status' in appts.columns else 0
+        # Apply date filtering (match dashboard's default date range)
+        # Dashboard default: 2026-06-01 to 2026-08-07
+        date_from = "2026-06-01"
+        date_to = "2026-08-07"
+        if 'appt_date' in appts.columns:
+            appts_filtered = appts[(appts['appt_date'] >= date_from) & (appts['appt_date'] <= date_to)].copy()
+        else:
+            appts_filtered = appts.copy()
 
-        # Service type breakdown
-        diet_total = len(appts[appts['speciality'] == 'Diet']) if 'speciality' in appts.columns else 0
-        diet_completed = len(appts[(appts['speciality'] == 'Diet') & (appts['status'] == 'COM')]) if 'speciality' in appts.columns and 'status' in appts.columns else 0
-        doctor_total = len(appts[appts['speciality'] != 'Diet']) if 'speciality' in appts.columns else 0
-        doctor_completed = len(appts[(appts['speciality'] != 'Diet') & (appts['status'] == 'COM')]) if 'speciality' in appts.columns and 'status' in appts.columns else 0
+        # Calculate key metrics from filtered appointments
+        total_appts = len(appts_filtered)
+        completed = len(appts_filtered[appts_filtered['status'] == 'COM']) if 'status' in appts_filtered.columns else 0
+        cancelled = len(appts_filtered[appts_filtered['status'] == 'CAN']) if 'status' in appts_filtered.columns else 0
+        booked = len(appts_filtered[appts_filtered['status'] == 'BOOKED']) if 'status' in appts_filtered.columns else 0
+
+        # Service type breakdown (use correct speciality values)
+        diet_total = len(appts_filtered[appts_filtered['speciality'] == 'Dietitian/Nutritionist']) if 'speciality' in appts_filtered.columns else 0
+        diet_completed = len(appts_filtered[(appts_filtered['speciality'] == 'Dietitian/Nutritionist') & (appts_filtered['status'] == 'COM')]) if 'speciality' in appts_filtered.columns and 'status' in appts_filtered.columns else 0
+        doctor_total = len(appts_filtered[appts_filtered['speciality'] == 'General Physician']) if 'speciality' in appts_filtered.columns else 0
+        doctor_completed = len(appts_filtered[(appts_filtered['speciality'] == 'General Physician') & (appts_filtered['status'] == 'COM')]) if 'speciality' in appts_filtered.columns and 'status' in appts_filtered.columns else 0
 
         diet_completion_rate = (diet_completed / diet_total * 100) if diet_total > 0 else 0
         doctor_completion_rate = (doctor_completed / doctor_total * 100) if doctor_total > 0 else 0
         overall_completion_rate = (completed / total_appts * 100) if total_appts > 0 else 0
         cancellation_rate = (cancelled / total_appts * 100) if total_appts > 0 else 0
 
-        # Cohort distribution
+        # Cohort distribution from policy_data (source of truth)
         cohort_counts = {}
-        if cohorts is not None and 'cohort' in cohorts.columns:
-            cohort_counts = cohorts['cohort'].value_counts().to_dict()
+        if 'cohort' in policy.columns:
+            cohort_counts = policy['cohort'].value_counts().to_dict()
 
-        enrolled_users = len(policy) if policy is not None else len(cohorts) if cohorts is not None else 0
-        zero_appt_users = enrolled_users - len(appts['phr_id'].unique()) if 'phr_id' in appts.columns else 0
-        zero_appt_rate = (zero_appt_users / enrolled_users * 100) if enrolled_users > 0 else 0
+        # Count missing cohorts (users without cohort classification)
+        total_policy = len(policy)
+        cohort_classified = sum(cohort_counts.values())
+        missing_count = total_policy - cohort_classified
+        if missing_count > 0:
+            cohort_counts['missing'] = missing_count
 
+        # Zero appointment calculation (based on filtered appointments)
+        unique_appt_users = appts_filtered['phr_id'].nunique() if 'phr_id' in appts_filtered.columns else 0
+        zero_appt_users = total_policy - unique_appt_users
+        zero_appt_rate = (zero_appt_users / total_policy * 100) if total_policy > 0 else 0
+
+        # Cohort rates (calculate as % of CLASSIFIED users, not all users)
+        classified_users = total_policy - missing_count
         very_high_count = cohort_counts.get('Very High', 0)
-        missing_count = cohort_counts.get('missing', 0)
-        total_cohort = sum(cohort_counts.values()) if cohort_counts else 0
-        missing_rate = (missing_count / total_cohort * 100) if total_cohort > 0 else 0
-        very_high_rate = (very_high_count / total_cohort * 100) if total_cohort > 0 else 0
+        very_high_rate = (very_high_count / classified_users * 100) if classified_users > 0 else 0
+        missing_rate = (missing_count / total_policy * 100) if total_policy > 0 else 0
 
         # Map priority text to numbers for frontend display
         priority_map = {"critical": 1, "high": 2, "medium": 3, "low": 4}
