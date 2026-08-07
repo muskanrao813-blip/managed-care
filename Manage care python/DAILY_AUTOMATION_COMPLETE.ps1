@@ -26,6 +26,9 @@ function Log {
 
 Log "========== MANAGED CARE DAILY AUTOMATION (ALL SCRIPTS) START ==========="
 
+# Mark pipeline start
+python update_pipeline_status.py start 2>&1 | Tee-Object -FilePath $LogFile -Append
+
 # STEP 1: Run all data generation scripts
 Log "STEP 1: Running all data generation scripts..."
 Set-Location $ScriptDir
@@ -119,6 +122,9 @@ try {
 } catch {
     Log "WARN - Git push warning: $_" "WARN"
 }
+
+# Mark pipeline end
+python update_pipeline_status.py end 2>&1 | Tee-Object -FilePath $LogFile -Append
 
 # STEP 4: Summary
 Log ""
