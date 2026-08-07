@@ -176,25 +176,148 @@ def health_check():
 
 @app.route("/api/insights")
 def get_insights():
-    """Serve Claude insights JSON for recommendations section"""
-    import json
-    # Try multiple locations
-    paths = [
-        Path(__file__).parent / "claude_insights.json",
-        Path(__file__).parent / "Data" / "claude_insights.json",
-        Path(__file__).parent / "data" / "claude_insights.json",
-    ]
+    """Generate data-driven recommendations based on static rules"""
+    recommendations = []
 
-    for insights_path in paths:
-        if insights_path.exists():
-            try:
-                with open(insights_path, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                return jsonify(data)
-            except Exception as e:
-                continue
+    try:
+        # Load dashboard data
+        appts = read_table("vytal_appt_flat") if read_table else None
+        cohorts = read_table("impact_scores") if read_table else None
+        policy = read_table("policy_data") if read_table else None
 
-    return jsonify({"error": "insights file not found"}), 404
+        if appts is None or appts.empty:
+            return jsonify({"recommendations": [], "error": "No appointment data available"}), 200
+
+        # Calculate key metrics
+        total_appts = len(appts)
+        completed = len(appts[appts['status'] == 'COM']) if 'status' in appts.columns else 0
+        cancelled = len(appts[appts['status'] == 'CANCELLED']) if 'status' in appts.columns else 0
+        booked = len(appts[appts['status'] == 'BOOKED']) if 'status' in appts.columns else 0
+
+        # Service type breakdown
+        diet_total = len(appts[appts['speciality'] == 'Diet']) if 'speciality' in appts.columns else 0
+        diet_completed = len(appts[(appts['speciality'] == 'Diet') & (appts['status'] == 'COM')]) if 'speciality' in appts.columns and 'status' in appts.columns else 0
+        doctor_total = len(appts[appts['speciality'] != 'Diet']) if 'speciality' in appts.columns else 0
+        doctor_completed = len(appts[(appts['speciality'] != 'Diet') & (appts['status'] == 'COM')]) if 'speciality' in appts.columns and 'status' in appts.columns else 0
+
+        diet_completion_rate = (diet_completed / diet_total * 100) if diet_total > 0 else 0
+        doctor_completion_rate = (doctor_completed / doctor_total * 100) if doctor_total > 0 else 0
+        overall_completion_rate = (completed / total_appts * 100) if total_appts > 0 else 0
+        cancellation_rate = (cancelled / total_appts * 100) if total_appts > 0 else 0
+
+        # Cohort distribution
+        cohort_counts = {}
+        if cohorts is not None and 'cohort' in cohorts.columns:
+            cohort_counts = cohorts['cohort'].value_counts().to_dict()
+
+        enrolled_users = len(policy) if policy is not None else len(cohorts) if cohorts is not None else 0
+        zero_appt_users = enrolled_users - len(appts['phr_id'].unique()) if 'phr_id' in appts.columns else 0
+        zero_appt_rate = (zero_appt_users / enrolled_users * 100) if enrolled_users > 0 else 0
+
+        # Rule 1: Service Type Performance
+        if doctor_completion_rate < 40 and diet_completion_rate > 85:
+            recommendations.append({
+                "priority": "high",
+                "category": "Service Quality",
+                "title": "Doctor Appointments Underperforming",
+                "description": f"Diet completion rate is {diet_completion_rate:.1f}% but Doctor completion is only {doctor_completion_rate:.1f}%. Investigate appointment barriers and no-show reasons.",
+                "action": "Review doctor appointment process, identify cancellation drivers",
+                "metric": f"Diet: {diet_completion_rate:.1f}% vs Doctor: {doctor_completion_rate:.1f}%"
+            })
+
+        # Rule 2: Cohort Risk Management - Missing cohort
+        very_high_count = cohort_counts.get('Very High', 0)
+        missing_count = cohort_counts.get('missing', 0)
+        total_cohort = sum(cohort_counts.values()) if cohort_counts else 0
+        missing_rate = (missing_count / total_cohort * 100) if total_cohort > 0 else 0
+
+        if missing_rate > 50:
+            recommendations.append({
+                "priority": "high",
+                "category": "Risk Management",
+                "title": "Incomplete Risk Assessment",
+                "description": f"{missing_rate:.1f}% of users have not been risk-classified. Prioritize cohort assessment to enable targeted interventions.",
+                "action": "Launch cohort risk assessment campaign for unclassified users",
+                "metric": f"{missing_count} unclassified out of {total_cohort} users"
+            })
+
+        # Rule 3: Very High Risk Cohort Intervention
+        very_high_rate = (very_high_count / total_cohort * 100) if total_cohort > 0 else 0
+        if very_high_rate > 30:
+            recommendations.append({
+                "priority": "high",
+                "category": "Clinical Intervention",
+                "title": "High-Risk Segment Requires Intensive Intervention",
+                "description": f"{very_high_rate:.1f}% of users are in Very High risk cohort. Recommend intensive intervention including frequent dietician consultations and device allocation.",
+                "action": "Prioritize very high-risk users for device allocation and weekly follow-ups",
+                "metric": f"{very_high_count} very high-risk users"
+            })
+
+        # Rule 4: Engagement Gaps - Zero Appointment Users
+        if zero_appt_rate > 80:
+            recommendations.append({
+                "priority": "critical",
+                "category": "Engagement",
+                "title": "Majority of Enrolled Users Have No Appointments",
+                "description": f"{zero_appt_rate:.1f}% of enrolled users have not booked any appointments. Launch engagement campaign to improve program awareness and accessibility.",
+                "action": "Increase marketing outreach, simplify appointment booking, offer incentives",
+                "metric": f"{zero_appt_users:,} users with zero appointments"
+            })
+
+        # Rule 5: Cancellation Rate Monitoring
+        if cancellation_rate > 10:
+            recommendations.append({
+                "priority": "medium",
+                "category": "Quality Monitoring",
+                "title": "High Cancellation Rate Detected",
+                "description": f"Cancellation rate is {cancellation_rate:.1f}%. Investigate reasons (scheduling conflicts, accessibility, user preference) and implement retention strategies.",
+                "action": "Analyze cancellation patterns, offer rescheduling reminders, improve slot availability",
+                "metric": f"{cancelled} cancellations out of {total_appts} appointments"
+            })
+
+        # Rule 6: Completion Rate Target
+        if overall_completion_rate < 75:
+            recommendations.append({
+                "priority": "medium",
+                "category": "Quality Monitoring",
+                "title": "Appointment Completion Below Target",
+                "description": f"Current completion rate is {overall_completion_rate:.1f}%. Target is 75%+. Enhance follow-up protocols and reminders.",
+                "action": "Implement SMS/WhatsApp reminders, track no-shows, follow up with incomplete users",
+                "metric": f"{completed} completed out of {total_appts} appointments"
+            })
+
+        # Rule 7: Booked Appointment Pipeline
+        if booked < total_appts * 0.05:
+            recommendations.append({
+                "priority": "medium",
+                "category": "Capacity Planning",
+                "title": "Low Booked Appointment Pipeline",
+                "description": f"Only {booked} appointments are currently booked ({booked/total_appts*100:.1f}%). Ensure adequate appointment slots to meet demand.",
+                "action": "Increase dietician and doctor appointment availability for next 30 days",
+                "metric": f"{booked} booked appointments (< 5% of total)"
+            })
+
+        # Sort by priority
+        priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+        recommendations.sort(key=lambda x: priority_order.get(x.get("priority", "low"), 4))
+
+        return jsonify({
+            "recommendations": recommendations,
+            "metrics": {
+                "total_appointments": total_appts,
+                "completed": completed,
+                "completion_rate": round(overall_completion_rate, 1),
+                "cancellation_rate": round(cancellation_rate, 1),
+                "diet_completion": round(diet_completion_rate, 1),
+                "doctor_completion": round(doctor_completion_rate, 1),
+                "zero_appointment_users": zero_appt_users,
+                "zero_appointment_rate": round(zero_appt_rate, 1)
+            }
+        }), 200
+
+    except Exception as e:
+        print(f"Error generating insights: {e}")
+        return jsonify({"recommendations": [], "error": str(e)}), 500
 
 
 @app.route("/api/csv/<filename>")
