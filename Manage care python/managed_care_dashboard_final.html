@@ -2144,14 +2144,31 @@ function renderDevices() {
       const hraUsers   = dev26.filter(r => String(r.hra_available).toLowerCase()==='true');
       const hraN       = hraUsers.length;
 
-      // Biomarker: ANY actual lab values (HbA1c, cholesterol, triglycerides)
-      // has_high_bp is status flag only, not actual lab value
+      // Biomarker: ANY actual lab values from 24 LOINC codes:
+      // Metabolic: HbA1c, glucose (fasting/random/post-meal)
+      // Lipid: chol_total, ldl, hdl, triglycerides
+      // Liver: alt, ast, ggt, bilirubin_total, bilirubin_direct
+      // Kidney: creatinine
+      // Electrolytes: potassium, sodium
+      // Minerals: calcium, magnesium
+      // Proteins: protein_total, albumin
+      // Thyroid: tsh
       // FILTERED TO HRA USERS ONLY
       const bioN   = hraUsers.filter(r => {
-        const hasHba1c = r.hba1c !== '' && r.hba1c !== null && r.hba1c !== undefined && !isNaN(parseFloat(r.hba1c));
-        const hasChol = r.chol_total !== '' && r.chol_total !== null && r.chol_total !== undefined && !isNaN(parseFloat(r.chol_total));
-        const hasTrig = r.triglycerides !== '' && r.triglycerides !== null && r.triglycerides !== undefined && !isNaN(parseFloat(r.triglycerides));
-        return hasHba1c || hasChol || hasTrig;
+        const biomarkers = [
+          'hba1c', 'glucose_fasting', 'glucose_random', 'glucose_pp',
+          'chol_total', 'ldl', 'hdl', 'triglycerides',
+          'alt', 'ast', 'ggt', 'bilirubin_total', 'bilirubin_direct',
+          'creatinine',
+          'potassium', 'sodium',
+          'calcium', 'magnesium',
+          'protein_total', 'albumin',
+          'tsh'
+        ];
+        return biomarkers.some(field => {
+          const val = r[field];
+          return val !== '' && val !== null && val !== undefined && !isNaN(parseFloat(val));
+        });
       }).length;
 
       // Appointments: FILTERED TO HRA USERS ONLY
