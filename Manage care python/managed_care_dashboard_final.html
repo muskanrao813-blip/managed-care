@@ -2151,12 +2151,12 @@ function renderDevices() {
       const totalHraAttempted = hraStatMap['total_attempted_all'] || 0;
 
       document.getElementById('dev26-enrolled').textContent  = fmt(total);
-      document.getElementById('dev26-hra').textContent       = fmt(hraN) + (totalHraCompleted ? ' / ' + fmt(totalHraCompleted) : '');
-      document.getElementById('dev26-hra-pct').textContent   = 'enrolled completed · ' + fmt(totalHraCompleted) + ' total completed hra_healthcamp';
+      document.getElementById('dev26-hra').textContent       = fmt(hraN);
+      document.getElementById('dev26-hra-pct').textContent   = fmt(hraN) + ' enrolled completed · ' + fmt(totalHraCompleted) + ' total HRA attempts';
       document.getElementById('dev26-bio').textContent       = fmt(bioN);
       document.getElementById('dev26-bio-pct').textContent   = pct(bioN, total) + ' with 2026 camp report';
       document.getElementById('dev26-appt').textContent      = fmt(apptN);
-      document.getElementById('dev26-appt-pct').textContent  = pct(apptN, total) + '% booked since Jun 2026';
+      document.getElementById('dev26-appt-pct').textContent  = pct(apptN, total) + ' booked since Jun 2026';
 
       // Also update the top device count tiles with eligibility numbers
       const eligible = dev26.filter(r => r.primary_device && r.primary_device !== 'None');
