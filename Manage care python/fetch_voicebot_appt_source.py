@@ -168,8 +168,13 @@ print(f"[Saved] {OUT_FILE}  ({len(out):,} rows)")
 
 # Save voicebot funnel metrics for dashboard
 # Only count as "booked" if voice bot user has completed appointment (claim created)
-vb_booked = int((df_appt['source'] == 'Voice Bot').sum())
-vb_interested_with_claim = int((df_appt[df_appt['mobile_number_hash'].isin(interested_hashes) & (df_appt['status'] == 'COM')]).shape[0])
+# Filter to appointments up to today to match dashboard date filtering
+from datetime import datetime
+today = pd.to_datetime(datetime.now().date())
+df_appt['appt_date_parsed'] = pd.to_datetime(df_appt['appt_date'], errors='coerce')
+df_appt_today = df_appt[df_appt['appt_date_parsed'] <= today]
+vb_booked = int((df_appt_today['source'] == 'Voice Bot').sum())
+vb_interested_with_claim = int((df_appt_today[df_appt_today['mobile_number_hash'].isin(interested_hashes) & (df_appt_today['status'] == 'COM')]).shape[0])
 
 funnel = {
     "dialled":    total_dialled,

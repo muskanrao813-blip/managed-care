@@ -425,11 +425,11 @@ def get_csv_fallback(filename):
 
 if __name__ == "__main__":
     print("\n" + "="*60)
-    print("  MANAGED CARE 3.0 — Dashboard Server (PostgreSQL + NaN Fix)")
+    print("  MANAGED CARE 3.0 - Dashboard Server (PostgreSQL + NaN Fix)")
     print("="*60)
-    print(f"\n  📊 Dashboard: http://localhost:{PORT}")
-    print(f"  🔌 API Docs: http://localhost:{PORT}/api/status")
-    print(f"  🗄️  Database: {os.getenv('DATABASE_URL', 'SQLite (local)')}")
+    print(f"\n  Dashboard: http://localhost:{PORT}")
+    print(f"  API Docs: http://localhost:{PORT}/api/status")
+    print(f"  Database: {os.getenv('DATABASE_URL', 'SQLite (local)')}")
     print("\n  Press Ctrl+C to stop")
     print("="*60 + "\n")
 
