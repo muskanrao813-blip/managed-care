@@ -33,14 +33,14 @@ DATA_DIR     = os.path.join(SCRIPT_DIR, "Data")
 OUT_FILE     = os.path.join(DATA_DIR, "managed_care_appt_source.csv")
 FUNNEL_FILE  = os.path.join(DATA_DIR, "managed_care_voicebot_funnel.json")
 
-# ── Step 0: Load VYTAL 2026 mobile hashes from Neon (not stale CSV) ─────────
-print("[0] Loading VYTAL 2026 mobile hashes from Neon...")
+# ── Step 0: Load ALL VYTAL mobile hashes from Neon (not stale CSV) ─────────
+print("[0] Loading ALL VYTAL mobile hashes from Neon...")
 policy = read_table("policy_data")
 df_policy_raw = policy[
-    policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)
+    policy['mc_product_code'].str.contains('VYTAL', regex=True, na=False)
 ][['phr_id','mobile_number_hash']].dropna().drop_duplicates('phr_id')
 mc_hashes = set(df_policy_raw['mobile_number_hash'].dropna().unique())
-print(f"  VYTAL 2026 MC users with mobile hash: {len(mc_hashes):,}")
+print(f"  ALL VYTAL MC users with mobile hash: {len(mc_hashes):,}")
 
 # ── Step 1: OAuth — get Mcare voicebot sessions (filtered to MC users) ────────
 print("[1] Fetching Mcare voicebot sessions (OAuth2)...")
@@ -146,13 +146,16 @@ df_appt['speciality_grp'] = df_appt['speciality'].apply(
               else str(x))
 )
 
-# Voice Bot = answered call + interested + claim created (status != BOOKED, has claim_id or COM)
+# Classification Logic:
+# Voice Bot = (mobile_hash in interested_hashes + COM status) OR (no mobile_hash = unmatched VB users)
+# Agent = has mobile_hash but NOT in interested_hashes
 df_appt['source'] = df_appt.apply(
     lambda row: 'Voice Bot' if (
-        pd.notna(row['mobile_number_hash'])
-        and row['mobile_number_hash'] in interested_hashes
-        and row['status'] in ['COM']  # Only count if appointment completed (claim created)
-    ) else ('Agent' if pd.notna(row['mobile_number_hash']) else 'Organic'),
+        (pd.notna(row['mobile_number_hash'])
+         and row['mobile_number_hash'] in interested_hashes
+         and row['status'] == 'COM')  # Matched voice bot user with completed appt
+        or pd.isna(row['mobile_number_hash'])  # Unmatched users (no mobile_hash) = voice bot
+    ) else 'Agent',  # Has mobile_hash but not voice bot = Agent
     axis=1
 )
 
