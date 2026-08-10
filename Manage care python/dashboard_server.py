@@ -62,6 +62,10 @@ def load_csv_data(table_name):
         "programme_allocation": "managed_care_program_allocation.csv",
         "comparison_retest": ["managed_care_comparison.csv", "managed_care_comparison_2026.csv"],
         "device_eligibility": ["managed_care_device_eligibility_2026.csv", "managed_care_device_eligibility_lifestyle.csv"],
+        "appt_source": "managed_care_appt_source.csv",
+        "appointment_source": "managed_care_appt_source.csv",
+        "vytal_appt_flat": "managed_care_vytal_appt_flat.csv",
+        "vytal_appointments": "managed_care_vytal_appt_flat.csv",
     }
 
     csv_files = csv_mappings.get(table_name)
@@ -91,12 +95,20 @@ def get_table_data(table_name):
     Falls back to CSV files if database not available.
     Usage: GET /api/data/programme_allocation
     """
+    # Map frontend table names to actual Neon table names
+    table_mapping = {
+        'appointment_source': 'appt_source',
+        'vytal_appointments': 'vytal_appt_flat',
+    }
+
+    actual_table_name = table_mapping.get(table_name, table_name)
+
     df = None
 
     # Try database first
     if read_table:
         try:
-            df = read_table(table_name)
+            df = read_table(actual_table_name)
         except:
             df = None
 
