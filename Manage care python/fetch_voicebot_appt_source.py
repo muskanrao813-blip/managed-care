@@ -1,10 +1,9 @@
 ﻿"""
 fetch_voicebot_appt_source.py
 Daily pipeline step: classify VYTAL appointments by booking source.
-  Voice Bot = user's mobile hash had intersted=True in a completed live call
-              from Mcare campaigns (IDs 234, 236, 240)
+  Voice Bot = user answered call + said interested + claim created
   Organic   = everything else
-  (Agent source not available in f_appointmentflattable — no agent ID column)
+  Agent     = user booked without voice bot
 Outputs: Data/managed_care_appt_source.csv
          Data/managed_care_voicebot_funnel.json
 """
@@ -17,6 +16,8 @@ import trino as trino_lib
 from sqlalchemy import create_engine, text
 
 from config import TRINO_HOST as HOST, TRINO_USER, TRINO_PASSWORD
+from db_layer import read_table, save_dataframe
+
 PORT = 443
 pw   = urllib.parse.quote_plus(TRINO_PASSWORD)
 url  = f"trino://{TRINO_USER}:{pw}@{HOST}:{PORT}/system?http_scheme=https"
@@ -32,15 +33,14 @@ DATA_DIR     = os.path.join(SCRIPT_DIR, "Data")
 OUT_FILE     = os.path.join(DATA_DIR, "managed_care_appt_source.csv")
 FUNNEL_FILE  = os.path.join(DATA_DIR, "managed_care_voicebot_funnel.json")
 
-# ── Step 0: Load VYTAL mobile hashes from policy CSV (MC users only) ─────────
-print("[0] Loading VYTAL mobile hashes from policy CSV...")
-policy_csv = os.path.join(DATA_DIR, "managed_care_policy_data.csv")
-df_policy_raw = pd.read_csv(policy_csv)
-df_policy_raw = df_policy_raw[
-    df_policy_raw['mc_product_code'].str.startswith('VYTAL', na=False)
+# ── Step 0: Load VYTAL 2026 mobile hashes from Neon (not stale CSV) ─────────
+print("[0] Loading VYTAL 2026 mobile hashes from Neon...")
+policy = read_table("policy_data")
+df_policy_raw = policy[
+    policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)
 ][['phr_id','mobile_number_hash']].dropna().drop_duplicates('phr_id')
 mc_hashes = set(df_policy_raw['mobile_number_hash'].dropna().unique())
-print(f"  VYTAL MC users with mobile hash: {len(mc_hashes):,}")
+print(f"  VYTAL 2026 MC users with mobile hash: {len(mc_hashes):,}")
 
 # ── Step 1: OAuth — get Mcare voicebot sessions (filtered to MC users) ────────
 print("[1] Fetching Mcare voicebot sessions (OAuth2)...")
@@ -146,18 +146,28 @@ df_appt['speciality_grp'] = df_appt['speciality'].apply(
               else str(x))
 )
 
-df_appt['source'] = df_appt['mobile_number_hash'].apply(
-    lambda h: 'Voice Bot' if pd.notna(h) and h in interested_hashes else 'Organic'
+# Voice Bot = answered call + interested + claim created (status != BOOKED, has claim_id or COM)
+df_appt['source'] = df_appt.apply(
+    lambda row: 'Voice Bot' if (
+        pd.notna(row['mobile_number_hash'])
+        and row['mobile_number_hash'] in interested_hashes
+        and row['status'] in ['COM']  # Only count if appointment completed (claim created)
+    ) else ('Agent' if pd.notna(row['mobile_number_hash']) else 'Organic'),
+    axis=1
 )
 
 # ── Step 5: Save ─────────────────────────────────────────────
 out = df_appt[['phr_id','appt_date','booking_date','status',
                'speciality','speciality_grp','product_code','source']].copy()
 out.to_csv(OUT_FILE, index=False)
+save_dataframe(out, "appt_source", if_exists="replace")
 print(f"[Saved] {OUT_FILE}  ({len(out):,} rows)")
 
 # Save voicebot funnel metrics for dashboard
-vb_booked = int((out['source'] == 'Voice Bot').sum())
+# Only count as "booked" if voice bot user has completed appointment (claim created)
+vb_booked = int((df_appt['source'] == 'Voice Bot').sum())
+vb_interested_with_claim = int((df_appt[df_appt['mobile_number_hash'].isin(interested_hashes) & (df_appt['status'] == 'COM')]).shape[0])
+
 funnel = {
     "dialled":    total_dialled,
     "answered":   answered,
@@ -168,6 +178,7 @@ funnel = {
 }
 with open(FUNNEL_FILE, 'w', encoding='utf-8') as f:
     json.dump(funnel, f, indent=2)
+save_dataframe(pd.DataFrame([funnel]), "voicebot_performance", if_exists="replace")
 print(f"[Saved] {FUNNEL_FILE}")
 
 # Print summary
