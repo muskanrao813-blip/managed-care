@@ -1,0 +1,87 @@
+================================================================
+MANAGED CARE 3.0 - DAILY AUTOMATION SETUP GUIDE
+================================================================
+
+WHAT RUNS DAILY:
+- All data generation scripts (Python pipeline)
+- Data copied to Render deployment folder
+- Automatic git push to GitHub
+- Render auto-rebuilds dashboard (2-3 min)
+
+SCHEDULE: 6:00 AM daily
+LOCATION: C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python
+
+================================================================
+SETUP: Create Windows Task Scheduler Job (RUN AS ADMIN)
+================================================================
+
+Run this command in PowerShell (AS ADMINISTRATOR):
+
+$trigger = New-ScheduledTaskTrigger -Daily -At 6:00AM
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass -NoProfile -File `"C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python\DAILY_AUTOMATION_COMPLETE.ps1`""
+$settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd -AllowStartIfOnBatteries
+Register-ScheduledTask -TaskName "MC_DailyAutomation" -Trigger $trigger -Action $action -Settings $settings -Force -User "$env:USERNAME" -ErrorAction Stop
+
+================================================================
+VERIFICATION:
+================================================================
+
+1. Open Task Scheduler (taskschd.msc)
+2. Look for "MC_DailyAutomation" task
+3. Right-click → Properties to view schedule
+4. Check "Logs" folder for daily_*.log files
+   Path: C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python\logs\
+
+================================================================
+WHAT'S INCLUDED IN DAILY AUTOMATION:
+================================================================
+
+DATA GENERATION (16+ scripts):
+  ✓ Program allocation analysis (2025/2026)
+  ✓ Comparison & retest analysis
+  ✓ Device eligibility tracking
+  ✓ Claude AI insights generation
+  ✓ Engagement effect analysis
+  ✓ Voicebot appointment source classification
+  ✓ Appointment breakdown analysis
+  ✓ HRA wellness data
+  ✓ Recommendations generation
+
+DATA QUALITY FIXES (LATEST):
+  ✓ Voicebot performance: Only counts booked appointments up to today
+  ✓ Agent appointments: Shows full breakdown (Diet/Doctor/status)
+  ✓ Organic appointments: Hidden if zero appointments
+  ✓ API endpoint: /api/voicebot/funnel for metrics
+
+DEPLOYMENT:
+  ✓ Copies all CSVs and JSON to deploy/Data/
+  ✓ Pushes to GitHub
+  ✓ Render auto-rebuilds (2-3 minutes)
+  ✓ Dashboard live: https://managed-care-dashboard.onrender.com/
+
+================================================================
+LOGS & MONITORING:
+================================================================
+
+Daily logs: logs/daily_YYYY-MM-DD_HH-MM.log
+Last run status: Check /api/status endpoint
+
+================================================================
+TROUBLESHOOTING:
+================================================================
+
+If Task Scheduler fails:
+1. Run MC_Daily.bat manually to test
+2. Check logs/ folder for errors
+3. Verify database connection (Neon PostgreSQL)
+4. Ensure Python path is correct
+
+If data doesn't update on Render:
+1. Wait 2-3 minutes after task runs
+2. Check GitHub commits
+3. Check Render deployment logs
+4. Hard refresh dashboard (Ctrl+Shift+R)
+
+================================================================
+LAST UPDATED: 2026-08-10
+================================================================
