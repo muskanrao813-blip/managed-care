@@ -2139,24 +2139,39 @@ function renderDevices() {
 
     if (hasData) {
       const total  = dev26.length;
-      const hraN   = dev26.filter(r => String(r.hra_available).toLowerCase()==='true').length;
-      const bioN   = dev26.filter(r => r.hba1c !== '' && r.hba1c !== null && r.hba1c !== undefined && !isNaN(parseFloat(r.hba1c))).length;
-      const apptN  = dev26.filter(r => parseFloat(r.appt_booked||0) > 0).length;
 
-      // Get total HRA count from hra_stats CSV
+      // HRA: Users with hra_available=true (VYTAL users who completed HRA)
+      const hraUsers   = dev26.filter(r => String(r.hra_available).toLowerCase()==='true');
+      const hraN       = hraUsers.length;
+
+      // Biomarker: ANY of hba1c, cholesterol, triglycerides, or blood pressure
+      // FILTERED TO HRA USERS ONLY
+      const bioN   = hraUsers.filter(r => {
+        const hasHba1c = r.hba1c !== '' && r.hba1c !== null && r.hba1c !== undefined && !isNaN(parseFloat(r.hba1c));
+        const hasChol = r.chol_total !== '' && r.chol_total !== null && r.chol_total !== undefined && !isNaN(parseFloat(r.chol_total));
+        const hasTrig = r.triglycerides !== '' && r.triglycerides !== null && r.triglycerides !== undefined && !isNaN(parseFloat(r.triglycerides));
+        const hasBp = r.has_high_bp !== null && r.has_high_bp !== undefined && r.has_high_bp !== '';
+        return hasHba1c || hasChol || hasTrig || hasBp;
+      }).length;
+
+      // Appointments: FILTERED TO HRA USERS ONLY
+      const apptSrc = DATA.appt_source || [];
+      const apptSrcUsers = new Set(apptSrc.filter(r => r.appt_date >= '2026-06-01').map(r => r.phr_id));
+      const apptN  = hraUsers.filter(r => apptSrcUsers.has(r.phr_id)).length;
+
+      // Get total HRA count from hra_stats (system-wide, not just VYTAL)
       const hraStatsRows = DATA.hra_stats || [];
       const hraStatMap = {};
       hraStatsRows.forEach(r => { hraStatMap[r.metric] = parseInt(r.value) || 0; });
       const totalHraCompleted = hraStatMap['total_completed_all'] || 0;
-      const totalHraAttempted = hraStatMap['total_attempted_all'] || 0;
 
       document.getElementById('dev26-enrolled').textContent  = fmt(total);
       document.getElementById('dev26-hra').textContent       = fmt(hraN);
-      document.getElementById('dev26-hra-pct').textContent   = fmt(hraN) + ' enrolled completed · ' + fmt(totalHraCompleted) + ' total HRA attempts';
+      document.getElementById('dev26-hra-pct').textContent   = fmt(hraN) + ' enrolled completed · ' + fmt(totalHraCompleted) + ' total HRA system-wide';
       document.getElementById('dev26-bio').textContent       = fmt(bioN);
-      document.getElementById('dev26-bio-pct').textContent   = pct(bioN, total) + ' with 2026 camp report';
+      document.getElementById('dev26-bio-pct').textContent   = fmt(bioN) + ' out of ' + fmt(hraN) + ' HRA users have biomarkers';
       document.getElementById('dev26-appt').textContent      = fmt(apptN);
-      document.getElementById('dev26-appt-pct').textContent  = pct(apptN, total) + ' booked since Jun 2026';
+      document.getElementById('dev26-appt-pct').textContent  = fmt(apptN) + ' out of ' + fmt(hraN) + ' HRA users have appointments';
 
       // Also update the top device count tiles with eligibility numbers
       const eligible = dev26.filter(r => r.primary_device && r.primary_device !== 'None');
