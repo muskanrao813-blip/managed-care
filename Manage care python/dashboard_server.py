@@ -178,6 +178,36 @@ def get_table_summary(table_name):
     return jsonify(summary)
 
 
+@app.route("/api/voicebot/funnel")
+def get_voicebot_funnel():
+    """Get voicebot funnel metrics from database or JSON file"""
+    funnel_data = None
+
+    # Try database first
+    if read_table:
+        try:
+            df = read_table("voicebot_performance")
+            if df is not None and not df.empty:
+                funnel_data = df.iloc[0].to_dict()
+        except:
+            pass
+
+    # Fall back to JSON file
+    if funnel_data is None:
+        json_path = Path(__file__).parent / "Data" / "managed_care_voicebot_funnel.json"
+        if json_path.exists():
+            try:
+                with open(json_path, 'r') as f:
+                    funnel_data = json.load(f)
+            except:
+                pass
+
+    if funnel_data is None:
+        funnel_data = {"dialled": 0, "answered": 0, "interested": 0, "booked": 0, "callback": 0, "no_answer": 0}
+
+    return jsonify(funnel_data)
+
+
 @app.route("/api/status")
 def health_check():
     """Health check endpoint for Render with pipeline status"""

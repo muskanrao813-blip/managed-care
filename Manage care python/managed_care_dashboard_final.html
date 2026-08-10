@@ -1240,15 +1240,17 @@ async function reloadData() {
   const actLogs = { ok: false, data: [] };
   const benDeep = null;
 
-  // Load voicebot funnel JSON
+  // Load voicebot funnel from API
   let vbFunnel = null;
-  try {
-    const vbRes = await fetch('./Data/managed_care_voicebot_funnel.json');
-    if (vbRes.ok) {
-      vbFunnel = await vbRes.json();
+  if (API_URL) {
+    try {
+      const vbRes = await fetch(API_URL.replace('/data', '') + '/voicebot/funnel');
+      if (vbRes.ok) {
+        vbFunnel = await vbRes.json();
+      }
+    } catch(e) {
+      console.log('VB funnel API load failed:', e);
     }
-  } catch(e) {
-    console.log('VB funnel load failed:', e);
   }
 
   const anyOk = alloc.ok || comp.ok || dev.ok || impact.ok || policy.ok || campMon.ok;
