@@ -282,10 +282,8 @@ def fetch_biomarkers(hash_list):
         # Thyroid
         LOINC_TSH:   'tsh',
     })
-    for c in empty_cols[1:]:
-        if c not in wide.columns:
-            wide[c] = np.nan
-    return wide[empty_cols]
+    # Ensure all columns exist (add missing as NaN)
+    return wide.reindex(columns=empty_cols, fill_value=np.nan)
 
 #  STEP 4: Fetch VYTAL appointments (2026 programme) 
 def fetch_appointments(hash_list):
@@ -712,8 +710,16 @@ def main():
     final_cols = [
         'mobile_number_hash','phr_id','programme','cohort',
         'mc_product_code','policy_year_month',
-        'hba1c','chol_total','ldl','hdl','triglycerides',
-        'alt','ast','ggt','creatinine','tsh',
+        # All 24 biomarker columns
+        'hba1c', 'glucose_fasting', 'glucose_random', 'glucose_pp',
+        'chol_total','ldl','hdl','triglycerides',
+        'alt','ast','ggt', 'bilirubin_total', 'bilirubin_direct',
+        'creatinine',
+        'potassium', 'sodium',
+        'calcium', 'magnesium',
+        'protein_total', 'albumin',
+        'tsh',
+        # Other columns
         'hra_available','smoking_status','alcohol_frequency','stress_level','sleep_hours','bmi_category','has_high_bp',
         'appt_booked','appt_completed','appt_types_used',
         'clinical_risk_score','engagement_score','engagement_tier',
