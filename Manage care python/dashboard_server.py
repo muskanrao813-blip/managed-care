@@ -35,6 +35,8 @@ def convert_nan_to_none(obj):
         return [convert_nan_to_none(v) for v in obj]
     elif isinstance(obj, float) and pd.isna(obj):
         return None
+    elif hasattr(obj, 'isoformat'):  # datetime.date, datetime.datetime, etc.
+        return obj.isoformat()
     return obj
 
 
