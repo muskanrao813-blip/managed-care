@@ -2144,14 +2144,14 @@ function renderDevices() {
       const hraUsers   = dev26.filter(r => String(r.hra_available).toLowerCase()==='true');
       const hraN       = hraUsers.length;
 
-      // Biomarker: ANY of hba1c, cholesterol, triglycerides, or blood pressure
+      // Biomarker: ANY actual lab values (HbA1c, cholesterol, triglycerides)
+      // has_high_bp is status flag only, not actual lab value
       // FILTERED TO HRA USERS ONLY
       const bioN   = hraUsers.filter(r => {
         const hasHba1c = r.hba1c !== '' && r.hba1c !== null && r.hba1c !== undefined && !isNaN(parseFloat(r.hba1c));
         const hasChol = r.chol_total !== '' && r.chol_total !== null && r.chol_total !== undefined && !isNaN(parseFloat(r.chol_total));
         const hasTrig = r.triglycerides !== '' && r.triglycerides !== null && r.triglycerides !== undefined && !isNaN(parseFloat(r.triglycerides));
-        const hasBp = r.has_high_bp !== null && r.has_high_bp !== undefined && r.has_high_bp !== '';
-        return hasHba1c || hasChol || hasTrig || hasBp;
+        return hasHba1c || hasChol || hasTrig;
       }).length;
 
       // Appointments: FILTERED TO HRA USERS ONLY
