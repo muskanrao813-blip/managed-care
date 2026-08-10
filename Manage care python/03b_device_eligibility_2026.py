@@ -83,28 +83,61 @@ APPT_FROM   = '2026-06-01'    # appointments counted from programme start
 CAMP_FROM   = '2026-04'       # biomarkers from 2026 camp reports
 
 # Confirmed available LOINC codes in BPC camp reports
-LOINC_HBAIC   = '4548-4'
-# BMI (39156-5) and BP (8480-6/8462-4) are vitals  NOT in lab parsed data
-# Cholesterol/Dyslipidemia
+# === METABOLIC ===
+LOINC_HBAIC   = '4548-4'   # HbA1c (diabetes)
+LOINC_GLUCOSE_FASTING = '30385-9'  # Glucose (fasting) - 569K records
+LOINC_GLUCOSE_RANDOM  = '30384-2'  # Glucose (non-fasting) - 564K records
+LOINC_GLUCOSE_PP      = '30428-7'  # Glucose (random/post-meal) - 545K records
+
+# === Cholesterol/Dyslipidemia ===
 LOINC_CHOL    = '2093-3'   # Total Cholesterol
 LOINC_LDL     = '2089-1'   # LDL Cholesterol
 LOINC_HDL     = '2085-9'   # HDL Cholesterol
 LOINC_TRIG    = '2571-8'   # Triglycerides
-# Liver
+
+# === Liver Function ===
 LOINC_ALT     = '1742-6'   # Alanine aminotransferase (ALT)
 LOINC_AST     = '1920-8'   # Aspartate aminotransferase (AST)
 LOINC_GGT     = '6768-6'   # Gamma glutamyl transferase
-# Renal/Kidney
-LOINC_CREAT   = '2160-0'   # Creatinine
-# Thyroid
+LOINC_BILI_TOTAL = '11054-4'  # Bilirubin (total) - liver function
+LOINC_BILI_DIR   = '2336-6'   # Bilirubin (direct) - liver function
+
+# === Renal/Kidney ===
+LOINC_CREAT   = '2160-0'   # Creatinine (kidney function)
+
+# === Electrolytes ===
+LOINC_POTASSIUM = '20570-8'  # Potassium (serum) - 544K records
+LOINC_SODIUM    = '26450-7'  # Sodium (serum) - 539K records
+
+# === Minerals ===
+LOINC_CALCIUM   = '30180-4'  # Calcium - 538K records
+LOINC_MAGNESIUM = '26453-1'  # Magnesium
+
+# === Proteins ===
+LOINC_PROTEIN_TOTAL = '2885-2'   # Protein (total) - nutritional status
+LOINC_ALBUMIN       = '43396-1'  # Albumin - nutritional/liver status
+
+# === Thyroid ===
 LOINC_TSH     = '3016-3'   # Thyroid stimulating hormone
 
-# All LOINC codes to fetch in biomarker query
+# All LOINC codes to fetch in biomarker query (24 total)
 ALL_LOINCS = [
+    # Metabolic
     LOINC_HBAIC,
+    LOINC_GLUCOSE_FASTING, LOINC_GLUCOSE_RANDOM, LOINC_GLUCOSE_PP,
+    # Lipid panel
     LOINC_CHOL, LOINC_LDL, LOINC_HDL, LOINC_TRIG,
-    LOINC_ALT, LOINC_AST, LOINC_GGT,
+    # Liver
+    LOINC_ALT, LOINC_AST, LOINC_GGT, LOINC_BILI_TOTAL, LOINC_BILI_DIR,
+    # Kidney
     LOINC_CREAT,
+    # Electrolytes
+    LOINC_POTASSIUM, LOINC_SODIUM,
+    # Minerals
+    LOINC_CALCIUM, LOINC_MAGNESIUM,
+    # Proteins
+    LOINC_PROTEIN_TOTAL, LOINC_ALBUMIN,
+    # Thyroid
     LOINC_TSH,
 ]
 
@@ -163,10 +196,16 @@ def fetch_phr_ids(hash_list):
 #  STEP 3: Fetch biomarkers (2026 camp BPC reports) 
 def fetch_biomarkers(hash_list):
     """
-    Fetches all 5 clinical condition markers from camp lab reports:
-    Diabetes (HbA1c), Cholesterol (Total/LDL/HDL/Trig), Liver (ALT/AST/GGT),
-    Renal (Creatinine), Thyroid (TSH).
-    Note: BMI and BP are vitals  not available in lab parsed data.
+    Fetches 24 biomarker LOINC codes from camp lab reports (BPC01/02/03):
+    - Metabolic: HbA1c, Glucose (fasting/random/post-meal)
+    - Lipid panel: Total Cholesterol, LDL, HDL, Triglycerides
+    - Liver: ALT, AST, GGT, Bilirubin (total/direct)
+    - Kidney: Creatinine
+    - Electrolytes: Potassium, Sodium
+    - Minerals: Calcium, Magnesium
+    - Proteins: Total Protein, Albumin
+    - Thyroid: TSH
+    Note: BMI and BP are vitals, not available in lab parsed data.
     """
     ids      = sql_list(hash_list)
     loincs   = sql_list(ALL_LOINCS)
@@ -187,8 +226,23 @@ def fetch_biomarkers(hash_list):
           AND SUBSTR(CAST(d.created_at AS VARCHAR),1,7) >= '{CAMP_FROM}'
     """, 'biomarkers')
 
-    empty_cols = ['mobile_number_hash','hba1c','chol_total','ldl','hdl','triglycerides',
-                  'alt','ast','ggt','creatinine','tsh']
+    empty_cols = ['mobile_number_hash',
+                  # Metabolic
+                  'hba1c', 'glucose_fasting', 'glucose_random', 'glucose_pp',
+                  # Lipid panel
+                  'chol_total', 'ldl', 'hdl', 'triglycerides',
+                  # Liver
+                  'alt', 'ast', 'ggt', 'bilirubin_total', 'bilirubin_direct',
+                  # Kidney
+                  'creatinine',
+                  # Electrolytes
+                  'potassium', 'sodium',
+                  # Minerals
+                  'calcium', 'magnesium',
+                  # Proteins
+                  'protein_total', 'albumin',
+                  # Thyroid
+                  'tsh']
     if df.empty:
         return pd.DataFrame(columns=empty_cols)
 
@@ -198,15 +252,34 @@ def fetch_biomarkers(hash_list):
                           values='value', aggfunc='first').reset_index()
     wide.columns.name = None
     wide = wide.rename(columns={
+        # Metabolic
         LOINC_HBAIC: 'hba1c',
+        LOINC_GLUCOSE_FASTING: 'glucose_fasting',
+        LOINC_GLUCOSE_RANDOM: 'glucose_random',
+        LOINC_GLUCOSE_PP: 'glucose_pp',
+        # Lipid panel
         LOINC_CHOL:  'chol_total',
         LOINC_LDL:   'ldl',
         LOINC_HDL:   'hdl',
         LOINC_TRIG:  'triglycerides',
+        # Liver
         LOINC_ALT:   'alt',
         LOINC_AST:   'ast',
         LOINC_GGT:   'ggt',
+        LOINC_BILI_TOTAL: 'bilirubin_total',
+        LOINC_BILI_DIR:   'bilirubin_direct',
+        # Kidney
         LOINC_CREAT: 'creatinine',
+        # Electrolytes
+        LOINC_POTASSIUM: 'potassium',
+        LOINC_SODIUM: 'sodium',
+        # Minerals
+        LOINC_CALCIUM: 'calcium',
+        LOINC_MAGNESIUM: 'magnesium',
+        # Proteins
+        LOINC_PROTEIN_TOTAL: 'protein_total',
+        LOINC_ALBUMIN: 'albumin',
+        # Thyroid
         LOINC_TSH:   'tsh',
     })
     for c in empty_cols[1:]:
