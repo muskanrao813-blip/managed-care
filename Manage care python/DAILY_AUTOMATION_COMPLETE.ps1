@@ -72,13 +72,13 @@ foreach ($script in $allScripts) {
 
 Log "OK - All scripts completed"
 
-# STEP 2: Copy fresh data to deploy/Data/ (FIXED - looks in /data subdirectory)
+# STEP 2: Copy fresh data to deploy/Data/
 Log "STEP 2: Copying data to Render deployment folder..."
 $csvPatterns = @("*.csv", "*.json")
 $copiedCount = 0
 
-# Look in both root and /data subdirectory
-$searchPaths = @($ScriptDir, (Join-Path $ScriptDir "data"))
+# Look in both root and /Data subdirectory (capital D)
+$searchPaths = @($ScriptDir, (Join-Path $ScriptDir "Data"))
 
 foreach ($searchPath in $searchPaths) {
     if (-not (Test-Path $searchPath)) { continue }
@@ -106,8 +106,8 @@ try {
     git fetch origin 2>&1 | Out-Null
     git pull origin main --ff-only -ErrorAction SilentlyContinue 2>&1 | Out-Null
 
-    # Stage all changes in deploy/Data/
-    git add -f "Manage care python\deploy\Data\"
+    # Stage all changes in deploy/Data/ using forward slashes (git standard)
+    git add -f "Manage care python/deploy/Data/*" 2>&1 | Out-Null
 
     # Check if there are changes to commit
     $status = git status --porcelain 2>&1
@@ -120,7 +120,8 @@ try {
         Log "WARN - No changes to commit"
     }
 } catch {
-    Log "WARN - Git push warning: $_" "WARN"
+    Log "ERROR - Git push failed: $_" "WARN"
+    Log "Continuing with next step..." "WARN"
 }
 
 # Mark pipeline end
