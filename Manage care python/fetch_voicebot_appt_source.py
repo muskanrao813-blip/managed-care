@@ -26,7 +26,7 @@ VYTAL_CODES = ['VYTAL0126','VYTAL0226','VYTAL0326','VYTAL0426','VYTAL0526',
                'VYTAL0626','VYTAL0726','VYTAL0826','VYTAL0926','VYTAL01026']
 cs = ", ".join(f"'{c}'" for c in VYTAL_CODES)
 
-MCARE_CAMPAIGN_IDS = "234, 236, 240"
+MCARE_CAMPAIGN_IDS = "234, 236, 240, 270"
 
 SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR     = os.path.join(SCRIPT_DIR, "Data")
