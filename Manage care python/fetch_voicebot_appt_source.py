@@ -147,15 +147,15 @@ df_appt['speciality_grp'] = df_appt['speciality'].apply(
 )
 
 # Classification Logic:
-# Voice Bot = (mobile_hash in interested_hashes + COM status) OR (no mobile_hash = unmatched VB users)
+# Voice Bot = mobile_hash in interested_hashes + COM status (matched voice bot users)
 # Agent = has mobile_hash but NOT in interested_hashes
+# Organic = no mobile_hash (cannot match to policy, direct bookings)
 df_appt['source'] = df_appt.apply(
-    lambda row: 'Voice Bot' if (
-        (pd.notna(row['mobile_number_hash'])
-         and row['mobile_number_hash'] in interested_hashes
-         and row['status'] == 'COM')  # Matched voice bot user with completed appt
-        or pd.isna(row['mobile_number_hash'])  # Unmatched users (no mobile_hash) = voice bot
-    ) else 'Agent',  # Has mobile_hash but not voice bot = Agent
+    lambda row: ('Voice Bot' if (
+        pd.notna(row['mobile_number_hash'])
+        and row['mobile_number_hash'] in interested_hashes
+        and row['status'] == 'COM'
+    ) else ('Organic' if pd.isna(row['mobile_number_hash']) else 'Agent')),
     axis=1
 )
 
@@ -173,8 +173,7 @@ from datetime import datetime
 today = pd.to_datetime(datetime.now().date())
 df_appt['appt_date_parsed'] = pd.to_datetime(df_appt['appt_date'], errors='coerce')
 df_appt_today = df_appt[df_appt['appt_date_parsed'] <= today]
-vb_booked = int((df_appt_today['source'] == 'Voice Bot').sum())
-vb_interested_with_claim = int((df_appt_today[df_appt_today['mobile_number_hash'].isin(interested_hashes) & (df_appt_today['status'] == 'COM')]).shape[0])
+vb_booked = int((df_appt_today['source'] == 'Voice Bot').sum())  # Only matched voice bot appointments
 
 funnel = {
     "dialled":    total_dialled,
