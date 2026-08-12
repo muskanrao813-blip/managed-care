@@ -147,15 +147,14 @@ df_appt['speciality_grp'] = df_appt['speciality'].apply(
 )
 
 # Classification Logic:
-# Voice Bot = mobile_hash in answered_user_outcome (all voice bot campaign participants)
-# Agent = has mobile_hash but NOT in answered_user_outcome
-# Organic = no mobile_hash (cannot match to policy, direct bookings)
+# Voice Bot = mobile_hash in answered_user_outcome (all voice bot campaign participants, any status)
+# Agent = has mobile_hash but NOT in answered_user_outcome (direct policy bookings with hash)
+# Organic = no mobile_hash (cannot match to policy, truly unmatched bookings)
 all_vb_users = set(user_outcome.keys())  # ALL answered VB campaign participants
 df_appt['source'] = df_appt.apply(
     lambda row: ('Voice Bot' if (
         pd.notna(row['mobile_number_hash'])
         and row['mobile_number_hash'] in all_vb_users
-        and row['status'] == 'COM'  # Only COM status = booked/completed
     ) else ('Organic' if pd.isna(row['mobile_number_hash']) else 'Agent')),
     axis=1
 )
