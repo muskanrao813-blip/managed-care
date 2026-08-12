@@ -256,7 +256,7 @@ def get_insights():
 
         if recs_table is None or recs_table.empty:
             print("[WARN] Pre-calculated recommendations not found, calculating on-the-fly...")
-            return get_insights_fallback()
+            return get_insights_fallback(date_from, date_to)
 
         # Convert to list of dicts for JSON
         recommendations = recs_table.drop(columns=['generated_at', 'date_range_from', 'date_range_to', 'enrolled_count'], errors='ignore').to_dict('records')
@@ -350,7 +350,16 @@ def get_insights_fallback(date_from='2026-06-01', date_to=None):
             return jsonify({"insights": {"recommendations": []}, "error": "No data available"}), 200
 
         policy_vytal_2026 = policy[policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)]
-        enrolled_vytal_2026 = policy_vytal_2026['phr_id'].nunique()
+
+        # Filter enrolled users by SAME date range as appointments (use policy_year_month if available)
+        if 'policy_year_month' in policy_vytal_2026.columns:
+            date_from_ym = date_from[:7]  # YYYY-MM
+            date_to_ym = date_to[:7]      # YYYY-MM
+            policy_in_range = policy_vytal_2026[(policy_vytal_2026['policy_year_month'] >= date_from_ym) &
+                                                 (policy_vytal_2026['policy_year_month'] <= date_to_ym)]
+            enrolled_vytal_2026 = policy_in_range['phr_id'].nunique()
+        else:
+            enrolled_vytal_2026 = policy_vytal_2026['phr_id'].nunique()
 
         appts_filtered = appts[(appts['appt_date'] >= date_from) & (appts['appt_date'] <= date_to)].copy()
 
