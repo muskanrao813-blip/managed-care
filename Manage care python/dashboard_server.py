@@ -350,11 +350,9 @@ def get_insights_fallback(date_from='2026-06-01', date_to=None):
             return jsonify({"insights": {"recommendations": []}, "error": "No data available"}), 200
 
         policy_vytal_2026 = policy[policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)]
-
-        # Use all enrolled VYTAL users (policy data is a snapshot, not month-by-month)
-        # If date range filtering is needed for specific analysis, use the latest policy month available
         enrolled_vytal_2026 = policy_vytal_2026['phr_id'].nunique()
 
+        # Apply date range filter to appointments for selected date range analysis
         appts_filtered = appts[(appts['appt_date'] >= date_from) & (appts['appt_date'] <= date_to)].copy()
 
         total_appts = len(appts_filtered)
@@ -372,8 +370,10 @@ def get_insights_fallback(date_from='2026-06-01', date_to=None):
         if 'cohort' in policy_vytal_2026.columns:
             cohort_counts = policy_vytal_2026['cohort'].value_counts().to_dict()
 
-        unique_appt_users = appts_filtered['phr_id'].nunique() if 'phr_id' in appts_filtered.columns else 0
-        zero_appt_users = enrolled_vytal_2026 - unique_appt_users
+        # Zero-appointment users: across FULL PLAN YEAR (not filtered by date range)
+        # Calculate from ALL appointments (not date-filtered)
+        unique_appt_users_full_year = appts['phr_id'].nunique() if 'phr_id' in appts.columns else 0
+        zero_appt_users = enrolled_vytal_2026 - unique_appt_users_full_year
         zero_appt_rate = (zero_appt_users / enrolled_vytal_2026 * 100) if enrolled_vytal_2026 > 0 else 0
 
         very_high_count = cohort_counts.get('Very High', 0)
