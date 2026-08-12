@@ -235,8 +235,11 @@ def health_check():
 
 @app.route("/api/insights")
 def get_insights():
-    """Fetch pre-calculated daily recommendations for VYTAL 2026"""
+    """Fetch pre-calculated daily recommendations for VYTAL 2026, with optional date filtering"""
     try:
+        # Get date range from query parameters, default to 2026-06-01 to today
+        date_from = request.args.get('date_from', '2026-06-01')
+        date_to = request.args.get('date_to', pd.Timestamp.now().strftime('%Y-%m-%d'))
         # Get actual data refresh timestamp from pipeline status
         data_refresh_time = None
         try:
@@ -331,11 +334,13 @@ def get_insights():
 
     except Exception as e:
         print(f"Error fetching insights: {e}")
-        return get_insights_fallback()
+        return get_insights_fallback(date_from, date_to)
 
 
-def get_insights_fallback():
+def get_insights_fallback(date_from='2026-06-01', date_to=None):
     """Fallback: Calculate recommendations on-the-fly if pre-calculated not available"""
+    if date_to is None:
+        date_to = pd.Timestamp.now().strftime('%Y-%m-%d')
     recommendations = []
     try:
         appts = read_table("vytal_appt_flat") if read_table else None
@@ -347,8 +352,6 @@ def get_insights_fallback():
         policy_vytal_2026 = policy[policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)]
         enrolled_vytal_2026 = policy_vytal_2026['phr_id'].nunique()
 
-        date_from = "2026-06-01"
-        date_to = "2026-08-07"
         appts_filtered = appts[(appts['appt_date'] >= date_from) & (appts['appt_date'] <= date_to)].copy()
 
         total_appts = len(appts_filtered)

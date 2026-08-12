@@ -1,0 +1,103 @@
+===============================================================
+TASK SCHEDULER SETUP - Managed Care 3.0 Daily Pipeline
+===============================================================
+
+WHY PIPELINE DIDN'T RUN:
+- Task Scheduler job wasn't created/registered
+- Need to set it up manually
+
+HOW TO FIX (2 STEPS):
+
+STEP 1: Run Setup Script (Admin Mode)
+======================================
+
+1. Open PowerShell as Administrator
+   - Right-click Start Menu → Windows PowerShell (Admin)
+
+2. Run the setup script:
+
+   cd "C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python"
+   .\Setup_TaskScheduler.ps1
+
+3. You should see "SUCCESS: Task created!"
+
+STEP 2: Verify Task Was Created
+================================
+
+In PowerShell, run:
+
+   Get-ScheduledTask -TaskName "Managed Care Daily Pipeline"
+
+Output should show:
+   TaskPath   : \Managed Care\
+   TaskName   : Managed Care Daily Pipeline
+   State      : Ready
+
+
+MANUAL TEST (Optional):
+=======================
+
+To test the pipeline runs correctly:
+
+1. In PowerShell (Admin):
+
+   Start-ScheduledTask -TaskName "Managed Care Daily Pipeline"
+
+2. Watch the output in a new command window:
+
+   C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python\MC_Daily.bat
+
+3. Check logs for completion:
+
+   dir "C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python\logs"
+
+
+AUTOMATIC SCHEDULING:
+=====================
+
+After setup, the pipeline will run automatically:
+- WHEN: Daily at 6:00 AM
+- WHAT: All 16 data scripts + recommendations generation
+- WHERE: Neon database updated
+- THEN: Dashboard auto-updated on Render
+
+
+TROUBLESHOOTING:
+================
+
+If task doesn't run:
+1. Check Task Scheduler is running:
+   tasklist | findstr "svchost"
+
+2. Verify permissions:
+   - Run PowerShell as Administrator
+   - Re-run Setup_TaskScheduler.ps1
+
+3. Check batch file exists:
+   Test-Path "C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python\MC_Daily.bat"
+
+4. View last run result in Task Scheduler GUI:
+   - Press Win+R
+   - Type: taskschd.msc
+   - Navigate to: Managed Care → Managed Care Daily Pipeline
+   - Check "Last Run Result"
+
+
+LOGS LOCATION:
+==============
+
+After each run, check:
+C:\Users\muskan.rao\Documents\managed-care-platform\Manage care python\logs\daily_YYYY-MM-DD_HH-MM.log
+
+Contains all script outputs and status messages.
+
+
+NEED TO RUN NOW?
+================
+
+PowerShell (Admin):
+
+Start-ScheduledTask -TaskName "Managed Care Daily Pipeline"
+
+
+That's it! Pipeline will now run automatically every day at 6:00 AM.

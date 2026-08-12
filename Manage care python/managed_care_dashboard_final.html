@@ -1232,6 +1232,7 @@ async function reloadData() {
       const insResponse = await fetch(API_URL.replace('/data', '') + '/insights');
       if (insResponse.ok) {
         ins = await insResponse.json();
+        window.cachedInsights = ins;
       }
     } catch (e) {
       console.log('Insights load failed:', e);
@@ -3703,6 +3704,21 @@ function setCareOpsDateRange() {
 
   console.log('%c═══ CARE OPS DATE CHANGED ═══', 'color: orange; font-weight: bold');
   console.log(`DateFrom: ${opDateFrom} | DateTo: ${opDateTo} | SpecificDate: ${opSpecificDate}`);
+
+  // Reload insights with new date range
+  if (API_URL) {
+    try {
+      const insUrl = new URL(API_URL.replace('/data', '') + '/insights');
+      insUrl.searchParams.append('date_from', opDateFrom);
+      insUrl.searchParams.append('date_to', opDateTo);
+      fetch(insUrl.toString()).then(r => r.json()).then(data => {
+        window.cachedInsights = data;
+        console.log('Insights reloaded for new date range');
+      }).catch(e => console.log('Insights reload failed:', e));
+    } catch (e) {
+      console.log('Error reloading insights:', e);
+    }
+  }
 
   // Re-render active section with new filters
   const activeSection = document.querySelector('.nav-item.active');
