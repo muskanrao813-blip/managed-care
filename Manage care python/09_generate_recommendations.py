@@ -13,21 +13,22 @@ sys.stdout.reconfigure(encoding='utf-8')
 print("[START] Generate Recommendations")
 
 # Load data
-appts = read_table("vytal_appt_flat")
+appts = read_table("appt_source")
 policy = read_table("policy_data")
 
 if appts is None or appts.empty or policy is None or policy.empty:
     print("[ERROR] Missing data tables")
     sys.exit(1)
 
-# Filter to VYTAL 2026
-policy_vytal_2026 = policy[policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)]
-enrolled_vytal_2026 = policy_vytal_2026['phr_id'].nunique()
+# Filter to ALL VYTAL users (not just VYTAL.*26) for accurate enrolled count
+policy_vytal_all = policy[policy['mc_product_code'].str.contains('VYTAL', regex=True, na=False)]
+enrolled_vytal_all = policy_vytal_all['phr_id'].nunique()
 
 # Date range (dashboard default)
 date_from = "2026-06-01"
 date_to = "2026-08-07"
-appts_filtered = appts[(appts['appt_date'] >= date_from) & (appts['appt_date'] <= date_to)].copy()
+appts['appt_date'] = pd.to_datetime(appts['appt_date'], errors='coerce')
+appts_filtered = appts[(appts['appt_date'] >= pd.to_datetime(date_from)) & (appts['appt_date'] <= pd.to_datetime(date_to))].copy()
 
 # Calculate metrics
 total_appts = len(appts_filtered)
@@ -46,18 +47,18 @@ cancellation_rate = (cancelled / total_appts * 100) if total_appts > 0 else 0
 
 # Cohort distribution
 cohort_counts = {}
-if 'cohort' in policy_vytal_2026.columns:
-    cohort_counts = policy_vytal_2026['cohort'].value_counts().to_dict()
+if 'cohort' in policy_vytal_all.columns:
+    cohort_counts = policy_vytal_all['cohort'].value_counts().to_dict()
 
 very_high_count = cohort_counts.get('Very High', 0)
-very_high_rate = (very_high_count / enrolled_vytal_2026 * 100) if enrolled_vytal_2026 > 0 else 0
+very_high_rate = (very_high_count / enrolled_vytal_all * 100) if enrolled_vytal_all > 0 else 0
 
-# Zero appointments
-unique_appt_users = appts_filtered['phr_id'].nunique() if 'phr_id' in appts_filtered.columns else 0
-zero_appt_users = enrolled_vytal_2026 - unique_appt_users
-zero_appt_rate = (zero_appt_users / enrolled_vytal_2026 * 100) if enrolled_vytal_2026 > 0 else 0
+# Zero appointments: from ALL appointments (not just filtered date range) for accuracy
+unique_appt_users_all = appts['phr_id'].nunique() if 'phr_id' in appts.columns else 0
+zero_appt_users = enrolled_vytal_all - unique_appt_users_all
+zero_appt_rate = (zero_appt_users / enrolled_vytal_all * 100) if enrolled_vytal_all > 0 else 0
 
-print(f"[OK] Calculated metrics for {enrolled_vytal_2026} VYTAL 2026 enrolled users")
+print(f"[OK] Calculated metrics for {enrolled_vytal_all} VYTAL enrolled users")
 print(f"  - Zero appointments: {zero_appt_users} ({zero_appt_rate:.1f}%)")
 print(f"  - Very High cohort: {very_high_count} ({very_high_rate:.1f}%)")
 print(f"  - Diet completion: {diet_completion_rate:.1f}%")
@@ -123,7 +124,7 @@ df_recommendations = pd.DataFrame(recommendations)
 df_recommendations['generated_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 df_recommendations['date_range_from'] = date_from
 df_recommendations['date_range_to'] = date_to
-df_recommendations['enrolled_count'] = enrolled_vytal_2026
+df_recommendations['enrolled_count'] = enrolled_vytal_all
 
 # Save to Neon
 save_dataframe(df_recommendations, "recommendations_vytal_2026", if_exists="replace")

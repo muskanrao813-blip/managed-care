@@ -271,7 +271,8 @@ def get_insights():
         hra_stats = read_table("hra_stats") if read_table else None
         prog_alloc = read_table("programme_allocation") if read_table else None
 
-        policy_vytal_2026 = policy[policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)] if policy is not None else None
+        # Get ALL VYTAL users (not just VYTAL.*26) for accurate enrolled count
+        policy_vytal_all = policy[policy['mc_product_code'].str.contains('VYTAL', regex=True, na=False)] if policy is not None else None
 
         cohort_counts = {}
         zero_appt_users = 0
@@ -280,9 +281,9 @@ def get_insights():
         hra_completion_pct = 0
         hra_completed_count = 0
 
-        if policy_vytal_2026 is not None:
-            if 'cohort' in policy_vytal_2026.columns:
-                cohort_counts = policy_vytal_2026['cohort'].value_counts().to_dict()
+        if policy_vytal_all is not None:
+            if 'cohort' in policy_vytal_all.columns:
+                cohort_counts = policy_vytal_all['cohort'].value_counts().to_dict()
 
             # Get zero-appt count from recommendations
             if len(recommendations) > 0 and 'metric_value' in recommendations[0]:
@@ -291,7 +292,7 @@ def get_insights():
 
             # Calculate MC improvement rate
             if prog_alloc is not None and len(prog_alloc) > 0:
-                mc_users_hash = policy_vytal_2026[policy_vytal_2026['managed_care_program'].notna()]['mobile_number_hash'].unique()
+                mc_users_hash = policy_vytal_all[policy_vytal_all['managed_care_program'].notna()]['mobile_number_hash'].unique()
                 prog_alloc_mc = prog_alloc[prog_alloc['mobile_number_hash'].isin(mc_users_hash)]
                 if len(prog_alloc_mc) > 0 and 'total_score' in prog_alloc_mc.columns:
                     # Use average score improvement as proxy (higher score = better improvement)
@@ -343,14 +344,15 @@ def get_insights_fallback(date_from='2026-06-01', date_to=None):
         date_to = pd.Timestamp.now().strftime('%Y-%m-%d')
     recommendations = []
     try:
-        appts = read_table("vytal_appt_flat") if read_table else None
+        appts = read_table("appt_source") if read_table else None
         policy = read_table("policy_data") if read_table else None
 
         if appts is None or appts.empty or policy is None or policy.empty:
             return jsonify({"insights": {"recommendations": []}, "error": "No data available"}), 200
 
-        policy_vytal_2026 = policy[policy['mc_product_code'].str.contains('VYTAL.*26', regex=True, na=False)]
-        enrolled_vytal_2026 = policy_vytal_2026['phr_id'].nunique()
+        # Get ALL VYTAL users (not just VYTAL.*26) for accurate enrolled count
+        policy_vytal_all = policy[policy['mc_product_code'].str.contains('VYTAL', regex=True, na=False)]
+        enrolled_vytal_all = policy_vytal_all['phr_id'].nunique()
 
         # Apply date range filter to appointments for selected date range analysis
         appts_filtered = appts[(appts['appt_date'] >= date_from) & (appts['appt_date'] <= date_to)].copy()
@@ -367,17 +369,17 @@ def get_insights_fallback(date_from='2026-06-01', date_to=None):
         cancellation_rate = (cancelled / total_appts * 100) if total_appts > 0 else 0
 
         cohort_counts = {}
-        if 'cohort' in policy_vytal_2026.columns:
-            cohort_counts = policy_vytal_2026['cohort'].value_counts().to_dict()
+        if 'cohort' in policy_vytal_all.columns:
+            cohort_counts = policy_vytal_all['cohort'].value_counts().to_dict()
 
         # Zero-appointment users: across FULL PLAN YEAR (not filtered by date range)
         # Calculate from ALL appointments (not date-filtered)
         unique_appt_users_full_year = appts['phr_id'].nunique() if 'phr_id' in appts.columns else 0
-        zero_appt_users = enrolled_vytal_2026 - unique_appt_users_full_year
-        zero_appt_rate = (zero_appt_users / enrolled_vytal_2026 * 100) if enrolled_vytal_2026 > 0 else 0
+        zero_appt_users = enrolled_vytal_all - unique_appt_users_full_year
+        zero_appt_rate = (zero_appt_users / enrolled_vytal_all * 100) if enrolled_vytal_all > 0 else 0
 
         very_high_count = cohort_counts.get('Very High', 0)
-        very_high_rate = (very_high_count / enrolled_vytal_2026 * 100) if enrolled_vytal_2026 > 0 else 0
+        very_high_rate = (very_high_count / enrolled_vytal_all * 100) if enrolled_vytal_all > 0 else 0
 
         if zero_appt_rate > 80:
             recommendations.append({
@@ -428,8 +430,8 @@ def get_insights_fallback(date_from='2026-06-01', date_to=None):
             "metrics": {
                 "zero_appt": {"zero_appt": zero_appt_users, "pct": round(zero_appt_rate, 1)},
                 "cohort_split": cohort_counts,
-                "enrolled": enrolled_vytal_2026,
-                "camp_total": enrolled_vytal_2026
+                "enrolled": enrolled_vytal_all,
+                "camp_total": enrolled_vytal_all
             },
             "meta": {"generated_at": pd.Timestamp.now().strftime("%Y-%m-%d %H:%M")}
         }), 200

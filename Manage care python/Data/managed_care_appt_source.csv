@@ -1057,7 +1057,7 @@ phr_id,appt_date,booking_date,status,speciality,speciality_grp,product_code,sour
 628f45697bee9c5d5a883833,2026-08-07,2026-08-03,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
 6a1fed7d91996e05c0016e5d,2026-08-05,2026-07-30,COM,Dietitian/Nutritionist,Diet,VYTAL0426,Agent
 6a1fed2991996e05c0ffca85,2026-08-08,2026-08-04,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-66978614ab7e60756eeb1761,2026-08-07,2026-08-06,CAN,Dietitian/Nutritionist,Diet,VYTAL01026,Agent
+66978614ab7e60756eeb1761,2026-08-07,2026-08-06,CAN,Dietitian/Nutritionist,Diet,VYTAL01026,Organic
 6298e9cd53c65bae2e7399c3,2026-08-05,2026-07-30,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
 6a1fedd591996e05c0033915,2026-08-07,2026-08-06,CAN,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
 6299166453c65bae2e8a2c1e,2026-08-07,2026-08-03,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
@@ -1366,7 +1366,7 @@ phr_id,appt_date,booking_date,status,speciality,speciality_grp,product_code,sour
 64afe4a0cf21b2948d632d8c,2026-06-18,2026-06-15,CAN,General Physician,Doctor,VYTAL0726,Agent
 628f42ad7bee9c5d5a85d6a2,2026-06-19,2026-06-17,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
 6a1fecce91996e05c0fe2160,2026-06-16,2026-06-11,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-66978614ab7e60756eeb1761,2026-07-09,2026-07-07,COM,General Physician,Doctor,VYTAL01026,Agent
+66978614ab7e60756eeb1761,2026-07-09,2026-07-07,COM,General Physician,Doctor,VYTAL01026,Organic
 68527a42ab7e60756ef6ba66,2026-07-02,2026-06-27,COM,Dietitian/Nutritionist,Diet,VYTAL0326,Agent
 6a1fef1791996e05c0095a39,2026-07-22,2026-07-18,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
 6a1fe55391996e05c0d72b1f,2026-06-22,2026-06-18,CAN,General Physician,Doctor,VYTAL0726,Agent
@@ -1683,6 +1683,39 @@ phr_id,appt_date,booking_date,status,speciality,speciality_grp,product_code,sour
 6a1fec8791996e05c0fcc54a,2026-07-07,2026-07-04,CAN,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
 6294e0917bee9c5d5a660d9e,2026-06-17,2026-06-11,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
 6a1fedf691996e05c003d9ef,2026-07-16,2026-07-15,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6a1fecca91996e05c0fe0a21,2026-08-11,2026-08-06,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6a1fef5591996e05c00a6c7e,2026-08-11,2026-08-11,COM,Dietitian/Nutritionist,Diet,VYTAL0326,Agent
+5f06f4b64b61bb08c2f321ce,2026-08-11,2026-08-10,COM,General Physician,Doctor,VYTAL0826,Agent
+67ea2353ab7e60756e73377f,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
+68527acfab7e60756ef80c88,2026-08-11,2026-08-07,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+67f62013ab7e60756e707d47,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+6a1ff06491996e05c00f68c2,2026-08-11,2026-08-11,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+6a1fef0691996e05c0090445,2026-07-16,2026-07-15,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+674d3b24ab7e60756ebcddf0,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
+61910ffe813bb28a90852786,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6a1fee0791996e05c0043043,2026-08-11,2026-08-09,CAN,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
+6a1fee7791996e05c006452b,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
+67ea38d5ab7e60756e983d15,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6298eee153c65bae2e776168,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+69dfb36791996e05c0a2e97c,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+69bda1f291996e05c012a378,2026-08-17,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
+6226f5067bee9c5d5a1f85ca,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6a1fee5f91996e05c005e02c,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0926,Agent
+69bdfa1591996e05c04be0a2,2026-08-11,2026-08-10,COM,General Physician,Doctor,VYTAL0726,Agent
+671357f7ab7e60756efe30a7,2026-08-11,2026-08-11,COM,Dietitian/Nutritionist,Diet,VYTAL0326,Agent
+6115098cee3b0993ea22db52,2026-06-29,2026-06-23,COM,Dietitian/Nutritionist,Diet,VYTAL0526,Agent
+6a1fed6e91996e05c0011b7a,2026-06-29,2026-06-23,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+628f3ffb7bee9c5d5a83a71c,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
+682db85dab7e60756ecddf37,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6a1fef4991996e05c00a36d1,2026-08-11,2026-08-06,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6a1fed8891996e05c001a346,2026-07-07,2026-07-04,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+6a1fedf891996e05c003e006,2026-08-11,2026-08-09,COM,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
+67135867ab7e60756effa37e,2026-08-11,2026-08-07,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+608d1a2cd5cc3545908472f0,2026-08-13,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
+6a1fed6791996e05c000faaf,2026-08-11,2026-08-06,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
+6298ed3453c65bae2e761094,2026-06-30,2026-06-24,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+68c41489e3ec279a55ef795d,2026-06-30,2026-06-24,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
+6815eedeab7e60756ea3a3b0,2026-08-11,2026-08-09,CAN,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
 69cfb64091996e05c0425ddc,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
 624c12127bee9c5d5a2f18a1,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
 69e150d891996e05c099a446,2026-08-11,2026-08-07,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
@@ -1726,7 +1759,6 @@ phr_id,appt_date,booking_date,status,speciality,speciality_grp,product_code,sour
 6a1d70f291996e05c0c45222,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0326,Agent
 5f98f9cf610faaf7fb77ee05,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
 6891d96de3ec279a55863fcf,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0326,Agent
-6a1fee0b91996e05c004434b,2026-08-12,2026-08-11,CAN,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
 6a1fed1f91996e05c0ff99d9,2026-07-07,2026-07-04,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
 6a1fed6e91996e05c0011b7a,2026-08-11,2026-08-11,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
 6a1febd591996e05c0f95c46,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
@@ -1818,36 +1850,4 @@ phr_id,appt_date,booking_date,status,speciality,speciality_grp,product_code,sour
 6a1fefcf91996e05c00caf2f,2026-07-07,2026-07-04,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
 6720d969ab7e60756e79ebbc,2026-08-13,2026-08-12,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
 619cbb1d813bb28a904e7e81,2026-08-14,2026-08-12,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6a1fecca91996e05c0fe0a21,2026-08-11,2026-08-06,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6a1fef5591996e05c00a6c7e,2026-08-11,2026-08-11,COM,Dietitian/Nutritionist,Diet,VYTAL0326,Agent
-5f06f4b64b61bb08c2f321ce,2026-08-11,2026-08-10,COM,General Physician,Doctor,VYTAL0826,Agent
-67ea2353ab7e60756e73377f,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
-68527acfab7e60756ef80c88,2026-08-11,2026-08-07,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-67f62013ab7e60756e707d47,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-6a1ff06491996e05c00f68c2,2026-08-11,2026-08-11,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-6a1fef0691996e05c0090445,2026-07-16,2026-07-15,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-674d3b24ab7e60756ebcddf0,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
-61910ffe813bb28a90852786,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6a1fee0791996e05c0043043,2026-08-11,2026-08-09,CAN,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
-6a1fee7791996e05c006452b,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
-67ea38d5ab7e60756e983d15,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6298eee153c65bae2e776168,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-69dfb36791996e05c0a2e97c,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-69bda1f291996e05c012a378,2026-08-17,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
-6226f5067bee9c5d5a1f85ca,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6a1fee5f91996e05c005e02c,2026-08-11,2026-08-08,COM,Dietitian/Nutritionist,Diet,VYTAL0926,Agent
-69bdfa1591996e05c04be0a2,2026-08-11,2026-08-10,COM,General Physician,Doctor,VYTAL0726,Agent
-671357f7ab7e60756efe30a7,2026-08-11,2026-08-11,COM,Dietitian/Nutritionist,Diet,VYTAL0326,Agent
-6115098cee3b0993ea22db52,2026-06-29,2026-06-23,COM,Dietitian/Nutritionist,Diet,VYTAL0526,Agent
-6a1fed6e91996e05c0011b7a,2026-06-29,2026-06-23,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-628f3ffb7bee9c5d5a83a71c,2026-08-14,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
-682db85dab7e60756ecddf37,2026-08-11,2026-08-05,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6a1fef4991996e05c00a36d1,2026-08-11,2026-08-06,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6a1fed8891996e05c001a346,2026-07-07,2026-07-04,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-6a1fedf891996e05c003e006,2026-08-11,2026-08-09,COM,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
-67135867ab7e60756effa37e,2026-08-11,2026-08-07,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-608d1a2cd5cc3545908472f0,2026-08-13,2026-08-11,BOOKED,Dietitian/Nutritionist,Diet,VYTAL0226,Organic
-6a1fed6791996e05c000faaf,2026-08-11,2026-08-06,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Voice Bot
-6298ed3453c65bae2e761094,2026-06-30,2026-06-24,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-68c41489e3ec279a55ef795d,2026-06-30,2026-06-24,COM,Dietitian/Nutritionist,Diet,VYTAL0226,Agent
-6815eedeab7e60756ea3a3b0,2026-08-11,2026-08-09,CAN,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
+6a1fee0b91996e05c004434b,2026-08-12,2026-08-11,CAN,Dietitian/Nutritionist,Diet,VYTAL0726,Agent
