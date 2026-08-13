@@ -6,7 +6,7 @@ Supports both local SQLite and Render PostgreSQL.
 
 import os
 import json
-from flask import Flask, jsonify, send_file
+from flask import Flask, jsonify, send_file, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 import pandas as pd
