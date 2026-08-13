@@ -129,7 +129,6 @@ with engine.connect() as c:
         FROM deltalake.dl_standard_pbireporting.f_appointmentflattable
         WHERE vlocity_ins_fsc__productcode__c IN ({cs})
           AND (istestappt = 0 OR istestappt IS NULL)
-          AND appointmentdate >= DATE '2026-04-01'
     """))
     df_appt = pd.DataFrame(r.fetchall(), columns=r.keys())
 engine.dispose()
