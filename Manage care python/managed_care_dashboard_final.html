@@ -1774,27 +1774,27 @@ function renderOverview() {
   const advantage = noneRate > 0 ? (mcRate/noneRate).toFixed(1) : '—';
   document.getElementById('kpi-advantage').textContent = advantage + '× advantage';
 
-  // 3. Zero appointment users — from appt_util CSV (f_claim phr_id join)
-  const apptUtil_ov = DATA.appt_util || [];
+  // 3. Zero appointment users — from appt_source (latest with all appointment data)
+  const apptSource_ov = DATA.appt_source || [];
   // Filter by year's product codes (PURELIFE for 2025, VYTAL for 2026) + date range
-  // All rows in appt_util are already valid (from Script 04), no need to filter by enrolledHashes
-  const apptYearRows_ov = apptUtil_ov.filter(r => {
-    const rCode = (r.mc_product_code || '').toString().trim();
+  const apptYearRows_ov = apptSource_ov.filter(r => {
+    const rCode = (r.product_code || '').toString().trim();
     if (!enrollCodes.includes(rCode)) return false;
-    const cm = (r.claim_month || '').toString().trim();
-    if (cm && cm.length === 7) return cm >= DATE_FROM && cm <= DATE_TO;
-    return String(r.year) === enrollYear;
+    // appt_source has appt_date field
+    const apptDate = (r.appt_date || '').toString().substring(0, 7);  // YYYY-MM
+    if (apptDate && apptDate.length === 7) return apptDate >= DATE_FROM && apptDate <= DATE_TO;
+    return true;  // No date, include anyway
   });
   const apptBookedSet_ov = new Set(
-    apptYearRows_ov.filter(r => ['Authorized','Redeemed','Paid'].includes(r.claim_status))
-                   .map(r => r.phr_id || r.mobile_number_hash)
+    apptYearRows_ov.filter(r => r.status === 'COM')  // COM = Completed
+                   .map(r => r.phr_id)
                    .filter(Boolean)
   );
   const zeroAppt_ov = enrolled > 0 ? (enrolled - apptBookedSet_ov.size) : 0;
-  document.getElementById('kpi-zero-appt').textContent = apptUtil_ov.length > 0 ? fmt(zeroAppt_ov) : '—';
-  document.getElementById('kpi-zero-pct').textContent  = apptUtil_ov.length > 0
+  document.getElementById('kpi-zero-appt').textContent = apptSource_ov.length > 0 ? fmt(zeroAppt_ov) : '—';
+  document.getElementById('kpi-zero-pct').textContent  = apptSource_ov.length > 0
     ? pct(zeroAppt_ov, enrolled) + ' of enrolled · priority outreach'
-    : 'Run Script 04 to load appointment data';
+    : 'No appointment data';
 
   // 4. Device improvement
   const _ovYear = (DATE_FROM && DATE_FROM >= '2026-04') ? '2026' : '2025';
@@ -1822,14 +1822,13 @@ function renderOverview() {
     ? pct(cohorts['Very High'], totalImpact) + ' of enrolled'
     : 'No enrolled users for this period';
 
-  // 6. Appointments completed — non-cancelled; completion % = non-cancelled / total (incl. cancelled)
-  const apptAllTot_ov      = apptYearRows_ov.reduce((s,r) => s + safeN(r.claim_count), 0);
-  const apptCompletedTot_ov= apptYearRows_ov.filter(r => ['Authorized','Redeemed','Paid'].includes(r.claim_status))
-                                              .reduce((s,r) => s + safeN(r.claim_count), 0);
-  document.getElementById('kpi-appt-done').textContent = apptUtil_ov.length > 0 ? fmt(apptCompletedTot_ov) : '—';
-  document.getElementById('kpi-appt-rate').textContent = apptUtil_ov.length > 0
+  // 6. Appointments completed — COM = completed; completion % = completed / total (incl. cancelled, booked)
+  const apptAllTot_ov      = apptYearRows_ov.length;  // Total appointments in date range
+  const apptCompletedTot_ov= apptYearRows_ov.filter(r => r.status === 'COM').length;  // COM = Completed
+  document.getElementById('kpi-appt-done').textContent = apptSource_ov.length > 0 ? fmt(apptCompletedTot_ov) : '—';
+  document.getElementById('kpi-appt-rate').textContent = apptSource_ov.length > 0
     ? pct(apptCompletedTot_ov, apptAllTot_ov) + ' completion rate'
-    : 'Run Script 04 to load';
+    : 'No appointment data';
 
   // 7. High engagement
   const highEng = dev.filter(r=>r.engagement_tier==='High').length;
